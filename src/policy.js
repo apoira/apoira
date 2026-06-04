@@ -1,5 +1,7 @@
 import { relative, resolve } from "node:path";
 
+const COMMAND_RULE_KINDS = ["allow", "ask", "deny"];
+
 export const DEFAULT_POLICY = Object.freeze({
   version: 1,
   commands: {
@@ -114,7 +116,7 @@ export function evaluatePath(policy, projectRoot, targetPath) {
 }
 
 export function addCommandRule(policy, kind, pattern) {
-  if (!["allow", "ask", "deny"].includes(kind)) {
+  if (!COMMAND_RULE_KINDS.includes(kind)) {
     throw new Error(`Unknown command rule kind: ${kind}`);
   }
 
@@ -141,6 +143,42 @@ export function addPathDeny(policy, pattern) {
   return next;
 }
 
+export function validatePolicy(policy) {
+  const issues = [];
+
+  if (!policy || typeof policy !== "object") {
+    return ["policy must be an object"];
+  }
+
+  if (policy.version !== 1) {
+    issues.push("policy.version must be 1");
+  }
+
+  for (const kind of COMMAND_RULE_KINDS) {
+    validateStringArray(policy.commands?.[kind], `commands.${kind}`, issues);
+  }
+
+  validateStringArray(policy.paths?.deny, "paths.deny", issues);
+  validateStringArray(policy.network?.allow, "network.allow", issues);
+  validateStringArray(policy.network?.deny, "network.deny", issues);
+
+  if (typeof policy.secrets?.redact !== "boolean") {
+    issues.push("secrets.redact must be a boolean");
+  }
+
+  return issues;
+}
+
+export function assertValidPolicy(policy) {
+  const issues = validatePolicy(policy);
+
+  if (issues.length > 0) {
+    throw new Error(`Invalid Mote policy: ${issues.join("; ")}`);
+  }
+
+  return policy;
+}
+
 export function matchPattern(pattern, value) {
   const exactPrefix = !pattern.includes("*");
   if (exactPrefix && (value === pattern || value.startsWith(`${pattern} `))) {
@@ -148,6 +186,20 @@ export function matchPattern(pattern, value) {
   }
 
   return wildcardRegExp(pattern, false).test(value);
+}
+
+function validateStringArray(value, key, issues) {
+  if (!Array.isArray(value)) {
+    issues.push(`${key} must be an array`);
+    return;
+  }
+
+  for (const item of value) {
+    if (typeof item !== "string" || !item.trim()) {
+      issues.push(`${key} entries must be non-empty strings`);
+      return;
+    }
+  }
 }
 
 function firstMatch(patterns = [], value) {

@@ -2,11 +2,13 @@ export {
   DEFAULT_POLICY,
   addCommandRule,
   addPathDeny,
+  assertValidPolicy,
   defaultPolicy,
   evaluateCommand,
   evaluatePath,
   formatCommand,
-  matchPattern
+  matchPattern,
+  validatePolicy
 } from "./policy.js";
 
 export {

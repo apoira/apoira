@@ -4,7 +4,8 @@ import {
   addCommandRule,
   defaultPolicy,
   evaluateCommand,
-  evaluatePath
+  evaluatePath,
+  validatePolicy
 } from "../src/index.js";
 
 test("commands default to deny unless policy allows or asks", () => {
@@ -29,4 +30,18 @@ test("path policy blocks sensitive paths", () => {
   assert.equal(evaluatePath(policy, root, ".env").effect, "deny");
   assert.equal(evaluatePath(policy, root, ".git/config").effect, "deny");
   assert.equal(evaluatePath(policy, root, "src/index.js").effect, "allow");
+});
+
+test("policy validation reports malformed policy fields", () => {
+  const policy = defaultPolicy();
+  assert.deepEqual(validatePolicy(policy), []);
+
+  const broken = structuredClone(policy);
+  broken.commands.allow = "npm test";
+  broken.secrets.redact = "yes";
+
+  assert.deepEqual(validatePolicy(broken), [
+    "commands.allow must be an array",
+    "secrets.redact must be a boolean"
+  ]);
 });

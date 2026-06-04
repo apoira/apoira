@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import {
   addCommandRule,
   addPathDeny,
+  assertValidPolicy,
   evaluateCommand,
   formatCommand
 } from "./policy.js";
@@ -39,10 +40,11 @@ export class MoteRuntime {
 
   async loadPolicy() {
     await ensureProject(this.projectRoot);
-    return readJson(policyPath(this.projectRoot));
+    return assertValidPolicy(await readJson(policyPath(this.projectRoot)));
   }
 
   async savePolicy(policy, reason = "policy updated") {
+    assertValidPolicy(policy);
     await writeJson(policyPath(this.projectRoot), policy);
     await appendEvent(this.projectRoot, {
       type: "policy.updated",
