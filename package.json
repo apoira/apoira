@@ -18,6 +18,7 @@
   },
   "scripts": {
     "demo": "node examples/demo.mjs",
+    "check:residue": "node scripts/check-residue.mjs",
     "test": "node --test"
   },
   "engines": {

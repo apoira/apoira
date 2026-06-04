@@ -217,10 +217,12 @@ proves secret redaction, blocks `.env`, and shows an approval boundary for
 
 ```bash
 npm test
+npm run check:residue
 ```
 
 Mote currently has no runtime dependencies. Tests use Node's built-in test
-runner.
+runner. The residue check fails if legacy project identifiers reappear in the
+repo.
 
 ## License
 
