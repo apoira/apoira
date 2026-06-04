@@ -1,0 +1,9 @@
+node_modules/
+coverage/
+.DS_Store
+*.log
+*.tmp
+
+.mote/events.jsonl
+.mote/secrets.json
+.mote/checkpoints/

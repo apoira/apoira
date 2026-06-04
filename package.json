@@ -1,0 +1,38 @@
+{
+  "name": "mote",
+  "version": "0.1.0",
+  "description": "Policy, secrets, approvals, and replay for AI agents using real computers.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moteMCP/mote.git"
+  },
+  "bugs": {
+    "url": "https://github.com/moteMCP/mote/issues"
+  },
+  "bin": {
+    "mote": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "demo": "node examples/demo.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "agents",
+    "runtime",
+    "mcp",
+    "policy",
+    "secrets",
+    "approvals",
+    "agent-safety",
+    "sandbox",
+    "replay"
+  ],
+  "license": "MIT"
+}
