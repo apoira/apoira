@@ -208,6 +208,7 @@ proves secret redaction, blocks `.env`, and shows an approval boundary for
 ## Documentation
 
 - [Architecture](docs/architecture.md)
+- [MCP Adapter](docs/mcp.md)
 - [Policy](docs/policy.md)
 - [Roadmap](docs/roadmap.md)
 - [Security](SECURITY.md)

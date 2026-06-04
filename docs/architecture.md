@@ -60,6 +60,9 @@ agent -> tool call -> Mote policy -> runtime -> event log
 
 The adapter is deliberately small until the core policy surface settles.
 
+See [MCP Adapter](mcp.md) for the current tool contract and example JSON-RPC
+messages.
+
 ## Roadmap
 
 - filesystem checkpoints and rollback
