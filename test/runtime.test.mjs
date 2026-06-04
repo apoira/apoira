@@ -69,3 +69,19 @@ test("approval rules stop execution unless approved", async () => {
     await rm(projectRoot, { recursive: true, force: true });
   }
 });
+
+test("runtime status exposes policy after validation", async () => {
+  const projectRoot = await mkdtemp(join(tmpdir(), "mote-test-"));
+  const runtime = new MoteRuntime({ projectRoot });
+
+  try {
+    await runtime.init();
+    await runtime.allow("echo *");
+
+    const status = await runtime.status();
+    assert.equal(status.policy.commands.allow.includes("echo *"), true);
+    assert.equal(status.events > 0, true);
+  } finally {
+    await rm(projectRoot, { recursive: true, force: true });
+  }
+});

@@ -101,6 +101,13 @@ Run a command through policy:
 mote run npm test --project ./my-project
 ```
 
+Preflight a command or path without executing anything:
+
+```bash
+mote check-command npm test --project ./my-project
+mote check-path .env --project ./my-project
+```
+
 If a command matches an `ask` rule, Mote records the approval boundary and stops:
 
 ```bash

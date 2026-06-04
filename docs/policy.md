@@ -67,3 +67,15 @@ mote run git push --yes
 
 The current CLI uses `--yes` as a local approval stand-in. A future approval UI
 can replace this without changing the runtime event model.
+
+## Preflight Checks
+
+Use preflight checks when an agent needs to inspect policy before acting.
+
+```bash
+mote check-command npm test
+mote check-path .env
+```
+
+Both commands return structured JSON with the policy decision and the matching
+rule, if any.

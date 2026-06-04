@@ -2,6 +2,7 @@
 import { resolve } from "node:path";
 import { MoteRuntime } from "./runtime.js";
 import { serveMcp } from "./mcp.js";
+import { evaluateCommand, evaluatePath, formatCommand } from "./policy.js";
 
 const { command, args, projectRoot } = parseArgs(process.argv.slice(2));
 const runtime = new MoteRuntime({ projectRoot });
@@ -29,6 +30,28 @@ async function dispatch(runtime, command, args) {
 
   if (command === "status") {
     console.log(JSON.stringify(await runtime.status(), null, 2));
+    return;
+  }
+
+  if (command === "check-command") {
+    if (args.length === 0) {
+      throw new Error("Usage: mote check-command COMMAND [ARGS...]");
+    }
+
+    const commandLine = formatCommand(args[0], args.slice(1));
+    console.log(JSON.stringify({
+      command: commandLine,
+      decision: evaluateCommand(await runtime.loadPolicy(), commandLine)
+    }, null, 2));
+    return;
+  }
+
+  if (command === "check-path") {
+    const targetPath = requiredPattern(args);
+    console.log(JSON.stringify({
+      path: targetPath,
+      decision: evaluatePath(await runtime.loadPolicy(), runtime.projectRoot, targetPath)
+    }, null, 2));
     return;
   }
 
@@ -179,6 +202,8 @@ function printHelp() {
 Usage:
   mote init [dir]
   mote status [--project dir]
+  mote check-command COMMAND [ARGS...] [--project dir]
+  mote check-path PATH [--project dir]
   mote allow "npm test" [--project dir]
   mote ask "git push" [--project dir]
   mote deny ".env" [--project dir]
