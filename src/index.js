@@ -13,6 +13,7 @@ export {
 
 export {
   appendEvent,
+  approvalsPath,
   ensureProject,
   eventLogPath,
   moteDir,
@@ -22,6 +23,15 @@ export {
   secretsPath,
   writeJson
 } from "./store.js";
+
+export {
+  approveApproval,
+  completeApproval,
+  createApproval,
+  getApproval,
+  listApprovals,
+  rejectApproval
+} from "./approvals.js";
 
 export {
   MoteRuntime

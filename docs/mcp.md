@@ -69,6 +69,23 @@ Runs a command through policy.
 }
 ```
 
+### `mote_approvals`
+
+Lists approval records. Pending approvals are returned by default.
+
+```json
+{
+  "name": "mote_approvals",
+  "arguments": {
+    "status": "pending"
+  }
+}
+```
+
+The adapter deliberately does not expose approval-granting tools yet. Agents can
+request or observe approval boundaries, but human approval should happen through
+the CLI or a future signed approval surface.
+
 ### `mote_allow`
 
 Adds a command allow rule.

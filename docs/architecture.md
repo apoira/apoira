@@ -18,9 +18,13 @@ allow or ask rule is blocked by default.
 
 ## 2. Runtime
 
-The runtime executes approved commands in a project directory, injects scoped
-environment variables when a secret is requested, redacts secret values from
-stdout/stderr, and appends lifecycle events to `.mote/events.jsonl`.
+The runtime executes approved commands in a project directory, creates pending
+approvals for risky commands, injects scoped environment variables when a secret
+is requested, redacts secret values from stdout/stderr, and appends lifecycle
+events to `.mote/events.jsonl`.
+
+Pending approvals are stored in `.mote/approvals.json`. The event log remains
+the audit trail; the approval store is the queue state.
 
 Runtime events include:
 
@@ -30,6 +34,9 @@ Runtime events include:
 - `command.blocked`
 - `command.approval_required`
 - `approval.granted`
+- `approval.rejected`
+- `approval.used`
+- `approval.completed`
 - `secret.stored`
 - `secret.accessed`
 - `command.completed`

@@ -19,15 +19,21 @@ export function secretsPath(projectRoot) {
   return join(moteDir(projectRoot), "secrets.json");
 }
 
+export function approvalsPath(projectRoot) {
+  return join(moteDir(projectRoot), "approvals.json");
+}
+
 export async function ensureProject(projectRoot) {
   await mkdir(moteDir(projectRoot), { recursive: true });
 
   const policyFile = policyPath(projectRoot);
   const secretsFile = secretsPath(projectRoot);
   const eventsFile = eventLogPath(projectRoot);
+  const approvalsFile = approvalsPath(projectRoot);
 
   await writeJsonIfMissing(policyFile, defaultPolicy());
   await writeJsonIfMissing(secretsFile, { version: 1, secrets: {} });
+  await writeJsonIfMissing(approvalsFile, { version: 1, approvals: [] });
   await writeFileIfMissing(eventsFile, "");
 }
 

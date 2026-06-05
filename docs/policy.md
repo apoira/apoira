@@ -55,18 +55,43 @@ mote deny ".ssh/**"
 
 ## Approval
 
-Commands matched by `ask` do not run unless an approval is passed.
+Commands matched by `ask` do not run immediately. Mote creates a pending
+approval record in `.mote/approvals.json` and records the boundary in the event
+log.
 
 ```bash
 mote run git push
-# blocked until approval
+# approval required: <approval-id>
+```
 
+Review the queue:
+
+```bash
+mote approvals
+```
+
+Approve and run:
+
+```bash
+mote approve <approval-id> "reviewed command"
+mote run-approval <approval-id>
+```
+
+Reject:
+
+```bash
+mote reject <approval-id> "not allowed right now"
+```
+
+For quick local tests, `--yes` can still grant approval inline:
+
+```bash
 mote run git push --yes
 # runs and records approval.granted
 ```
 
-The current CLI uses `--yes` as a local approval stand-in. A future approval UI
-can replace this without changing the runtime event model.
+The persistent approval queue is the path future UI, signed approvals, and
+remote approval workflows can build on.
 
 ## Preflight Checks
 

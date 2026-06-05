@@ -33,6 +33,44 @@ async function dispatch(runtime, command, args) {
     return;
   }
 
+  if (command === "approvals") {
+    const showAll = removeFlag(args, "--all");
+    const approvals = await runtime.listApprovals(showAll ? {} : { status: "pending" });
+    console.log(JSON.stringify(approvals, null, 2));
+    return;
+  }
+
+  if (command === "approve") {
+    const id = args.shift();
+    if (!id) {
+      throw new Error("Usage: mote approve APPROVAL_ID [note]");
+    }
+
+    console.log(JSON.stringify(await runtime.approveApproval(id, { note: args.join(" ") || undefined }), null, 2));
+    return;
+  }
+
+  if (command === "reject") {
+    const id = args.shift();
+    if (!id) {
+      throw new Error("Usage: mote reject APPROVAL_ID [reason]");
+    }
+
+    console.log(JSON.stringify(await runtime.rejectApproval(id, { reason: args.join(" ") || undefined }), null, 2));
+    return;
+  }
+
+  if (command === "run-approval") {
+    const id = args.shift();
+    if (!id) {
+      throw new Error("Usage: mote run-approval APPROVAL_ID");
+    }
+
+    const { result } = await runtime.runApproval(id);
+    await printRunResult(result);
+    return;
+  }
+
   if (command === "check-command") {
     if (args.length === 0) {
       throw new Error("Usage: mote check-command COMMAND [ARGS...]");
@@ -202,6 +240,10 @@ function printHelp() {
 Usage:
   mote init [dir]
   mote status [--project dir]
+  mote approvals [--all] [--project dir]
+  mote approve APPROVAL_ID [note] [--project dir]
+  mote reject APPROVAL_ID [reason] [--project dir]
+  mote run-approval APPROVAL_ID [--project dir]
   mote check-command COMMAND [ARGS...] [--project dir]
   mote check-path PATH [--project dir]
   mote allow "npm test" [--project dir]

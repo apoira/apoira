@@ -22,6 +22,17 @@ const TOOLS = [
     }
   },
   {
+    name: "mote_approvals",
+    description: "List approval records. Pending approvals are returned by default.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        status: { type: "string", enum: ["pending", "approved", "rejected", "completed"] }
+      },
+      additionalProperties: false
+    }
+  },
+  {
     name: "mote_allow",
     description: "Add an allow command rule.",
     inputSchema: {
@@ -165,6 +176,10 @@ async function callTool(runtime, name, args) {
   if (name === "mote_run") {
     const [executable, ...commandArgs] = commandArray(args.command);
     return runtime.run(executable, commandArgs, { approved: Boolean(args.approved) });
+  }
+
+  if (name === "mote_approvals") {
+    return runtime.listApprovals({ status: args.status ?? "pending" });
   }
 
   if (name === "mote_allow") {

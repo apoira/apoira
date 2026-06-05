@@ -5,5 +5,6 @@ coverage/
 *.tmp
 
 .mote/events.jsonl
+.mote/approvals.json
 .mote/secrets.json
 .mote/checkpoints/

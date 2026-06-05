@@ -37,6 +37,7 @@ What works now:
 - command policy with `allow`, `ask`, and `deny` rules
 - blocked path patterns for sensitive files like `.env`, `.git`, `.ssh`, and
   `.mote/secrets.json`
+- persistent approval queue for risky actions
 - local secret storage with runtime environment injection
 - stdout/stderr redaction for injected secrets
 - append-only event logs in `.mote/events.jsonl`
@@ -112,10 +113,18 @@ If a command matches an `ask` rule, Mote records the approval boundary and stops
 
 ```bash
 mote run git push --project ./my-project
-# approval required
+# approval required: <approval-id>
 ```
 
-For the local prototype, `--yes` acts as the approval grant:
+List, approve, and run pending approvals:
+
+```bash
+mote approvals --project ./my-project
+mote approve <approval-id> "looks safe" --project ./my-project
+mote run-approval <approval-id> --project ./my-project
+```
+
+For quick local testing, `--yes` still acts as an inline approval grant:
 
 ```bash
 mote run git push --project ./my-project --yes
@@ -163,6 +172,9 @@ Recorded events include:
 - `command.requested`
 - `command.blocked`
 - `command.approval_required`
+- `approval.rejected`
+- `approval.used`
+- `approval.completed`
 - `approval.granted`
 - `secret.stored`
 - `secret.accessed`
@@ -186,6 +198,7 @@ Available tools:
 
 - `mote_status`
 - `mote_run`
+- `mote_approvals`
 - `mote_allow`
 - `mote_ask`
 - `mote_deny_path`

@@ -8,6 +8,14 @@ import {
   formatCommand
 } from "./policy.js";
 import {
+  approveApproval,
+  completeApproval,
+  createApproval,
+  getApproval,
+  listApprovals,
+  rejectApproval
+} from "./approvals.js";
+import {
   appendEvent,
   ensureProject,
   policyPath,
@@ -84,6 +92,79 @@ export class MoteRuntime {
     return listSecrets(this.projectRoot);
   }
 
+  async listApprovals(options = {}) {
+    await ensureProject(this.projectRoot);
+    return listApprovals(this.projectRoot, options);
+  }
+
+  async approveApproval(id, options = {}) {
+    await ensureProject(this.projectRoot);
+    const approval = await approveApproval(this.projectRoot, id, options);
+
+    await appendEvent(this.projectRoot, {
+      type: "approval.granted",
+      approvalId: approval.id,
+      command: approval.command,
+      approvedBy: approval.approvedBy
+    });
+
+    return approval;
+  }
+
+  async rejectApproval(id, options = {}) {
+    await ensureProject(this.projectRoot);
+    const approval = await rejectApproval(this.projectRoot, id, options);
+
+    await appendEvent(this.projectRoot, {
+      type: "approval.rejected",
+      approvalId: approval.id,
+      command: approval.command,
+      rejectedBy: approval.rejectedBy,
+      reason: approval.reason
+    });
+
+    return approval;
+  }
+
+  async runApproval(id, options = {}) {
+    await ensureProject(this.projectRoot);
+    const approval = await getApproval(this.projectRoot, id);
+
+    if (approval.status !== "approved") {
+      throw new Error(`Approval ${id} must be approved before it can run.`);
+    }
+
+    if (approval.type !== "command") {
+      throw new Error(`Unsupported approval type: ${approval.type}`);
+    }
+
+    await appendEvent(this.projectRoot, {
+      type: "approval.used",
+      approvalId: approval.id,
+      command: approval.command
+    });
+
+    const result = await this.run(approval.executable, approval.args, {
+      ...options,
+      approved: true,
+      approvalId: approval.id
+    });
+
+    await completeApproval(this.projectRoot, id, result);
+    await appendEvent(this.projectRoot, {
+      type: "approval.completed",
+      approvalId: approval.id,
+      command: approval.command,
+      status: result.status,
+      exitCode: result.exitCode
+    });
+
+    return {
+      approval: await getApproval(this.projectRoot, id),
+      result
+    };
+  }
+
   async run(executable, args = [], options = {}) {
     await ensureProject(this.projectRoot);
 
@@ -119,24 +200,36 @@ export class MoteRuntime {
     }
 
     if (decision.effect === "ask" && !options.approved) {
+      const approval = await createApproval(this.projectRoot, {
+        type: "command",
+        command: commandLine,
+        executable,
+        args,
+        matched: decision.matched,
+        reason: decision.reason
+      });
+
       await appendEvent(this.projectRoot, {
         type: "command.approval_required",
+        approvalId: approval.id,
         command: commandLine,
         reason: decision.reason
       });
 
       return {
         status: "approval_required",
+        approvalId: approval.id,
         exitCode: null,
         decision,
         stdout: "",
-        stderr: "approval required"
+        stderr: `approval required: ${approval.id}`
       };
     }
 
     if (decision.effect === "ask" && options.approved) {
       await appendEvent(this.projectRoot, {
-        type: "approval.granted",
+        type: options.approvalId ? "approval.accepted" : "approval.granted",
+        approvalId: options.approvalId,
         command: commandLine,
         reason: decision.reason
       });
@@ -202,16 +295,18 @@ export class MoteRuntime {
   async status() {
     await ensureProject(this.projectRoot);
 
-    const [policy, events, secrets] = await Promise.all([
+    const [policy, events, secrets, pendingApprovals] = await Promise.all([
       this.loadPolicy(),
       this.replay(),
-      this.listSecrets()
+      this.listSecrets(),
+      this.listApprovals({ status: "pending" })
     ]);
 
     return {
       projectRoot: this.projectRoot,
       events: events.length,
       secrets: secrets.length,
+      pendingApprovals: pendingApprovals.length,
       policy
     };
   }

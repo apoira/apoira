@@ -12,6 +12,7 @@ Status: working prototype.
 - project initialization
 - command allow/ask/deny policy
 - sensitive path deny rules
+- persistent approval queue
 - local secret storage
 - secret injection through environment variables
 - stdout/stderr secret redaction
