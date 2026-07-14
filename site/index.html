@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mandate is an autonomous private-markets desk with an independent authorization layer for AI-managed capital.">
+  <title>Mandate — Autonomous capital, bounded by policy</title>
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="desk.css">
+  <link rel="stylesheet" href="architecture.css">
+  <link rel="stylesheet" href="pointillist.css">
+</head>
+<body>
+  <main id="top">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#top">mandate<span>.</span></a>
+      <div class="nav-links">
+        <a href="#architecture">Architecture</a>
+        <a href="#system">System</a>
+        <a href="#authority">Authority</a>
+        <a href="#assets">Assets</a>
+        <a href="#status">Status</a>
+      </div>
+      <span class="concept-badge">Open kernel v0.1</span>
+    </nav>
+
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="kicker">Autonomous private markets · bounded authority</p>
+        <h1>Agents build the book.<br>Mandate controls the capital.</h1>
+        <p class="hero-dek">A coordinated investment system that sources, researches, constructs, and rebalances portfolios of tokenized private and real-world assets—while an independent authorization layer checks every order before it can execute.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#architecture">See the architecture</a>
+          <a class="text-link" href="#authority">See the control plane <span>↓</span></a>
+        </div>
+        <div class="plain-facts">
+          <span>Working policy kernel</span>
+          <span>Independent risk gate</span>
+          <span>No token required</span>
+        </div>
+      </div>
+
+      <aside class="architecture-card" id="architecture" aria-label="Proposed Mandate system architecture">
+        <header class="architecture-head">
+          <div><span>CAPITAL AUTHORITY MAP</span><strong>Who may move what?</strong></div>
+          <em>Proposed design</em>
+        </header>
+
+        <div class="input-pair">
+          <article><span>PORTFOLIO ENGINE</span><strong>Target book + order intents</strong><small>Research and allocation remain outside the trust boundary.</small></article>
+          <article><span>LIVE STATE</span><strong>Holdings + eligibility + prices</strong><small>Authoritative inputs used to evaluate the whole portfolio.</small></article>
+        </div>
+
+        <div class="submit-line"><i></i><span>proposals enter without venue credentials</span><i></i></div>
+
+        <div class="kernel-card">
+          <div class="kernel-visual"><img src="assets/mandate-kernel-pointillist.png" alt="Pointillist locked gateway representing the Mandate authorization kernel"></div>
+          <div><span>MANDATE KERNEL</span><strong>Deterministic policy + portfolio state</strong><small>Same intent. Same facts. Same decision.</small></div>
+          <b>TRUST BOUNDARY</b>
+        </div>
+
+        <div class="outcome-grid">
+          <article class="permit-outcome"><span>IF ALLOWED</span><strong>Single-use permit</strong><small>Bound to the exact order and route.</small><i>→ credentialed relay</i></article>
+          <article class="deny-outcome"><span>IF DENIED</span><strong>Decision receipt</strong><small>Reason recorded. Authority remains zero.</small><i>× no route</i></article>
+        </div>
+        <p class="architecture-note">The deterministic kernel and receipt format are implemented. Market and venue connections are not built.</p>
+      </aside>
+    </section>
+
+    <section class="thesis section" aria-labelledby="thesis-title">
+      <div class="shell">
+        <div class="section-heading">
+          <p class="kicker">One desk · two planes</p>
+          <h2 id="thesis-title">Intelligence can be probabilistic.<br>Authority cannot.</h2>
+          <p>Mandate separates the software that seeks returns from the software that controls capital. The desk may form opinions; the control plane must produce the same decision from the same facts every time.</p>
+        </div>
+
+        <div class="plane-grid">
+          <article class="plane-card intelligence">
+            <div class="plane-top"><span>01</span><em>Intelligence plane</em></div>
+            <h3>Find and construct opportunity.</h3>
+            <p>Research agents and deterministic models assemble the investable universe, score assets, propose allocations, and watch the book between cycles.</p>
+            <ul>
+              <li>Asset sourcing and eligibility signals</li>
+              <li>Research, scoring, and thesis formation</li>
+              <li>Portfolio construction and drift monitoring</li>
+            </ul>
+            <small>Produces proposals—not execution authority.</small>
+          </article>
+
+          <article class="plane-card authority-card">
+            <div class="plane-top"><span>02</span><em>Authority plane</em></div>
+            <h3>Decide what may touch capital.</h3>
+            <p>A deterministic engine evaluates the entire portfolio, binds approval to the exact order, and gives the credentialed relay only the authority it needs.</p>
+            <ul>
+              <li>Cross-strategy exposure and liquidity limits</li>
+              <li>Single-use, order-bound execution permits</li>
+              <li>Revocation, circuit breakers, and receipts</li>
+            </ul>
+            <small>Holds the boundary every strategy must clear.</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="system section shell" id="system" aria-labelledby="system-title">
+      <div class="section-heading compact">
+        <p class="kicker">The system</p>
+        <h2 id="system-title">Three pieces. One hard boundary.</h2>
+        <p>Mandate is not a cast of agents. It is a portfolio engine connected to a small authorization kernel and a relay that possesses exactly one dangerous capability: execution.</p>
+      </div>
+
+      <div class="system-grid">
+        <article>
+          <div class="system-number">01</div>
+          <span>PORTFOLIO ENGINE</span>
+          <h3>Turn market intelligence into proposals.</h3>
+          <p>Sources eligible assets, forms views, constructs the target book, and submits order intents. Models can change without gaining execution authority.</p>
+          <small>Output · portfolio intent</small>
+        </article>
+        <article class="kernel-system">
+          <div class="system-number">02</div>
+          <span>MANDATE KERNEL</span>
+          <h3>Compute the authority of every action.</h3>
+          <p>Combines policy, current holdings, eligibility, liquidity, valuation freshness, and cross-strategy exposure into one reproducible decision.</p>
+          <small>Output · permit or denial</small>
+        </article>
+        <article>
+          <div class="system-number">03</div>
+          <span>EXECUTION RELAY</span>
+          <h3>Translate narrow permission into action.</h3>
+          <p>Holds the venue credential, validates the permit, submits the exact approved order, and returns the fill to portfolio state.</p>
+          <small>Output · fill receipt</small>
+        </article>
+      </div>
+      <div class="feedback-strip"><span>fills + receipts</span><i>→</i><strong>portfolio state updates</strong><i>→</i><span>the next proposal sees reality</span></div>
+    </section>
+
+    <section class="authority section" id="authority" aria-labelledby="authority-title">
+      <div class="shell authority-layout">
+        <div class="authority-copy">
+          <p class="kicker">The technical primitive</p>
+          <h2 id="authority-title">No permit.<br>No route.</h2>
+          <p>Agents never receive the venue credential. They submit intents to Mandate. The policy engine either returns a denial receipt or creates a short-lived permit bound to the exact asset, size, price bounds, account, and destination.</p>
+          <div class="authority-rules">
+            <div><span>01</span><p><strong>One execution path</strong><small>The credentialed relay is the only component allowed to reach the venue.</small></p></div>
+            <div><span>02</span><p><strong>Order-bound authority</strong><small>Change the amount, asset, price, account, or route and the permit becomes invalid.</small></p></div>
+            <div><span>03</span><p><strong>Inspectable proof</strong><small>Every approval, denial, fill, and revocation becomes a replayable receipt.</small></p></div>
+          </div>
+        </div>
+
+        <div class="permit-card" aria-label="Example authorization trace">
+          <header><span>authorization.trace</span><em>protocol specimen</em></header>
+          <div class="route-line">
+            <span>agent intent</span><i>→</i><strong>mandate</strong><i>→</i><b>relay</b><i>→</i><span>venue</span>
+          </div>
+          <pre><code>intent
+  side        BUY
+  asset       PRIVATE_AI
+  amount      $50,000
+  account     fund-01
+
+policy
+  id          private-growth-v1
+  maxPosition 25.0%
+
+decision
+  result      DENIED
+  observed    29.0%
+  rule        max_position
+  permit      null</code></pre>
+          <footer><span class="denied-dot"></span><p><strong>Execution unavailable</strong><small>The relay has no valid authority for this order.</small></p></footer>
+        </div>
+      </div>
+    </section>
+
+    <section class="assets section" id="assets" aria-labelledby="assets-title">
+      <div class="shell">
+        <div class="section-heading compact">
+          <p class="kicker">Asset coverage</p>
+          <h2 id="assets-title">One book. Different proofs.</h2>
+          <p>Every asset class needs its own eligibility and settlement evidence. Mandate should share one authorization model without pretending the underlying assets are interchangeable.</p>
+        </div>
+
+        <div class="asset-grid">
+          <article>
+            <figure class="asset-visual"><img src="assets/tokenized-equities-pointillist.png" alt="Pointillist market cards passing through a registry frame" loading="lazy"></figure>
+            <h3>Tokenized equities</h3>
+            <p>Canonical contract, jurisdiction, market status, price freshness, account eligibility, and venue support.</p>
+            <span>Registry adapter planned</span>
+          </article>
+          <article>
+            <figure class="asset-visual"><img src="assets/private-assets-pointillist.png" alt="Pointillist private archive secured behind an eligibility gate" loading="lazy"></figure>
+            <h3>Private assets</h3>
+            <p>Issuer authority, investor eligibility, transfer restrictions, valuation age, custody, and exit liquidity.</p>
+            <span>Policy research</span>
+          </article>
+          <article>
+            <figure class="asset-visual"><img src="assets/real-world-assets-pointillist.png" alt="Pointillist bridge connecting physical collateral and a digital registry" loading="lazy"></figure>
+            <h3>Real-world assets</h3>
+            <p>Issuer, reserves, redemption terms, custody, maturity, settlement route, and independent attestations.</p>
+            <span>Policy research</span>
+          </article>
+        </div>
+        <p class="network-note">Robinhood Chain and Robinhood MCP are candidate integrations, not part of this prototype. Mandate is independent and not affiliated with Robinhood. Availability and eligibility vary by jurisdiction.</p>
+      </div>
+    </section>
+
+    <section class="status section shell" id="status" aria-labelledby="status-title">
+      <div class="section-heading compact">
+        <p class="kicker">Build status</p>
+        <h2 id="status-title">The kernel now exists.<br>The desk comes next.</h2>
+        <p>No simulated metric is presented as market performance, and no decorative “live” badge stands in for a real execution path.</p>
+      </div>
+
+      <ol class="roadmap">
+        <li class="current"><span>Now</span><div><strong>Deterministic evaluator + receipts</strong><p>Tested portfolio checks, content-addressed decisions, order-bound permits, and replay protection.</p></div><b>Built</b></li>
+        <li><span>Build</span><div><strong>Open paper desk + portfolio loop</strong><p>Simulated assets, repeatable portfolio cycles, proposal construction, state persistence, and full traces.</p></div><b>Next</b></li>
+        <li><span>Connect</span><div><strong>Read-only asset and market adapters</strong><p>Canonical registries, issuer facts, price sources, account eligibility, and chain state.</p></div><b>Planned</b></li>
+        <li><span>Arm</span><div><strong>Credentialed execution relay</strong><p>Live routing only after the authorization boundary and venue integration are independently verified.</p></div><b>Not built</b></li>
+      </ol>
+    </section>
+
+    <section class="closing">
+      <div class="shell">
+        <p class="kicker">Mandate</p>
+        <h2>Build conviction.<br>Enforce the mandate.</h2>
+        <p>An autonomous private-markets desk with a hard boundary between intelligence and authority.</p>
+        <a class="button light" href="#system">See the system</a>
+      </div>
+    </section>
+
+    <footer class="shell">
+      <a class="brand" href="#top">mandate<span>.</span></a>
+      <p>Open kernel v0.1 · paper-only · no live capital · no token</p>
+      <span>2026</span>
+    </footer>
+  </main>
+</body>
+</html>
