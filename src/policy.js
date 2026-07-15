@@ -16,6 +16,22 @@ export function evaluatePolicy({ policy, state, intent, evaluatedAt }) {
   const notional = intent.quantity * intent.limitPriceUsd;
 
   checks.push(result(
+    "portfolio.value_valid",
+    Number.isFinite(portfolioValue) && portfolioValue > 0,
+    Number.isFinite(portfolioValue) ? portfolioValue : null,
+    "> 0",
+    portfolioValue > 0 ? "Portfolio value is valid." : "Portfolio value is missing or non-positive.",
+  ));
+
+  checks.push(result(
+    "portfolio.cash_valid",
+    Number.isFinite(cash) && cash >= 0,
+    Number.isFinite(cash) ? cash : null,
+    ">= 0",
+    cash >= 0 ? "Cash balance is valid." : "Cash balance is missing or negative.",
+  ));
+
+  checks.push(result(
     "asset.known",
     Boolean(asset),
     asset ? intent.assetId : null,

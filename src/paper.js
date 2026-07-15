@@ -1,4 +1,4 @@
-import { hash } from "./canonical.js";
+import { hashWithDomain } from "./canonical.js";
 import { evaluate } from "./evaluate.js";
 import { DurablePermitLedger } from "./permit.js";
 import { applyPaperFill, buildRebalanceIntents } from "./portfolio.js";
@@ -16,7 +16,7 @@ function paperFill(permit, intent, at) {
     venue: "paper",
     filledAt: new Date(at).toISOString(),
   };
-  return { ...body, fillId: hash(body) };
+  return { ...body, fillId: hashWithDomain("mandate.paper-fill.v1", body) };
 }
 
 export async function runPaperCycle({
@@ -36,14 +36,14 @@ export async function runPaperCycle({
 
   const evaluatedAt = new Date(at).toISOString();
   const cycleBody = {
-    policyHash: hash(policy),
-    startingStateHash: hash(state),
-    targetsHash: hash(targets),
+    policyHash: hashWithDomain("mandate.policy.v1", policy),
+    startingStateHash: hashWithDomain("mandate.state.v1", state),
+    targetsHash: hashWithDomain("mandate.targets.v1", targets),
     accountId,
     venue,
     evaluatedAt,
   };
-  const cycleId = hash(cycleBody);
+  const cycleId = hashWithDomain("mandate.paper-cycle.v1", cycleBody);
   const intents = buildRebalanceIntents({
     state,
     targets,
@@ -83,7 +83,7 @@ export async function runPaperCycle({
     allowedOrders: decisions.filter((receipt) => receipt.decision === "ALLOW").length,
     deniedOrders: decisions.filter((receipt) => receipt.decision === "DENY").length,
     fills,
-    finalStateHash: hash(workingState),
+    finalStateHash: hashWithDomain("mandate.state.v1", workingState),
     finalState: workingState,
   };
   await store.append("cycle.completed", {
