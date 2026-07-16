@@ -1,6 +1,6 @@
 {
   "name": "@mandate/kernel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Deterministic authorization infrastructure for agent-managed portfolios.",
   "type": "module",
   "private": true,
@@ -12,10 +12,11 @@
   },
   "scripts": {
     "demo": "node src/cli.js evaluate --policy examples/policy.json --state examples/state.json --intent examples/intent.json --at 2026-07-20T12:00:00.000Z",
+    "demo:cycle": "node scripts/demo-cycle.mjs",
     "test": "node --test"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.10"
   },
   "keywords": [
     "agents",
