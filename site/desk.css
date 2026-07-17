@@ -1052,3 +1052,28 @@ footer > span {
     transition-duration: .01ms !important;
   }
 }
+
+@supports (content-visibility: auto) {
+  .thesis,
+  .system,
+  .authority,
+  .assets,
+  .status {
+    content-visibility: auto;
+    contain-intrinsic-size: 900px;
+  }
+}
+
+@media print {
+  .nav-links,
+  .hero-actions,
+  .closing .button {
+    display: none;
+  }
+
+  body,
+  .closing {
+    background: #fff;
+    color: #000;
+  }
+}
