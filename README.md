@@ -4,7 +4,7 @@
 
 # Murre
 
-[![CI](https://github.com/moteMCP/murre/actions/workflows/ci.yml/badge.svg)](https://github.com/moteMCP/murre/actions/workflows/ci.yml)
+[![CI](https://github.com/murreMCP/murre/actions/workflows/ci.yml/badge.svg)](https://github.com/murreMCP/murre/actions/workflows/ci.yml)
 [![Node.js 20.10+](https://img.shields.io/badge/node-%3E%3D20.10-417E38)](package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111)](LICENSE)
 
@@ -72,7 +72,7 @@ The repository contains executable infrastructure, not a simulated dashboard:
 Murre requires Node.js 20.10 or newer.
 
 ```bash
-git clone https://github.com/moteMCP/murre.git
+git clone https://github.com/murreMCP/murre.git
 cd murre
 npm ci
 npm test
