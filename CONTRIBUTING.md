@@ -1,6 +1,6 @@
-# Contributing to Mandate
+# Contributing to Murre
 
-Mandate's authorization boundary should remain small, deterministic, and easy
+Murre's authorization boundary should remain small, deterministic, and easy
 to audit. Features that do not need capital authority belong outside the
 kernel.
 

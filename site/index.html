@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mandate is an autonomous private-markets desk with an independent authorization layer for AI-managed capital.">
-  <title>Mandate — Autonomous capital, bounded by policy</title>
+  <meta name="description" content="Murre is policy and paper-execution infrastructure for autonomous portfolios of tokenized private and real-world assets.">
+  <title>Murre — Autonomous portfolios, governed by code</title>
   <link rel="icon" href="favicon.svg">
   <link rel="stylesheet" href="desk.css">
   <link rel="stylesheet" href="architecture.css">
@@ -13,22 +13,22 @@
 <body>
   <main id="top">
     <nav class="nav shell" aria-label="Primary navigation">
-      <a class="brand" href="#top">mandate<span>.</span></a>
+      <a class="brand" href="#top">murre<span>.</span></a>
       <div class="nav-links">
         <a href="#architecture">Architecture</a>
         <a href="#system">System</a>
         <a href="#authority">Authority</a>
         <a href="#assets">Assets</a>
         <a href="#status">Status</a>
-        <a href="https://github.com/moteMCP/mandate">Source</a>
+        <a href="https://github.com/moteMCP/murre">Source</a>
       </div>
-      <span class="concept-badge">Open protocol v0.2</span>
+      <span class="concept-badge">Open protocol v0.3</span>
     </nav>
 
     <section class="hero shell">
       <div class="hero-copy">
         <p class="kicker">Autonomous private markets · bounded authority</p>
-        <h1>Agents build the book.<br>Mandate controls the capital.</h1>
+        <h1>Agents build the book.<br>Murre governs the capital.</h1>
         <p class="hero-dek">A coordinated investment system that sources, researches, constructs, and rebalances portfolios of tokenized private and real-world assets—while an independent authorization layer checks every order before it can execute.</p>
         <div class="hero-actions">
           <a class="button primary" href="#architecture">See the architecture</a>
@@ -41,10 +41,10 @@
         </div>
       </div>
 
-      <aside class="architecture-card" id="architecture" aria-label="Mandate version 0.2 system architecture">
+      <aside class="architecture-card" id="architecture" aria-label="Murre version 0.3 system architecture">
         <header class="architecture-head">
           <div><span>CAPITAL AUTHORITY MAP</span><strong>Who may move what?</strong></div>
-          <em>V0.2 boundary</em>
+          <em>V0.3 boundary</em>
         </header>
 
         <div class="input-pair">
@@ -55,8 +55,8 @@
         <div class="submit-line"><i></i><span>proposals enter without venue credentials</span><i></i></div>
 
         <div class="kernel-card">
-          <div class="kernel-visual"><img src="assets/mandate-kernel-pointillist.webp" alt="Pointillist locked gateway representing the Mandate authorization kernel" width="1254" height="1254" decoding="async"></div>
-          <div><span>MANDATE KERNEL</span><strong>Deterministic policy + portfolio state</strong><small>Same intent. Same facts. Same decision.</small></div>
+          <div class="kernel-visual"><img src="assets/murre-kernel-pointillist.webp" alt="Pointillist locked gateway representing the Murre authorization kernel" width="1254" height="1254" decoding="async"></div>
+          <div><span>MURRE KERNEL</span><strong>Deterministic policy + portfolio state</strong><small>Same intent. Same facts. Same decision.</small></div>
           <b>TRUST BOUNDARY</b>
         </div>
 
@@ -73,7 +73,7 @@
         <div class="section-heading">
           <p class="kicker">One desk · two planes</p>
           <h2 id="thesis-title">Intelligence can be probabilistic.<br>Authority cannot.</h2>
-          <p>Mandate separates the software that seeks returns from the software that controls capital. The desk may form opinions; the control plane must produce the same decision from the same facts every time.</p>
+          <p>Murre separates the software that seeks returns from the software that controls capital. The desk may form opinions; the control plane must produce the same decision from the same facts every time.</p>
         </div>
 
         <div class="plane-grid">
@@ -108,7 +108,7 @@
       <div class="section-heading compact">
         <p class="kicker">The system</p>
         <h2 id="system-title">Three pieces. One hard boundary.</h2>
-        <p>Mandate is not a cast of agents. It is a portfolio engine connected to a small authorization kernel and a relay that possesses exactly one dangerous capability: execution.</p>
+        <p>Murre is not a cast of agents. It is a portfolio engine connected to a small authorization kernel and a relay that possesses exactly one dangerous capability: execution.</p>
       </div>
 
       <div class="system-grid">
@@ -121,7 +121,7 @@
         </article>
         <article class="kernel-system">
           <div class="system-number">02</div>
-          <span>MANDATE KERNEL</span>
+          <span>MURRE KERNEL</span>
           <h3>Compute the authority of every action.</h3>
           <p>Combines policy, current holdings, eligibility, liquidity, valuation freshness, and cross-strategy exposure into one reproducible decision.</p>
           <small>Output · permit or denial</small>
@@ -142,7 +142,7 @@
         <div class="authority-copy">
           <p class="kicker">The technical primitive</p>
           <h2 id="authority-title">No permit.<br>No route.</h2>
-          <p>Agents never receive the venue credential. They submit intents to Mandate. The policy engine either returns a denial receipt or creates a short-lived permit bound to the exact asset, size, price bounds, account, and destination.</p>
+          <p>Agents never receive the venue credential. They submit intents to Murre. The policy engine either returns a denial receipt or creates a short-lived permit bound to the exact asset, size, price bounds, account, and destination.</p>
           <div class="authority-rules">
             <div><span>01</span><p><strong>One execution path</strong><small>The credentialed relay is the only component allowed to reach the venue.</small></p></div>
             <div><span>02</span><p><strong>Order-bound authority</strong><small>Change the amount, asset, price, account, or route and the permit becomes invalid.</small></p></div>
@@ -153,7 +153,7 @@
         <div class="permit-card" aria-label="Example authorization trace">
           <header><span>authorization.trace</span><em>protocol specimen</em></header>
           <div class="route-line">
-            <span>agent intent</span><i>→</i><strong>mandate</strong><i>→</i><b>relay</b><i>→</i><span>venue</span>
+            <span>agent intent</span><i>→</i><strong>murre</strong><i>→</i><b>relay</b><i>→</i><span>venue</span>
           </div>
           <pre><code>intent
   side        BUY
@@ -180,7 +180,7 @@ decision
         <div class="section-heading compact">
           <p class="kicker">Asset coverage</p>
           <h2 id="assets-title">One book. Different proofs.</h2>
-          <p>Every asset class needs its own eligibility and settlement evidence. Mandate should share one authorization model without pretending the underlying assets are interchangeable.</p>
+          <p>Every asset class needs its own eligibility and settlement evidence. Murre should share one authorization model without pretending the underlying assets are interchangeable.</p>
         </div>
 
         <div class="asset-grid">
@@ -203,7 +203,7 @@ decision
             <span>Policy research</span>
           </article>
         </div>
-        <p class="network-note">Robinhood Chain and Robinhood MCP are candidate integrations, not part of this prototype. Mandate is independent and not affiliated with Robinhood. Availability and eligibility vary by jurisdiction.</p>
+        <p class="network-note">Robinhood Chain and Robinhood MCP are candidate integrations, not part of this prototype. Murre is independent and not affiliated with Robinhood. Availability and eligibility vary by jurisdiction.</p>
       </div>
     </section>
 
@@ -224,16 +224,16 @@ decision
 
     <section class="closing">
       <div class="shell">
-        <p class="kicker">Mandate</p>
-        <h2>Build conviction.<br>Enforce the mandate.</h2>
+        <p class="kicker">Murre</p>
+        <h2>Build conviction.<br>Govern execution.</h2>
         <p>An autonomous private-markets desk with a hard boundary between intelligence and authority.</p>
         <a class="button light" href="#system">See the system</a>
       </div>
     </section>
 
     <footer class="shell">
-      <a class="brand" href="#top">mandate<span>.</span></a>
-      <p>Open protocol v0.2 · paper-only · no live capital · no token</p>
+      <a class="brand" href="#top">murre<span>.</span></a>
+      <p>Open protocol v0.3 · paper-only · no live capital · no token</p>
       <span>2026</span>
     </footer>
   </main>

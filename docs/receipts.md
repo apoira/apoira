@@ -1,10 +1,10 @@
 # Receipts, permits, and events
 
-Mandate produces three distinct proof objects. They are not interchangeable.
+Murre produces three distinct proof objects. They are not interchangeable.
 
 ## Decision receipt
 
-A `mandate.decision.v1` receipt records:
+A `murre.decision.v1` receipt records:
 
 - evaluation time;
 - policy identifier, version, and hash;
@@ -19,7 +19,7 @@ before the identifier and permit are attached.
 
 ## Execution permit
 
-A `mandate.permit.v1` object binds authority to:
+A `murre.permit.v1` object binds authority to:
 
 - the exact normalized intent hash;
 - account and venue;
@@ -31,7 +31,7 @@ therefore treats them as local protocol objects, not portable credentials.
 
 ## Event chain
 
-A `mandate.event.v1` record contains its sequence, event type, timestamp,
+A `murre.event.v1` record contains its sequence, event type, timestamp,
 payload, previous event hash, and event hash. `verifyChain` detects edits,
 deletions that break sequence continuity, and reordered events.
 

@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Mandate is pre-production software. Security fixes are applied only to the
+Murre is pre-production software. Security fixes are applied only to the
 latest commit on `main`.
 
 ## Current threat model

@@ -1,6 +1,6 @@
 # Architecture
 
-Mandate separates portfolio intelligence from capital authority. The codebase
+Murre separates portfolio intelligence from capital authority. The codebase
 contains six small components with explicit inputs and outputs.
 
 ## 1. Rebalance planner
@@ -28,13 +28,13 @@ closed.
 
 ## 3. Decision receipt
 
-The kernel emits a `mandate.decision.v1` receipt containing the complete check
+The kernel emits a `murre.decision.v1` receipt containing the complete check
 vector and domain-separated hashes of the policy, state, and intent. A denied
 receipt never contains a permit.
 
 ## 4. Permit boundary
 
-Allowed decisions receive a `mandate.permit.v1` capability. The permit is bound
+Allowed decisions receive a `murre.permit.v1` capability. The permit is bound
 to the normalized intent hash, account, venue, policy, decision, issue time,
 and expiry. Changing any execution field invalidates it.
 

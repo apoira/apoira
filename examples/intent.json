@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "mandate.intent.v1",
+  "schemaVersion": "murre.intent.v1",
   "id": "intent-001",
   "accountId": "paper-fund-01",
   "assetId": "PRIVATE_AI",

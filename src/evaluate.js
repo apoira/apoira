@@ -33,19 +33,19 @@ export function evaluate({ policy, state, intent, at = new Date().toISOString() 
 
   const allowed = checks.length > 1 && checks.every((check) => check.pass);
   const body = {
-    schemaVersion: "mandate.decision.v1",
+    schemaVersion: "murre.decision.v1",
     evaluatedAt,
     policy: {
       id: policy?.id || null,
       version: policy?.version || null,
-      hash: hashWithDomain("mandate.policy.v1", policy),
+      hash: hashWithDomain("murre.policy.v1", policy),
     },
-    stateHash: hashWithDomain("mandate.state.v1", state),
-    intentHash: hashWithDomain("mandate.intent.v1", normalizedIntent),
+    stateHash: hashWithDomain("murre.state.v1", state),
+    intentHash: hashWithDomain("murre.intent.v1", normalizedIntent),
     decision: allowed ? "ALLOW" : "DENY",
     checks,
   };
-  const decisionId = hashWithDomain("mandate.decision.v1", body);
+  const decisionId = hashWithDomain("murre.decision.v1", body);
   const receipt = { ...body, decisionId, permit: null };
 
   if (allowed) {

@@ -8,8 +8,8 @@ import { JsonlEventStore } from "./store.js";
 
 function usage() {
   console.error(`Usage:
-  mandate evaluate --policy FILE --state FILE --intent FILE [--at ISO_TIMESTAMP]
-  mandate paper-cycle --policy FILE --state FILE --targets FILE --ledger FILE --account ID [--at ISO_TIMESTAMP]`);
+  murre evaluate --policy FILE --state FILE --intent FILE [--at ISO_TIMESTAMP]
+  murre paper-cycle --policy FILE --state FILE --targets FILE --ledger FILE --account ID [--at ISO_TIMESTAMP]`);
 }
 function parseArgs(args) {
   const [command, ...rest] = args;
@@ -67,6 +67,6 @@ try {
     process.exitCode = 64;
   }
 } catch (error) {
-  console.error(`mandate: ${error.message}`);
+  console.error(`murre: ${error.message}`);
   process.exitCode = 1;
 }

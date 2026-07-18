@@ -5,7 +5,7 @@ import { canonicalize, hashWithDomain } from "./canonical.js";
 function eventBody(events, type, payload, at) {
   const previous = events.at(-1) || null;
   return {
-    schemaVersion: "mandate.event.v1",
+    schemaVersion: "murre.event.v1",
     sequence: previous ? previous.sequence + 1 : 1,
     type,
     recordedAt: new Date(at).toISOString(),
@@ -66,7 +66,7 @@ export class JsonlEventStore {
       const append = (type, payload, at = new Date().toISOString()) => {
         const timeline = [...current, ...additions];
         const body = eventBody(timeline, type, payload, at);
-        const event = { ...body, eventHash: hashWithDomain("mandate.event.v1", body) };
+        const event = { ...body, eventHash: hashWithDomain("murre.event.v1", body) };
         additions.push(event);
         return event;
       };
@@ -98,7 +98,7 @@ export class JsonlEventStore {
       if (event.previousEventHash !== previousEventHash) {
         return { valid: false, index, reason: "previous_hash_mismatch" };
       }
-      if (hashWithDomain("mandate.event.v1", body) !== eventHash) {
+      if (hashWithDomain("murre.event.v1", body) !== eventHash) {
         return { valid: false, index, reason: "event_hash_mismatch" };
       }
       previousEventHash = eventHash;
