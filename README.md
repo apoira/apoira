@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="site/assets/murre-profile.webp" alt="Murre bird and authorization gate" width="184">
+</p>
+
 # Murre
 
 [![CI](https://github.com/moteMCP/murre/actions/workflows/ci.yml/badge.svg)](https://github.com/moteMCP/murre/actions/workflows/ci.yml)
