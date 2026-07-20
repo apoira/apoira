@@ -1,7 +1,7 @@
 {
   "name": "@murre/kernel",
-  "version": "0.3.0",
-  "description": "Policy and paper-execution infrastructure for autonomous portfolios.",
+  "version": "0.4.0",
+  "description": "Policy, paper execution, and guarded Robinhood MCP routing for autonomous portfolios.",
   "type": "module",
   "private": true,
   "bin": {
@@ -13,6 +13,7 @@
   "scripts": {
     "demo": "node src/cli.js evaluate --policy examples/policy.json --state examples/state.json --intent examples/intent.json --at 2026-07-20T12:00:00.000Z",
     "demo:cycle": "node scripts/demo-cycle.mjs",
+    "demo:robinhood": "node scripts/demo-robinhood-order.mjs",
     "test": "node --test"
   },
   "engines": {
@@ -26,5 +27,9 @@
     "tokenized-assets",
     "rwa"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  }
 }

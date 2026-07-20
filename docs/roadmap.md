@@ -12,7 +12,19 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 - [x] target-weight planning and paper fills
 - [x] end-to-end CLI and automated tests
 
-## 0.3 - authenticated paper service
+## 0.4 - guarded Robinhood MCP bridge
+
+- [x] official Streamable HTTP MCP client and OAuth onboarding
+- [x] runtime remote-tool discovery
+- [x] exact venue arguments bound into permits
+- [x] Robinhood review before single-use permit consumption
+- [x] one-order live relay with explicit operator arming
+- [x] fail-closed tests with mocked remote tools
+- [ ] authenticated Robinhood-derived state snapshots
+- [ ] automatic order-status reconciliation
+- [ ] OS-keychain or isolated-service token custody
+
+## 0.5 - authenticated service
 
 - [ ] JSON Schema documents for every protocol object
 - [ ] signed state snapshots with key rotation
@@ -21,7 +33,7 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 - [ ] idempotency keys and crash-recovery reconciliation
 - [ ] read-only registry, pricing, and chain adapters
 
-## 0.4 - isolated relay prototype
+## 0.6 - isolated relay service
 
 - [ ] formally specified kernel-to-relay protocol
 - [ ] hardware- or service-backed signing keys
@@ -29,5 +41,6 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 - [ ] paper venue reconciliation and operational alerts
 - [ ] external threat-model and security review
 
-Live routing is intentionally excluded until these boundaries are independently
-tested. A venue integration is not evidence that the system is safe to fund.
+The guarded 0.4 bridge proves the venue integration but is not evidence that
+the system is safe for unattended or material capital. Those uses remain
+excluded until the remaining boundaries are independently tested.
