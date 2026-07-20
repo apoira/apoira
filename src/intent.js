@@ -25,7 +25,7 @@ export function normalizeIntent(input) {
     throw new TypeError("limitPriceUsd must be a positive finite number");
   }
 
-  return {
+  return Object.freeze({
     id: input.id.trim(),
     accountId: input.accountId.trim(),
     assetId: input.assetId.trim(),
@@ -33,5 +33,5 @@ export function normalizeIntent(input) {
     quantity,
     limitPriceUsd,
     venue: input.venue.trim(),
-  };
+  });
 }
