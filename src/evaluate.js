@@ -1,4 +1,4 @@
-import { hash } from "./canonical.js";
+import { hashWithDomain } from "./canonical.js";
 import { normalizeIntent } from "./intent.js";
 import { evaluatePolicy } from "./policy.js";
 import { createPermit } from "./permit.js";
@@ -38,14 +38,14 @@ export function evaluate({ policy, state, intent, at = new Date().toISOString() 
     policy: {
       id: policy?.id || null,
       version: policy?.version || null,
-      hash: hash(policy),
+      hash: hashWithDomain("mandate.policy.v1", policy),
     },
-    stateHash: hash(state),
-    intentHash: hash(normalizedIntent),
+    stateHash: hashWithDomain("mandate.state.v1", state),
+    intentHash: hashWithDomain("mandate.intent.v1", normalizedIntent),
     decision: allowed ? "ALLOW" : "DENY",
     checks,
   };
-  const decisionId = hash(body);
+  const decisionId = hashWithDomain("mandate.decision.v1", body);
   const receipt = { ...body, decisionId, permit: null };
 
   if (allowed) {

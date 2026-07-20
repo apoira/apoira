@@ -31,3 +31,14 @@ export function canonicalize(value) {
 export function hash(value) {
   return createHash("sha256").update(canonicalize(value)).digest("hex");
 }
+
+export function hashWithDomain(domain, value) {
+  if (typeof domain !== "string" || domain.trim() === "") {
+    throw new TypeError("Hash domain must be a non-empty string");
+  }
+  return createHash("sha256")
+    .update(domain)
+    .update("\0")
+    .update(canonicalize(value))
+    .digest("hex");
+}

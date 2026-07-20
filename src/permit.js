@@ -1,4 +1,4 @@
-import { hash } from "./canonical.js";
+import { hashWithDomain } from "./canonical.js";
 import { normalizeIntent } from "./intent.js";
 
 export function createPermit({ intent, decisionId, policyHash, evaluatedAt, ttlSeconds }) {
@@ -12,14 +12,14 @@ export function createPermit({ intent, decisionId, policyHash, evaluatedAt, ttlS
     schemaVersion: "mandate.permit.v1",
     decisionId,
     policyHash,
-    intentHash: hash(normalizeIntent(intent)),
+    intentHash: hashWithDomain("mandate.intent.v1", normalizeIntent(intent)),
     accountId: intent.accountId,
     venue: intent.venue,
     issuedAt: new Date(issuedAtMs).toISOString(),
     expiresAt: new Date(issuedAtMs + ttl * 1000).toISOString(),
   };
 
-  return { ...body, permitId: hash(body) };
+  return { ...body, permitId: hashWithDomain("mandate.permit.v1", body) };
 }
 
 export function verifyPermit(permit, intent, at = new Date().toISOString()) {
@@ -29,7 +29,7 @@ export function verifyPermit(permit, intent, at = new Date().toISOString()) {
 
   let intentHash;
   try {
-    intentHash = hash(normalizeIntent(intent));
+    intentHash = hashWithDomain("mandate.intent.v1", normalizeIntent(intent));
   } catch {
     return { valid: false, reason: "invalid_intent" };
   }

@@ -135,3 +135,13 @@ test("invalid intents produce denial receipts", () => {
   assert.equal(receipt.checks[0].id, "intent.valid");
   assert.equal(receipt.permit, null);
 });
+
+test("invalid portfolio state fails closed with explicit checks", () => {
+  const input = fixture();
+  input.state.portfolioValueUsd = 0;
+  input.state.cashUsd = -1;
+  const receipt = evaluate({ ...input, at: NOW });
+  assert.equal(receipt.decision, "DENY");
+  assert.equal(receipt.checks.find((check) => check.id === "portfolio.value_valid").pass, false);
+  assert.equal(receipt.checks.find((check) => check.id === "portfolio.cash_valid").pass, false);
+});
