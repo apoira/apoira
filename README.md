@@ -20,7 +20,8 @@ The research system can change its models without expanding its authority.
 Only the credentialed execution boundary may route an order, and only when the
 order matches a valid permit.
 
-> Murre is not an AI fund, broker, wallet, or trading venue. Version 0.4 adds
+> Murre is not an AI fund, broker, wallet, or trading venue. Version 0.5 adds
+> a local, paper-only MCP server that agents can call directly. Version 0.4 added
 > an experimental, explicitly armed bridge to Robinhood's official Trading
 > MCP. Paper mode remains the default. The live bridge can place real equity
 > orders and is not approved for unattended or material capital.
@@ -66,6 +67,8 @@ The repository contains executable infrastructure, not a simulated dashboard:
 - a target-weight planner that routes sells before buys;
 - an end-to-end paper cycle that evaluates, consumes, fills, updates state, and
   records the complete timeline;
+- a stdio MCP server agents can call for status, policy checks, paper orders,
+  paper rebalances, and verified audit events;
 - OAuth and runtime tool discovery for Robinhood's official Trading MCP;
 - a narrow live path that reviews an equity limit order, consumes the exact
   permit, submits the same arguments, and records a content-addressed receipt;
@@ -93,6 +96,20 @@ Run a complete paper rebalance with a temporary durable ledger:
 ```bash
 npm run demo:cycle
 ```
+
+Connect an agent to Murre's local paper-mode MCP server:
+
+```bash
+node src/mcp-server.js \
+  --policy examples/policy.json \
+  --state .murre/paper-state.json \
+  --ledger .murre/mcp-events.jsonl \
+  --account paper-fund-01
+```
+
+Copy `examples/state.json` to `.murre/paper-state.json` first; the MCP paper
+tools persist fills to that file. See [the MCP server guide](docs/mcp-server.md)
+for client configuration and the exact trust boundary.
 
 Exercise the guarded Robinhood order path against an in-process paper MCP
 client. This invokes the production policy, permit, adapter, and event-ledger
@@ -168,6 +185,9 @@ src/permit.js       permit creation, verification, and consumption
 src/store.js        durable hash-chained JSONL event store
 src/portfolio.js    target-weight rebalance planning and state updates
 src/paper.js        end-to-end paper execution cycle
+src/state-store.js  replace-on-write local paper state
+src/mcp.js          agent-facing paper MCP tools
+src/mcp-server.js   stdio MCP entrypoint
 src/robinhood.js    official MCP transport, OAuth, and venue calls
 src/live.js         guarded review, consume, and submit sequence
 src/cli.js          command-line interface
@@ -194,6 +214,7 @@ Robinhood Chain asset-registry and settlement adapters remain future work.
 Read the [security model](SECURITY.md), [architecture](docs/architecture.md),
 [policy model](docs/policy.md), [receipt format](docs/receipts.md), and
 [paper-mode contract](docs/paper-mode.md), plus the
+[agent-facing MCP server](docs/mcp-server.md) and
 [Robinhood MCP relay](docs/robinhood-mcp.md).
 
 ## Development

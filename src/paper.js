@@ -19,6 +19,61 @@ function paperFill(permit, intent, at) {
   return { ...body, fillId: hashWithDomain("murre.paper-fill.v1", body) };
 }
 
+export async function executePaperOrder({
+  policy,
+  state,
+  intent,
+  store,
+  at = new Date().toISOString(),
+  cycleId,
+}) {
+  if (!store || typeof store.append !== "function") {
+    throw new TypeError("A durable event store is required for paper orders");
+  }
+  if (intent?.venue !== "paper") {
+    throw new TypeError("The reference relay supports only the paper venue");
+  }
+
+  const evaluatedAt = new Date(at).toISOString();
+  const receipt = evaluate({ policy, state, intent, at: evaluatedAt });
+  const eventContext = cycleId ? { cycleId } : {};
+  await store.append("decision.recorded", { ...eventContext, receipt }, evaluatedAt);
+
+  if (receipt.decision !== "ALLOW") {
+    return {
+      schemaVersion: "murre.paper-order.v1",
+      status: "DENIED",
+      evaluatedAt,
+      receipt,
+      fill: null,
+      finalStateHash: hashWithDomain("murre.state.v1", state),
+      finalState: structuredClone(state),
+    };
+  }
+
+  const consumption = await new DurablePermitLedger(store).consume(
+    receipt.permit,
+    intent,
+    evaluatedAt,
+  );
+  if (!consumption.valid) {
+    throw new Error(`Permit consumption failed closed: ${consumption.reason}`);
+  }
+
+  const fill = paperFill(receipt.permit, intent, evaluatedAt);
+  const finalState = applyPaperFill(state, fill);
+  await store.append("fill.recorded", { ...eventContext, fill }, evaluatedAt);
+  return {
+    schemaVersion: "murre.paper-order.v1",
+    status: "FILLED",
+    evaluatedAt,
+    receipt,
+    fill,
+    finalStateHash: hashWithDomain("murre.state.v1", finalState),
+    finalState,
+  };
+}
+
 export async function runPaperCycle({
   policy,
   state,
@@ -53,26 +108,22 @@ export async function runPaperCycle({
   });
   await store.append("cycle.started", { cycleId, intents: intents.length, ...cycleBody }, evaluatedAt);
 
-  const ledger = new DurablePermitLedger(store);
   const decisions = [];
   const fills = [];
   let workingState = structuredClone(state);
 
   for (const intent of intents) {
-    const receipt = evaluate({ policy, state: workingState, intent, at: evaluatedAt });
-    await store.append("decision.recorded", { cycleId, receipt }, evaluatedAt);
-    decisions.push(receipt);
-    if (receipt.decision !== "ALLOW") continue;
-
-    const consumption = await ledger.consume(receipt.permit, intent, evaluatedAt);
-    if (!consumption.valid) {
-      throw new Error(`Permit consumption failed closed: ${consumption.reason}`);
-    }
-
-    const fill = paperFill(receipt.permit, intent, evaluatedAt);
-    workingState = applyPaperFill(workingState, fill);
-    fills.push(fill);
-    await store.append("fill.recorded", { cycleId, fill }, evaluatedAt);
+    const orderResult = await executePaperOrder({
+      policy,
+      state: workingState,
+      intent,
+      store,
+      at: evaluatedAt,
+      cycleId,
+    });
+    decisions.push(orderResult.receipt);
+    workingState = orderResult.finalState;
+    if (orderResult.fill) fills.push(orderResult.fill);
   }
 
   const result = {
