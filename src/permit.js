@@ -64,3 +64,42 @@ export class PermitLedger {
     return this.#consumed.get(permitId) || null;
   }
 }
+
+export class DurablePermitLedger {
+  constructor(store) {
+    if (!store || typeof store.transact !== "function") {
+      throw new TypeError("DurablePermitLedger requires a transactional event store");
+    }
+    this.store = store;
+  }
+
+  async consume(permit, intent, at = new Date().toISOString()) {
+    const verification = verifyPermit(permit, intent, at);
+    if (!verification.valid) return verification;
+
+    const transaction = await this.store.transact(({ events, append }) => {
+      const alreadyConsumed = events.some((event) => (
+        event.type === "permit.consumed"
+        && event.payload?.permitId === permit.permitId
+      ));
+      if (alreadyConsumed) return { valid: false, reason: "already_consumed" };
+
+      const event = append("permit.consumed", {
+        permitId: permit.permitId,
+        decisionId: permit.decisionId,
+        intentHash: permit.intentHash,
+        accountId: permit.accountId,
+        venue: permit.venue,
+      }, at);
+      return {
+        valid: true,
+        reason: "consumed",
+        consumedAt: event.recordedAt,
+        eventHash: event.eventHash,
+      };
+    });
+
+    if (!transaction.acquired) return { valid: false, reason: "ledger_busy" };
+    return transaction.result;
+  }
+}
