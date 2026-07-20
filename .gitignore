@@ -5,6 +5,6 @@ dist/
 .vscode/
 .env
 .env.*
-.mandate/
+.murre/
 *.log
 .DS_Store

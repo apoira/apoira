@@ -1,5 +1,5 @@
 name: Bug report
-description: Report incorrect or unsafe Mandate behavior
+description: Report incorrect or unsafe Murre behavior
 title: "bug: "
 labels: [bug]
 body:

@@ -1,6 +1,6 @@
 # Policy model
 
-Mandate policies are explicit JSON inputs. The example policy defines:
+Murre policies are explicit JSON inputs. The example policy defines:
 
 - allowed venues;
 - maximum order notional;
@@ -26,12 +26,12 @@ in the smallest supported unit and define rounding at every boundary.
 ## Versioning
 
 Policies carry a schema version, human-readable identifier, and semantic
-version. The complete document is hashed under the `mandate.policy.v1` domain.
+version. The complete document is hashed under the `murre.policy.v1` domain.
 Any field change therefore produces a different policy hash and different
 decision identifier.
 
 ## State assumptions
 
-The kernel trusts the supplied snapshot only as data; V0.2 does not authenticate
+The kernel trusts the supplied snapshot only as data; V0.3 does not authenticate
 its origin. Production state must be signed, freshness-bounded, and tied to the
 account and venue whose capital is being controlled.

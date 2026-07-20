@@ -5,7 +5,7 @@
 An untrusted portfolio proposal must not execute unless it matches an allowed,
 unexpired, unconsumed permit produced from the configured policy and state.
 
-## Trusted in V0.2
+## Trusted in V0.3
 
 - local operating system and filesystem;
 - process environment and system clock;
@@ -13,7 +13,7 @@ unexpired, unconsumed permit produced from the configured policy and state.
 - Node.js runtime;
 - repository code and operator.
 
-## Untrusted in V0.2
+## Untrusted in V0.3
 
 - portfolio proposals and target weights;
 - attempts to alter an approved order;
