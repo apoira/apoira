@@ -20,8 +20,9 @@
         <a href="#authority">Authority</a>
         <a href="#assets">Assets</a>
         <a href="#status">Status</a>
+        <a href="https://github.com/moteMCP/mandate">Source</a>
       </div>
-      <span class="concept-badge">Open kernel v0.1</span>
+      <span class="concept-badge">Open protocol v0.2</span>
     </nav>
 
     <section class="hero shell">
@@ -40,10 +41,10 @@
         </div>
       </div>
 
-      <aside class="architecture-card" id="architecture" aria-label="Proposed Mandate system architecture">
+      <aside class="architecture-card" id="architecture" aria-label="Mandate version 0.2 system architecture">
         <header class="architecture-head">
           <div><span>CAPITAL AUTHORITY MAP</span><strong>Who may move what?</strong></div>
-          <em>Proposed design</em>
+          <em>V0.2 boundary</em>
         </header>
 
         <div class="input-pair">
@@ -54,7 +55,7 @@
         <div class="submit-line"><i></i><span>proposals enter without venue credentials</span><i></i></div>
 
         <div class="kernel-card">
-          <div class="kernel-visual"><img src="assets/mandate-kernel-pointillist.png" alt="Pointillist locked gateway representing the Mandate authorization kernel"></div>
+          <div class="kernel-visual"><img src="assets/mandate-kernel-pointillist.webp" alt="Pointillist locked gateway representing the Mandate authorization kernel" width="1254" height="1254" decoding="async"></div>
           <div><span>MANDATE KERNEL</span><strong>Deterministic policy + portfolio state</strong><small>Same intent. Same facts. Same decision.</small></div>
           <b>TRUST BOUNDARY</b>
         </div>
@@ -63,7 +64,7 @@
           <article class="permit-outcome"><span>IF ALLOWED</span><strong>Single-use permit</strong><small>Bound to the exact order and route.</small><i>→ credentialed relay</i></article>
           <article class="deny-outcome"><span>IF DENIED</span><strong>Decision receipt</strong><small>Reason recorded. Authority remains zero.</small><i>× no route</i></article>
         </div>
-        <p class="architecture-note">The deterministic kernel and receipt format are implemented. Market and venue connections are not built.</p>
+        <p class="architecture-note">The kernel, durable event chain, permit consumption, and paper cycle are implemented. Market and live venue adapters are not.</p>
       </aside>
     </section>
 
@@ -184,19 +185,19 @@ decision
 
         <div class="asset-grid">
           <article>
-            <figure class="asset-visual"><img src="assets/tokenized-equities-pointillist.png" alt="Pointillist market cards passing through a registry frame" loading="lazy"></figure>
+            <figure class="asset-visual"><img src="assets/tokenized-equities-pointillist.webp" alt="Pointillist market cards passing through a registry frame" loading="lazy" width="1254" height="1254" decoding="async"></figure>
             <h3>Tokenized equities</h3>
             <p>Canonical contract, jurisdiction, market status, price freshness, account eligibility, and venue support.</p>
             <span>Registry adapter planned</span>
           </article>
           <article>
-            <figure class="asset-visual"><img src="assets/private-assets-pointillist.png" alt="Pointillist private archive secured behind an eligibility gate" loading="lazy"></figure>
+            <figure class="asset-visual"><img src="assets/private-assets-pointillist.webp" alt="Pointillist private archive secured behind an eligibility gate" loading="lazy" width="1254" height="1254" decoding="async"></figure>
             <h3>Private assets</h3>
             <p>Issuer authority, investor eligibility, transfer restrictions, valuation age, custody, and exit liquidity.</p>
             <span>Policy research</span>
           </article>
           <article>
-            <figure class="asset-visual"><img src="assets/real-world-assets-pointillist.png" alt="Pointillist bridge connecting physical collateral and a digital registry" loading="lazy"></figure>
+            <figure class="asset-visual"><img src="assets/real-world-assets-pointillist.webp" alt="Pointillist bridge connecting physical collateral and a digital registry" loading="lazy" width="1254" height="1254" decoding="async"></figure>
             <h3>Real-world assets</h3>
             <p>Issuer, reserves, redemption terms, custody, maturity, settlement route, and independent attestations.</p>
             <span>Policy research</span>
@@ -209,15 +210,15 @@ decision
     <section class="status section shell" id="status" aria-labelledby="status-title">
       <div class="section-heading compact">
         <p class="kicker">Build status</p>
-        <h2 id="status-title">The kernel now exists.<br>The desk comes next.</h2>
+        <h2 id="status-title">The paper loop runs.<br>Live authority does not.</h2>
         <p>No simulated metric is presented as market performance, and no decorative “live” badge stands in for a real execution path.</p>
       </div>
 
       <ol class="roadmap">
-        <li class="current"><span>Now</span><div><strong>Deterministic evaluator + receipts</strong><p>Tested portfolio checks, content-addressed decisions, order-bound permits, and replay protection.</p></div><b>Built</b></li>
-        <li><span>Build</span><div><strong>Open paper desk + portfolio loop</strong><p>Simulated assets, repeatable portfolio cycles, proposal construction, state persistence, and full traces.</p></div><b>Next</b></li>
-        <li><span>Connect</span><div><strong>Read-only asset and market adapters</strong><p>Canonical registries, issuer facts, price sources, account eligibility, and chain state.</p></div><b>Planned</b></li>
-        <li><span>Arm</span><div><strong>Credentialed execution relay</strong><p>Live routing only after the authorization boundary and venue integration are independently verified.</p></div><b>Not built</b></li>
+        <li class="current"><span>Now</span><div><strong>Durable paper kernel + portfolio cycle</strong><p>Target-weight planning, deterministic checks, hash-chained events, single-use permits, fills, and state updates.</p></div><b>Built</b></li>
+        <li><span>Build</span><div><strong>Authenticated paper service</strong><p>Signed snapshots, durable database storage, recovery semantics, and read-only registry and market adapters.</p></div><b>Next</b></li>
+        <li><span>Connect</span><div><strong>Isolated relay prototype</strong><p>A formally specified process boundary, external key custody, paper venue reconciliation, and operational alerts.</p></div><b>Planned</b></li>
+        <li><span>Arm</span><div><strong>Live credentialed execution</strong><p>Excluded until the authorization boundary, venue adapter, and operational controls are independently reviewed.</p></div><b>Not built</b></li>
       </ol>
     </section>
 
@@ -232,7 +233,7 @@ decision
 
     <footer class="shell">
       <a class="brand" href="#top">mandate<span>.</span></a>
-      <p>Open kernel v0.1 · paper-only · no live capital · no token</p>
+      <p>Open protocol v0.2 · paper-only · no live capital · no token</p>
       <span>2026</span>
     </footer>
   </main>
