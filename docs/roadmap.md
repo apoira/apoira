@@ -1,26 +1,33 @@
 # Roadmap
 
-## 0.1 - deterministic kernel
+The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 
-- policy evaluator
-- decision receipts
-- order-bound permits
-- in-memory single-use ledger
-- CLI and tests
+## 0.2 - durable paper kernel
 
-## 0.2 - durable paper system
+- [x] deterministic portfolio policy evaluation
+- [x] content-addressed decisions and exact-order permits
+- [x] domain-separated protocol hashes
+- [x] hash-chained JSONL events
+- [x] single-host atomic permit consumption
+- [x] target-weight planning and paper fills
+- [x] end-to-end CLI and automated tests
 
-- append-only receipt and permit store
-- portfolio cycle runner
-- signed state snapshots
-- read-only registry, pricing, and chain adapters
+## 0.3 - authenticated paper service
 
-## 0.3 - isolated relay prototype
+- [ ] JSON Schema documents for every protocol object
+- [ ] signed state snapshots with key rotation
+- [ ] HTTP or MCP service with caller authentication
+- [ ] SQLite or PostgreSQL event and permit backend
+- [ ] idempotency keys and crash-recovery reconciliation
+- [ ] read-only registry, pricing, and chain adapters
 
-- authenticated kernel-to-relay protocol
-- atomic permit consumption
-- paper venue adapter
-- fill receipts and reconciliation
+## 0.4 - isolated relay prototype
 
-Live routing is intentionally outside the roadmap until the trust boundary has
-been independently reviewed.
+- [ ] formally specified kernel-to-relay protocol
+- [ ] hardware- or service-backed signing keys
+- [ ] independent relay process with no research capability
+- [ ] paper venue reconciliation and operational alerts
+- [ ] external threat-model and security review
+
+Live routing is intentionally excluded until these boundaries are independently
+tested. A venue integration is not evidence that the system is safe to fund.
