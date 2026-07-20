@@ -9,27 +9,27 @@ export function createPermit({ intent, decisionId, policyHash, evaluatedAt, ttlS
   }
 
   const body = {
-    schemaVersion: "mandate.permit.v1",
+    schemaVersion: "murre.permit.v1",
     decisionId,
     policyHash,
-    intentHash: hashWithDomain("mandate.intent.v1", normalizeIntent(intent)),
+    intentHash: hashWithDomain("murre.intent.v1", normalizeIntent(intent)),
     accountId: intent.accountId,
     venue: intent.venue,
     issuedAt: new Date(issuedAtMs).toISOString(),
     expiresAt: new Date(issuedAtMs + ttl * 1000).toISOString(),
   };
 
-  return { ...body, permitId: hashWithDomain("mandate.permit.v1", body) };
+  return { ...body, permitId: hashWithDomain("murre.permit.v1", body) };
 }
 
 export function verifyPermit(permit, intent, at = new Date().toISOString()) {
-  if (!permit || permit.schemaVersion !== "mandate.permit.v1") {
+  if (!permit || permit.schemaVersion !== "murre.permit.v1") {
     return { valid: false, reason: "invalid_permit" };
   }
 
   let intentHash;
   try {
-    intentHash = hashWithDomain("mandate.intent.v1", normalizeIntent(intent));
+    intentHash = hashWithDomain("murre.intent.v1", normalizeIntent(intent));
   } catch {
     return { valid: false, reason: "invalid_intent" };
   }

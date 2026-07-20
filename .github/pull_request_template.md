@@ -1,6 +1,6 @@
 ## Summary
 
-Describe the change and why it belongs inside Mandate.
+Describe the change and why it belongs inside Murre.
 
 ## Trust-boundary impact
 

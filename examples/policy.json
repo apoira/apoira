@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "mandate.policy.v1",
+  "schemaVersion": "murre.policy.v1",
   "description": "Conservative paper policy for mixed private-market and RWA exposure",
   "id": "private-markets-paper-v1",
   "version": "1.0.0",
