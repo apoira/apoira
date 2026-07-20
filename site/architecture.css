@@ -353,3 +353,16 @@
     transform: rotate(90deg);
   }
 }
+
+@media (prefers-contrast: more) {
+  .architecture-card,
+  .input-pair article,
+  .kernel-card,
+  .outcome-grid article {
+    border-color: currentColor;
+  }
+
+  .architecture-note {
+    color: var(--ink);
+  }
+}

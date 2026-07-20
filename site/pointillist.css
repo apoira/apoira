@@ -482,3 +482,17 @@ footer.shell {
     grid-template-columns: 54px 1fr;
   }
 }
+
+@media print {
+  .asset-visual::before,
+  .asset-visual::after,
+  .kernel-visual::before,
+  .kernel-visual::after {
+    display: none;
+  }
+
+  .asset-visual img,
+  .kernel-visual img {
+    filter: grayscale(1) contrast(1.1);
+  }
+}
