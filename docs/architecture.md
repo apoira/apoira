@@ -1,82 +1,35 @@
 # Architecture
 
-Mote is split into four small layers.
+Mandate separates return-seeking software from capital authority.
 
-## 1. Policy
+## Intelligence plane
 
-Policy decides whether an agent action is allowed, blocked, or needs approval.
+The portfolio engine sources eligible assets, forms views, constructs targets,
+and proposes order intents. It may use agents or statistical models. It does
+not possess venue credentials.
 
-The prototype supports:
+## Authority plane
 
-- command allow rules
-- command ask rules
-- command deny rules
-- path deny rules
+The kernel receives three explicit inputs:
 
-Command matching is intentionally explicit. A command that does not match an
-allow or ask rule is blocked by default.
+- an immutable policy document;
+- a portfolio and asset-state snapshot;
+- one exact order intent.
 
-## 2. Runtime
+It normalizes and hashes those inputs, evaluates every configured constraint,
+and emits a content-addressed decision receipt. Allowed intents also receive a
+short-lived permit containing the exact intent hash.
 
-The runtime executes approved commands in a project directory, creates pending
-approvals for risky commands, injects scoped environment variables when a secret
-is requested, redacts secret values from stdout/stderr, and appends lifecycle
-events to `.mote/events.jsonl`.
+## Execution plane
 
-Pending approvals are stored in `.mote/approvals.json`. The event log remains
-the audit trail; the approval store is the queue state.
+A future relay is the only component that should possess a venue credential.
+Before routing, it must verify the permit, compare the submitted order hash,
+atomically consume the permit, and return a fill receipt. The relay is not part
+of V1.
 
-Runtime events include:
+## Failure model
 
-- `project.initialized`
-- `policy.updated`
-- `command.requested`
-- `command.blocked`
-- `command.approval_required`
-- `approval.granted`
-- `approval.rejected`
-- `approval.used`
-- `approval.completed`
-- `secret.stored`
-- `secret.accessed`
-- `command.completed`
-
-## 3. Secret Handling
-
-Secrets are stored in `.mote/secrets.json` as base64-encoded values. This is not
-production encryption. The point of the prototype is to prove the runtime
-contract:
-
-1. The model asks Mote to use a named secret.
-2. Mote injects the value into the process environment.
-3. The raw value is redacted from command output and logs.
-
-Future versions should support encrypted local vaults, hardware-backed keys, or
-remote secret managers.
-
-## 4. Agent Adapter
-
-`mote serve --mcp` exposes a small JSON-RPC stdio adapter with tool calls for
-status, policy updates, command execution, secret use, and replay.
-
-This lets an agent use Mote as a tool boundary:
-
-```text
-agent -> tool call -> Mote policy -> runtime -> event log
-```
-
-The adapter is deliberately small until the core policy surface settles.
-
-See [MCP Adapter](mcp.md) for the current tool contract and example JSON-RPC
-messages.
-
-## Roadmap
-
-- filesystem checkpoints and rollback
-- browser action logging
-- network egress policy
-- secret taint tracking
-- encrypted secret backends
-- approval UI
-- full MCP SDK integration
-- container or microVM execution backends
+Missing asset facts, unknown asset classes, stale valuations, invalid numeric
+inputs, unavailable liquidity, and policy violations all fail closed. The
+evaluator performs no network calls, so the same normalized inputs produce the
+same checks and decision.
