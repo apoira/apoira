@@ -1,10 +1,8 @@
 node_modules/
 coverage/
-.DS_Store
+dist/
+.env
+.env.*
+.mandate/
 *.log
-*.tmp
-
-.mote/events.jsonl
-.mote/approvals.json
-.mote/secrets.json
-.mote/checkpoints/
+.DS_Store

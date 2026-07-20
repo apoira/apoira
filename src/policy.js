@@ -1,251 +1,183 @@
-import { relative, resolve } from "node:path";
-
-const COMMAND_RULE_KINDS = ["allow", "ask", "deny"];
-
-export const DEFAULT_POLICY = Object.freeze({
-  version: 1,
-  commands: {
-    allow: [
-      "npm test",
-      "npm run test",
-      "npm run build",
-      "node --test"
-    ],
-    ask: [
-      "git push",
-      "vercel deploy",
-      "npm publish"
-    ],
-    deny: [
-      "rm -rf *",
-      "Remove-Item *",
-      "del *"
-    ]
-  },
-  paths: {
-    deny: [
-      ".env",
-      ".env.*",
-      ".git/**",
-      ".ssh/**",
-      ".mote/secrets.json",
-      "node_modules/**"
-    ]
-  },
-  network: {
-    allow: [],
-    deny: []
-  },
-  secrets: {
-    redact: true
-  }
-});
-
-export function defaultPolicy() {
-  return structuredClone(DEFAULT_POLICY);
+function result(id, pass, observed, limit, reason) {
+  return { id, pass: Boolean(pass), observed, limit, reason };
 }
 
-export function formatCommand(executable, args = []) {
-  return [executable, ...args].map(quotePart).join(" ");
+function number(value, fallback = Number.NaN) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-export function evaluateCommand(policy, commandLine) {
-  const commands = policy.commands ?? {};
+export function evaluatePolicy({ policy, state, intent, evaluatedAt }) {
+  const checks = [];
+  const asset = state?.assets?.[intent.assetId];
+  const positions = Array.isArray(state?.positions) ? state.positions : [];
+  const portfolioValue = number(state?.portfolioValueUsd);
+  const cash = number(state?.cashUsd);
+  const notional = intent.quantity * intent.limitPriceUsd;
 
-  const denied = firstMatch(commands.deny, commandLine);
-  if (denied) {
-    return {
-      effect: "deny",
-      matched: denied,
-      reason: `matched deny command rule: ${denied}`
-    };
-  }
+  checks.push(result(
+    "asset.known",
+    Boolean(asset),
+    asset ? intent.assetId : null,
+    "asset must exist in the signed state snapshot",
+    asset ? "Asset facts found." : "Asset facts are missing.",
+  ));
 
-  const ask = firstMatch(commands.ask, commandLine);
-  if (ask) {
-    return {
-      effect: "ask",
-      matched: ask,
-      reason: `matched approval command rule: ${ask}`
-    };
-  }
+  if (!asset) return checks;
 
-  const allowed = firstMatch(commands.allow, commandLine);
-  if (allowed) {
-    return {
-      effect: "allow",
-      matched: allowed,
-      reason: `matched allow command rule: ${allowed}`
-    };
-  }
+  const assetClass = asset.assetClass;
+  const maxAge = number(policy?.maxValuationAgeSeconds?.[assetClass]);
+  const valuedAtMs = Date.parse(asset.valuedAt);
+  const evaluatedAtMs = Date.parse(evaluatedAt);
+  const ageSeconds = (evaluatedAtMs - valuedAtMs) / 1000;
+  const venueAllowed = Array.isArray(policy?.allowedVenues)
+    && policy.allowedVenues.includes(intent.venue);
 
-  return {
-    effect: "deny",
-    matched: null,
-    reason: "no allow or approval rule matched"
-  };
-}
+  checks.push(result(
+    "venue.allowed",
+    venueAllowed,
+    intent.venue,
+    policy?.allowedVenues || [],
+    venueAllowed ? "Venue is permitted." : "Venue is not permitted by policy.",
+  ));
 
-export function evaluatePath(policy, projectRoot, targetPath) {
-  const root = resolve(projectRoot);
-  const absolute = resolve(root, targetPath);
-  const rel = normalizePath(relative(root, absolute));
+  const assetVenues = Array.isArray(asset.venues)
+    ? asset.venues
+    : (typeof asset.venue === "string" ? [asset.venue] : []);
+  const assetVenueSupported = assetVenues.includes(intent.venue);
+  checks.push(result(
+    "venue.asset_supported",
+    assetVenueSupported,
+    intent.venue,
+    assetVenues,
+    assetVenueSupported ? "Asset state confirms venue support." : "Asset state does not confirm this venue.",
+  ));
 
-  if (rel.startsWith("..") || rel === "") {
-    return {
-      effect: "deny",
-      matched: null,
-      reason: "path is outside project root"
-    };
-  }
+  checks.push(result(
+    "asset.eligible",
+    asset.eligible === true,
+    asset.eligible === true,
+    true,
+    asset.eligible === true ? "Asset is eligible for this account snapshot." : "Asset is not eligible.",
+  ));
 
-  const denied = firstPathMatch(policy.paths?.deny, rel);
-  if (denied) {
-    return {
-      effect: "deny",
-      matched: denied,
-      reason: `matched deny path rule: ${denied}`
-    };
-  }
+  const classSupported = Number.isFinite(maxAge);
+  checks.push(result(
+    "asset.class_supported",
+    classSupported,
+    assetClass || null,
+    Object.keys(policy?.maxValuationAgeSeconds || {}),
+    classSupported ? "Asset class has a freshness policy." : "Asset class has no freshness policy.",
+  ));
 
-  return {
-    effect: "allow",
-    matched: null,
-    reason: "no deny path rule matched"
-  };
-}
+  const fresh = classSupported
+    && Number.isFinite(ageSeconds)
+    && ageSeconds >= 0
+    && ageSeconds <= maxAge;
+  checks.push(result(
+    "valuation.fresh",
+    fresh,
+    Number.isFinite(ageSeconds) ? ageSeconds : null,
+    Number.isFinite(maxAge) ? maxAge : null,
+    fresh ? "Valuation is within the allowed age." : "Valuation is missing, future-dated, or stale.",
+  ));
 
-export function addCommandRule(policy, kind, pattern) {
-  if (!COMMAND_RULE_KINDS.includes(kind)) {
-    throw new Error(`Unknown command rule kind: ${kind}`);
-  }
+  const referencePrice = number(asset.priceUsd);
+  const maxPriceDeviationPct = number(policy?.maxLimitPriceDeviationPct);
+  const priceDeviationPct = referencePrice > 0
+    ? (Math.abs(intent.limitPriceUsd - referencePrice) / referencePrice) * 100
+    : Number.NaN;
+  const priceBoundPass = Number.isFinite(priceDeviationPct)
+    && Number.isFinite(maxPriceDeviationPct)
+    && priceDeviationPct <= maxPriceDeviationPct;
+  checks.push(result(
+    "price.limit_deviation",
+    priceBoundPass,
+    Number.isFinite(priceDeviationPct) ? priceDeviationPct : null,
+    Number.isFinite(maxPriceDeviationPct) ? maxPriceDeviationPct : null,
+    priceBoundPass ? "Limit price is within the reference-price band." : "Limit price is missing a reference or exceeds the allowed deviation.",
+  ));
 
-  const next = structuredClone(policy);
-  next.commands ??= {};
-  next.commands[kind] ??= [];
+  const maxOrder = number(policy?.maxOrderNotionalUsd);
+  checks.push(result(
+    "order.notional",
+    Number.isFinite(maxOrder) && notional <= maxOrder,
+    notional,
+    Number.isFinite(maxOrder) ? maxOrder : null,
+    notional <= maxOrder ? "Order is within the notional ceiling." : "Order exceeds the notional ceiling.",
+  ));
 
-  if (!next.commands[kind].includes(pattern)) {
-    next.commands[kind].push(pattern);
-  }
+  const availableLiquidity = number(asset.availableLiquidityUsd, 0);
+  const classFloor = number(policy?.minAvailableLiquidityUsd?.[assetClass]);
+  const requiredLiquidity = Number.isFinite(classFloor)
+    ? Math.max(notional, classFloor)
+    : Number.POSITIVE_INFINITY;
+  const liquidityPass = Number.isFinite(requiredLiquidity)
+    && availableLiquidity >= requiredLiquidity;
+  checks.push(result(
+    "liquidity.available",
+    liquidityPass,
+    availableLiquidity,
+    Number.isFinite(requiredLiquidity) ? requiredLiquidity : null,
+    liquidityPass ? "Available liquidity clears the order and class floor." : "Available liquidity is insufficient or unconfigured.",
+  ));
 
-  return next;
-}
+  const currentByAsset = new Map(
+    positions.map((position) => [position.assetId, number(position.marketValueUsd, 0)]),
+  );
+  const currentPosition = currentByAsset.get(intent.assetId) || 0;
+  const signedNotional = intent.side === "BUY" ? notional : -notional;
+  const postPosition = currentPosition + signedNotional;
+  const inventoryPass = intent.side === "BUY" || postPosition >= 0;
+  checks.push(result(
+    "inventory.sufficient",
+    inventoryPass,
+    currentPosition,
+    intent.side === "SELL" ? notional : 0,
+    inventoryPass ? "Position inventory is sufficient." : "Sell exceeds current inventory.",
+  ));
 
-export function addPathDeny(policy, pattern) {
-  const next = structuredClone(policy);
-  next.paths ??= {};
-  next.paths.deny ??= [];
+  const maxPositionPct = number(policy?.maxPositionPct);
+  const postPositionPct = portfolioValue > 0 ? (Math.max(0, postPosition) / portfolioValue) * 100 : Number.NaN;
+  const positionPass = Number.isFinite(postPositionPct)
+    && Number.isFinite(maxPositionPct)
+    && postPositionPct <= maxPositionPct;
+  checks.push(result(
+    "position.max",
+    positionPass,
+    Number.isFinite(postPositionPct) ? postPositionPct : null,
+    Number.isFinite(maxPositionPct) ? maxPositionPct : null,
+    positionPass ? "Resulting position is within the concentration limit." : "Resulting position exceeds the concentration limit.",
+  ));
 
-  if (!next.paths.deny.includes(pattern)) {
-    next.paths.deny.push(pattern);
-  }
+  currentByAsset.set(intent.assetId, postPosition);
+  const postGross = [...currentByAsset.values()].reduce((sum, value) => sum + Math.abs(value), 0);
+  const postGrossPct = portfolioValue > 0 ? (postGross / portfolioValue) * 100 : Number.NaN;
+  const maxGrossPct = number(policy?.maxGrossExposurePct);
+  const grossPass = Number.isFinite(postGrossPct)
+    && Number.isFinite(maxGrossPct)
+    && postGrossPct <= maxGrossPct;
+  checks.push(result(
+    "portfolio.gross_exposure",
+    grossPass,
+    Number.isFinite(postGrossPct) ? postGrossPct : null,
+    Number.isFinite(maxGrossPct) ? maxGrossPct : null,
+    grossPass ? "Resulting gross exposure is within policy." : "Resulting gross exposure exceeds policy.",
+  ));
 
-  return next;
-}
+  const postCash = cash - signedNotional;
+  const postCashPct = portfolioValue > 0 ? (postCash / portfolioValue) * 100 : Number.NaN;
+  const minCashPct = number(policy?.minCashPct);
+  const cashPass = Number.isFinite(postCashPct)
+    && Number.isFinite(minCashPct)
+    && postCashPct >= minCashPct;
+  checks.push(result(
+    "portfolio.min_cash",
+    cashPass,
+    Number.isFinite(postCashPct) ? postCashPct : null,
+    Number.isFinite(minCashPct) ? minCashPct : null,
+    cashPass ? "Resulting cash remains above the floor." : "Resulting cash falls below the floor.",
+  ));
 
-export function validatePolicy(policy) {
-  const issues = [];
-
-  if (!policy || typeof policy !== "object") {
-    return ["policy must be an object"];
-  }
-
-  if (policy.version !== 1) {
-    issues.push("policy.version must be 1");
-  }
-
-  for (const kind of COMMAND_RULE_KINDS) {
-    validateStringArray(policy.commands?.[kind], `commands.${kind}`, issues);
-  }
-
-  validateStringArray(policy.paths?.deny, "paths.deny", issues);
-  validateStringArray(policy.network?.allow, "network.allow", issues);
-  validateStringArray(policy.network?.deny, "network.deny", issues);
-
-  if (typeof policy.secrets?.redact !== "boolean") {
-    issues.push("secrets.redact must be a boolean");
-  }
-
-  return issues;
-}
-
-export function assertValidPolicy(policy) {
-  const issues = validatePolicy(policy);
-
-  if (issues.length > 0) {
-    throw new Error(`Invalid Mote policy: ${issues.join("; ")}`);
-  }
-
-  return policy;
-}
-
-export function matchPattern(pattern, value) {
-  const exactPrefix = !pattern.includes("*");
-  if (exactPrefix && (value === pattern || value.startsWith(`${pattern} `))) {
-    return true;
-  }
-
-  return wildcardRegExp(pattern, false).test(value);
-}
-
-function validateStringArray(value, key, issues) {
-  if (!Array.isArray(value)) {
-    issues.push(`${key} must be an array`);
-    return;
-  }
-
-  for (const item of value) {
-    if (typeof item !== "string" || !item.trim()) {
-      issues.push(`${key} entries must be non-empty strings`);
-      return;
-    }
-  }
-}
-
-function firstMatch(patterns = [], value) {
-  return patterns.find((pattern) => matchPattern(pattern, value)) ?? null;
-}
-
-function firstPathMatch(patterns = [], value) {
-  return patterns.find((pattern) => wildcardRegExp(normalizePath(pattern), true).test(value)) ?? null;
-}
-
-function wildcardRegExp(pattern, pathMode) {
-  let escaped = "";
-  const value = String(pattern);
-
-  for (let index = 0; index < value.length; index += 1) {
-    const char = value[index];
-
-    if (char === "*") {
-      if (pathMode && value[index + 1] === "*") {
-        escaped += ".*";
-        index += 1;
-      } else {
-        escaped += pathMode ? "[^/]*" : ".*";
-      }
-      continue;
-    }
-
-    escaped += char.replace(/[.+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  return new RegExp(`^${escaped}$`);
-}
-
-function normalizePath(value) {
-  return String(value).replace(/\\/g, "/");
-}
-
-function quotePart(part) {
-  const value = String(part);
-  if (value === "") {
-    return "\"\"";
-  }
-
-  if (/[\s"]/u.test(value)) {
-    return JSON.stringify(value);
-  }
-
-  return value;
+  return checks;
 }

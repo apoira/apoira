@@ -1,21 +1,10 @@
 # Contributing
 
-Mote is early, so the most useful contributions are small and testable.
+Keep the authorization boundary small and deterministic. New checks should:
 
-Good first areas:
+1. accept explicit inputs rather than fetching hidden state;
+2. return a stable check identifier and human-readable reason;
+3. fail closed when required facts are missing;
+4. include allow, deny, and boundary tests.
 
-- policy matching edge cases
-- better event replay output
-- MCP adapter hardening
-- command/path approval flows
-- secret backend integrations
-- checkpoint and rollback prototypes
-
-Before opening a pull request:
-
-```bash
-npm test
-```
-
-Keep changes scoped and include tests for policy or runtime behavior when the
-change affects enforcement.
+Run `npm test` before submitting a change.

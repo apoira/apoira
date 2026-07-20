@@ -1,24 +1,17 @@
 {
-  "name": "mote",
+  "name": "@mandate/kernel",
   "version": "0.1.0",
-  "description": "Policy, secrets, approvals, and replay for AI agents using real computers.",
+  "description": "Deterministic authorization infrastructure for agent-managed portfolios.",
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/moteMCP/mote.git"
-  },
-  "bugs": {
-    "url": "https://github.com/moteMCP/mote/issues"
-  },
+  "private": true,
   "bin": {
-    "mote": "./src/cli.js"
+    "mandate": "./src/cli.js"
   },
   "exports": {
     ".": "./src/index.js"
   },
   "scripts": {
-    "demo": "node examples/demo.mjs",
-    "check:residue": "node scripts/check-residue.mjs",
+    "demo": "node src/cli.js evaluate --policy examples/policy.json --state examples/state.json --intent examples/intent.json --at 2026-07-20T12:00:00.000Z",
     "test": "node --test"
   },
   "engines": {
@@ -26,14 +19,11 @@
   },
   "keywords": [
     "agents",
-    "runtime",
-    "mcp",
+    "portfolio",
+    "risk",
     "policy",
-    "secrets",
-    "approvals",
-    "agent-safety",
-    "sandbox",
-    "replay"
+    "tokenized-assets",
+    "rwa"
   ],
   "license": "MIT"
 }

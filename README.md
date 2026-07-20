@@ -1,241 +1,95 @@
-# Mote
+# Mandate
 
-[![CI](https://github.com/moteMCP/mote/actions/workflows/ci.yml/badge.svg)](https://github.com/moteMCP/mote/actions/workflows/ci.yml)
+Mandate is deterministic authorization infrastructure for agent-managed
+portfolios.
 
-Policy, secrets, approvals, and replay for AI agents using real computers.
-
-Mote gives agents a controlled runtime boundary. Instead of handing an agent raw
-access to a terminal, browser, local files, or deploy token, you route actions
-through Mote and define what the agent can do.
+The portfolio engine may research assets and propose trades. Mandate is the
+smaller, independent system that decides whether an exact order is allowed to
+touch capital.
 
 ```text
-agent -> Mote API -> policy check -> runtime -> append-only event log
+portfolio proposal + live state + policy
+                    |
+                    v
+             Mandate kernel
+              /           \
+      denial receipt    order-bound permit
+                              |
+                              v
+                       execution relay
 ```
 
-## Why Mote
+## What is real today
 
-Agent sandboxes answer where an agent runs. Mote focuses on what the agent is
-allowed to do once it can act.
+This repository contains a working V1 authorization kernel:
 
-The core idea is simple:
+- deterministic policy evaluation across the whole proposed portfolio
+- eligibility, price freshness, liquidity, order-size, cash, gross-exposure,
+  concentration, and sell-inventory checks
+- content-addressed decision receipts for replay and audit
+- short-lived permits bound to the exact account, asset, amount, price, and
+  route
+- a single-use permit ledger that rejects modified, expired, and replayed
+  orders
+- a zero-dependency CLI, fixtures, and automated tests
+- the static product and architecture site in [`site/`](site/)
 
-- agents should be able to use tools and credentials
-- credentials should not be revealed to the model
-- risky actions should pause for approval
-- blocked files and paths should stay blocked
-- every action should be replayable after the run
-
-Mote is not trying to be another chat UI or a generic VM wrapper. It is an
-agent-native control layer for commands, secrets, approvals, and auditability.
-
-## Current Status
-
-Mote is early, but the local runtime is functional.
-
-What works now:
-
-- command policy with `allow`, `ask`, and `deny` rules
-- blocked path patterns for sensitive files like `.env`, `.git`, `.ssh`, and
-  `.mote/secrets.json`
-- persistent approval queue for risky actions
-- local secret storage with runtime environment injection
-- stdout/stderr redaction for injected secrets
-- append-only event logs in `.mote/events.jsonl`
-- replay output for audits and demos
-- a minimal JSON-RPC/MCP-style stdio adapter for agent integrations
-
-Still in progress:
-
-- encrypted production secret backends
-- browser and network egress controls
-- secret taint tracking across tool outputs
-- filesystem checkpoints and rollback
-- stronger process isolation through containers or microVMs
-- approval UI beyond the local `--yes` flow
-
-## Install
-
-```bash
-npm install
-npm link
-```
-
-Or run it directly from the repo:
-
-```bash
-node src/cli.js status
-```
+The research agents, live market adapters, custody, Robinhood MCP routing, and
+Robinhood Chain settlement are **not built**. The included venue is a paper
+fixture. No real account credentials or capital are used.
 
 ## Quickstart
 
-Initialize a project:
+Requires Node.js 20 or newer.
 
 ```bash
-mote init ./my-project
-```
-
-Allow safe commands:
-
-```bash
-mote allow "npm test" --project ./my-project
-mote allow "npm run build" --project ./my-project
-```
-
-Require approval for risky commands:
-
-```bash
-mote ask "git push" --project ./my-project
-mote ask "vercel deploy" --project ./my-project
-```
-
-Block sensitive paths:
-
-```bash
-mote deny ".env" --project ./my-project
-mote deny ".env.*" --project ./my-project
-mote deny ".ssh/**" --project ./my-project
-```
-
-Run a command through policy:
-
-```bash
-mote run npm test --project ./my-project
-```
-
-Preflight a command or path without executing anything:
-
-```bash
-mote check-command npm test --project ./my-project
-mote check-path .env --project ./my-project
-```
-
-If a command matches an `ask` rule, Mote records the approval boundary and stops:
-
-```bash
-mote run git push --project ./my-project
-# approval required: <approval-id>
-```
-
-List, approve, and run pending approvals:
-
-```bash
-mote approvals --project ./my-project
-mote approve <approval-id> "looks safe" --project ./my-project
-mote run-approval <approval-id> --project ./my-project
-```
-
-For quick local testing, `--yes` still acts as an inline approval grant:
-
-```bash
-mote run git push --project ./my-project --yes
-```
-
-## Secret Injection
-
-Store a local secret:
-
-```bash
-mote secret:set DEPLOY_TOKEN sk_live_example --project ./my-project
-```
-
-Allow the command you want the agent to run:
-
-```bash
-mote allow "node -e *" --project ./my-project
-```
-
-Run the command with the secret injected:
-
-```bash
-mote secret:use DEPLOY_TOKEN -- node -e "console.log(process.env.MOTE_SECRET_DEPLOY_TOKEN)" --project ./my-project
-```
-
-The process receives `MOTE_SECRET_DEPLOY_TOKEN`, but command output and event
-logs redact the raw value:
-
-```text
-[secret:DEPLOY_TOKEN]
-```
-
-## Replay
-
-Every meaningful runtime action is appended to `.mote/events.jsonl`.
-
-```bash
-mote replay --project ./my-project
-```
-
-Recorded events include:
-
-- `project.initialized`
-- `policy.updated`
-- `command.requested`
-- `command.blocked`
-- `command.approval_required`
-- `approval.rejected`
-- `approval.used`
-- `approval.completed`
-- `approval.granted`
-- `secret.stored`
-- `secret.accessed`
-- `command.completed`
-
-## Agent Adapter
-
-Start the stdio adapter:
-
-```bash
-mote serve --mcp --project ./my-project
-```
-
-The adapter accepts JSON-RPC lines and currently supports:
-
-- `initialize`
-- `tools/list`
-- `tools/call`
-
-Available tools:
-
-- `mote_status`
-- `mote_run`
-- `mote_approvals`
-- `mote_allow`
-- `mote_ask`
-- `mote_deny_path`
-- `mote_secret_use`
-- `mote_replay`
-
-This is intentionally small while the policy surface stabilizes. The next step
-is replacing the minimal adapter with a full MCP SDK implementation.
-
-## Demo
-
-```bash
+npm install
+npm test
 npm run demo
 ```
 
-The demo initializes a temporary project, adds policy rules, stores a secret,
-proves secret redaction, blocks `.env`, and shows an approval boundary for
-`git push`.
-
-## Documentation
-
-- [Architecture](docs/architecture.md)
-- [MCP Adapter](docs/mcp.md)
-- [Policy](docs/policy.md)
-- [Roadmap](docs/roadmap.md)
-- [Security](SECURITY.md)
-
-## Development
+Evaluate your own proposal:
 
 ```bash
-npm test
-npm run check:residue
+node src/cli.js evaluate \
+  --policy examples/policy.json \
+  --state examples/state.json \
+  --intent examples/intent.json
 ```
 
-Mote currently has no runtime dependencies. Tests use Node's built-in test
-runner. The residue check fails if legacy project identifiers reappear in the
-repo.
+The CLI prints a complete JSON decision receipt. It exits with code `0` for an
+allowed intent and `2` for a denied intent.
+
+## Trust boundary
+
+The agent never receives a venue credential. It submits an intent. Mandate
+evaluates that intent against independently supplied policy and state. An
+execution relay should accept only a valid, unexpired, unconsumed permit and
+must submit the exact order whose hash is embedded in that permit.
+
+Changing the asset, side, quantity, price bound, account, or venue changes the
+intent hash and invalidates the permit.
+
+See [architecture](docs/architecture.md), [policy model](docs/policy.md), and
+[receipt format](docs/receipts.md).
+
+## Why separate it from the portfolio engine?
+
+Research is probabilistic and changes frequently. Capital authority should be
+small, deterministic, testable, and independently deployable. A better model
+can improve proposals without silently expanding what the system is permitted
+to execute.
+
+## Next build boundary
+
+1. Persist permits and receipts in an append-only store.
+2. Add signed state snapshots and issuer/registry adapters.
+3. Build a paper portfolio loop that consumes real read-only market data.
+4. Integrate one credentialed relay only after the permit boundary is audited.
+
+Mandate is independent and is not affiliated with Robinhood. Tokenized private
+and real-world assets may be illiquid, restricted, or unavailable in a given
+jurisdiction. This software is not investment advice.
 
 ## License
 
