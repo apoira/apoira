@@ -72,7 +72,7 @@ test("plans sells before buys and skips no-op trades", () => {
 });
 
 test("runs a complete paper cycle through policy, permits, and fills", async (context) => {
-  const directory = await mkdtemp(join(tmpdir(), "mandate-cycle-"));
+  const directory = await mkdtemp(join(tmpdir(), "murre-cycle-"));
   context.after(() => rm(directory, { recursive: true, force: true }));
   const store = new JsonlEventStore(join(directory, "events.jsonl"));
   const input = fixture();
@@ -103,7 +103,7 @@ test("runs a complete paper cycle through policy, permits, and fills", async (co
 });
 
 test("records denials without creating paper fills", async (context) => {
-  const directory = await mkdtemp(join(tmpdir(), "mandate-deny-"));
+  const directory = await mkdtemp(join(tmpdir(), "murre-deny-"));
   context.after(() => rm(directory, { recursive: true, force: true }));
   const store = new JsonlEventStore(join(directory, "events.jsonl"));
   const input = fixture();

@@ -70,7 +70,7 @@ export function buildRebalanceIntents({
       targetWeight: weight,
     };
     intents.push({
-      id: `rebalance-${hashWithDomain("mandate.rebalance-intent.v1", identity).slice(0, 16)}`,
+      id: `rebalance-${hashWithDomain("murre.rebalance-intent.v1", identity).slice(0, 16)}`,
       accountId,
       assetId,
       side,
@@ -104,7 +104,7 @@ export function applyPaperFill(state, fill) {
 
   next.cashUsd = round(Number(next.cashUsd) - signedNotional, 2);
   next.positions = [...positions.values()].sort((left, right) => left.assetId.localeCompare(right.assetId));
-  next.snapshotId = `paper-${hashWithDomain("mandate.paper-state.v1", {
+  next.snapshotId = `paper-${hashWithDomain("murre.paper-state.v1", {
     previousSnapshotId: state.snapshotId || null,
     fillId: fill.fillId,
     cashUsd: next.cashUsd,

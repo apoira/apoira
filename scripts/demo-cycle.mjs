@@ -11,7 +11,7 @@ async function fixture(name) {
   return JSON.parse(await readFile(url, "utf8"));
 }
 
-const directory = await mkdtemp(join(tmpdir(), "mandate-demo-"));
+const directory = await mkdtemp(join(tmpdir(), "murre-demo-"));
 
 try {
   const [policy, state, targetDocument] = await Promise.all([

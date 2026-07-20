@@ -55,7 +55,7 @@ function allowedReceipt() {
 }
 
 test("hash-chains appended events and verifies the ledger", async (context) => {
-  const directory = await mkdtemp(join(tmpdir(), "mandate-store-"));
+  const directory = await mkdtemp(join(tmpdir(), "murre-store-"));
   context.after(() => rm(directory, { recursive: true, force: true }));
   const store = new JsonlEventStore(join(directory, "events.jsonl"));
 
@@ -73,7 +73,7 @@ test("hash-chains appended events and verifies the ledger", async (context) => {
 });
 
 test("durably consumes a permit once across ledger instances", async (context) => {
-  const directory = await mkdtemp(join(tmpdir(), "mandate-permit-"));
+  const directory = await mkdtemp(join(tmpdir(), "murre-permit-"));
   context.after(() => rm(directory, { recursive: true, force: true }));
   const store = new JsonlEventStore(join(directory, "events.jsonl"));
   const receipt = allowedReceipt();
@@ -103,7 +103,7 @@ test("durably consumes a permit once across ledger instances", async (context) =
 });
 
 test("fails closed when the ledger lock is held", async (context) => {
-  const directory = await mkdtemp(join(tmpdir(), "mandate-lock-"));
+  const directory = await mkdtemp(join(tmpdir(), "murre-lock-"));
   context.after(() => rm(directory, { recursive: true, force: true }));
   const store = new JsonlEventStore(join(directory, "events.jsonl"));
   const receipt = allowedReceipt();
@@ -127,7 +127,7 @@ test("fails closed when the ledger lock is held", async (context) => {
 });
 
 test("detects tampering in an existing event", async (context) => {
-  const directory = await mkdtemp(join(tmpdir(), "mandate-tamper-"));
+  const directory = await mkdtemp(join(tmpdir(), "murre-tamper-"));
   context.after(() => rm(directory, { recursive: true, force: true }));
   const path = join(directory, "events.jsonl");
   const store = new JsonlEventStore(path);

@@ -1,7 +1,15 @@
 # Changelog
 
-All notable changes to Mandate are documented here. The project follows
+All notable changes to Murre are documented here. The project follows
 semantic versioning while the protocol is experimental.
+
+## 0.3.0 - 2026-07-20
+
+### Changed
+
+- renamed the project, package, CLI, site, and protocol namespace to Murre;
+- moved protocol identifiers and local event storage into the `murre` namespace;
+- refreshed product language around autonomous portfolios and governed execution.
 
 ## 0.2.0 - 2026-07-20
 

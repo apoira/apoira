@@ -1,12 +1,12 @@
-# Mandate
+# Murre
 
-[![CI](https://github.com/moteMCP/mandate/actions/workflows/ci.yml/badge.svg)](https://github.com/moteMCP/mandate/actions/workflows/ci.yml)
+[![CI](https://github.com/moteMCP/murre/actions/workflows/ci.yml/badge.svg)](https://github.com/moteMCP/murre/actions/workflows/ci.yml)
 [![Node.js 20.10+](https://img.shields.io/badge/node-%3E%3D20.10-417E38)](package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111)](LICENSE)
 
-**Capital authority for autonomous portfolios.**
+**Autonomous portfolios, governed by code.**
 
-Mandate turns a portfolio proposal, an independently supplied state snapshot,
+Murre turns a portfolio proposal, an independently supplied state snapshot,
 and a versioned policy into one of two proof objects:
 
 - a denial receipt explaining exactly which constraints failed; or
@@ -16,7 +16,7 @@ The research system can change its models without expanding its authority.
 Only the credentialed execution boundary may route an order, and only when the
 order matches a valid permit.
 
-> Mandate is not an AI fund, broker, wallet, or trading venue. Version 0.2 is a
+> Murre is not an AI fund, broker, wallet, or trading venue. Version 0.3 is a
 > paper-only reference implementation. It does not connect to live accounts or
 > hold credentials.
 
@@ -30,12 +30,12 @@ An autonomous portfolio system has two very different jobs:
    This work should be small, deterministic, replayable, and independently
    deployable.
 
-Mandate is the second system.
+Murre is the second system.
 
 ```text
 target weights ──> rebalance planner ──> order intents
                                              │
-policy + signed state ───────────────> Mandate kernel
+policy + signed state ───────────────> Murre kernel
                                              │
                          ┌───────────────────┴───────────────────┐
                          │                                       │
@@ -65,11 +65,11 @@ The repository contains executable infrastructure, not a simulated dashboard:
 
 ## Quickstart
 
-Mandate requires Node.js 20.10 or newer.
+Murre requires Node.js 20.10 or newer.
 
 ```bash
-git clone https://github.com/moteMCP/mandate.git
-cd mandate
+git clone https://github.com/moteMCP/murre.git
+cd murre
 npm ci
 npm test
 ```
@@ -104,7 +104,7 @@ node src/cli.js paper-cycle \
   --policy examples/policy.json \
   --state examples/state.json \
   --targets examples/targets.json \
-  --ledger .mandate/events.jsonl \
+  --ledger .murre/events.jsonl \
   --account paper-fund-01
 ```
 
@@ -141,7 +141,7 @@ site/               product and architecture website
 The current implementation is appropriate for local paper experiments and
 protocol review. It is **not** ready to control real capital.
 
-Before live use, Mandate needs authenticated and signed state inputs, a durable
+Before live use, Murre needs authenticated and signed state inputs, a durable
 multi-host database, external key custody, an isolated relay, a formally
 specified wire protocol, reconciliation against a real venue, operational
 monitoring, and independent security review.
@@ -167,6 +167,6 @@ boundary tests. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License and disclaimer
 
-MIT. Mandate is experimental software, not investment advice. Tokenized
+MIT. Murre is experimental software, not investment advice. Tokenized
 private and real-world assets may be restricted, illiquid, difficult to value,
 or unavailable in a given jurisdiction.

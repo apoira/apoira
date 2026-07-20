@@ -1,11 +1,11 @@
 {
-  "name": "@mandate/kernel",
-  "version": "0.2.0",
-  "description": "Deterministic authorization infrastructure for agent-managed portfolios.",
+  "name": "@murre/kernel",
+  "version": "0.3.0",
+  "description": "Policy and paper-execution infrastructure for autonomous portfolios.",
   "type": "module",
   "private": true,
   "bin": {
-    "mandate": "./src/cli.js"
+    "murre": "./src/cli.js"
   },
   "exports": {
     ".": "./src/index.js"

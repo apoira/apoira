@@ -5,7 +5,7 @@ import { applyPaperFill, buildRebalanceIntents } from "./portfolio.js";
 
 function paperFill(permit, intent, at) {
   const body = {
-    schemaVersion: "mandate.paper-fill.v1",
+    schemaVersion: "murre.paper-fill.v1",
     permitId: permit.permitId,
     intentHash: permit.intentHash,
     accountId: intent.accountId,
@@ -16,7 +16,7 @@ function paperFill(permit, intent, at) {
     venue: "paper",
     filledAt: new Date(at).toISOString(),
   };
-  return { ...body, fillId: hashWithDomain("mandate.paper-fill.v1", body) };
+  return { ...body, fillId: hashWithDomain("murre.paper-fill.v1", body) };
 }
 
 export async function runPaperCycle({
@@ -36,14 +36,14 @@ export async function runPaperCycle({
 
   const evaluatedAt = new Date(at).toISOString();
   const cycleBody = {
-    policyHash: hashWithDomain("mandate.policy.v1", policy),
-    startingStateHash: hashWithDomain("mandate.state.v1", state),
-    targetsHash: hashWithDomain("mandate.targets.v1", targets),
+    policyHash: hashWithDomain("murre.policy.v1", policy),
+    startingStateHash: hashWithDomain("murre.state.v1", state),
+    targetsHash: hashWithDomain("murre.targets.v1", targets),
     accountId,
     venue,
     evaluatedAt,
   };
-  const cycleId = hashWithDomain("mandate.paper-cycle.v1", cycleBody);
+  const cycleId = hashWithDomain("murre.paper-cycle.v1", cycleBody);
   const intents = buildRebalanceIntents({
     state,
     targets,
@@ -76,14 +76,14 @@ export async function runPaperCycle({
   }
 
   const result = {
-    schemaVersion: "mandate.paper-cycle.v1",
+    schemaVersion: "murre.paper-cycle.v1",
     cycleId,
     evaluatedAt,
     plannedOrders: intents.length,
     allowedOrders: decisions.filter((receipt) => receipt.decision === "ALLOW").length,
     deniedOrders: decisions.filter((receipt) => receipt.decision === "DENY").length,
     fills,
-    finalStateHash: hashWithDomain("mandate.state.v1", workingState),
+    finalStateHash: hashWithDomain("murre.state.v1", workingState),
     finalState: workingState,
   };
   await store.append("cycle.completed", {
