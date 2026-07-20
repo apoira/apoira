@@ -1,4 +1,5 @@
 {
+  "schemaVersion": "mandate.targets.v1",
   "weights": {
     "PRIVATE_AI": 0.15,
     "TREASURY_RWA": 0.25
