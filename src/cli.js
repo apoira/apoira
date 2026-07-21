@@ -18,7 +18,7 @@ function usage() {
   murre paper-cycle --policy FILE --state FILE --targets FILE --ledger FILE --account ID [--at ISO_TIMESTAMP]
   murre robinhood-auth [--oauth-store FILE] [--callback-port PORT]
   murre robinhood-tools [--oauth-store FILE] [--callback-port PORT]
-  murre live-order --policy FILE --state FILE --intent FILE --ledger FILE --confirm ${LIVE_CONFIRMATION} [--oauth-store FILE] [--at ISO_TIMESTAMP]`);
+  murre live-order --policy FILE --state FILE --intent FILE --ledger FILE --robinhood-account-number ACCOUNT --confirm ${LIVE_CONFIRMATION} [--oauth-store FILE] [--at ISO_TIMESTAMP]`);
 }
 function parseArgs(args) {
   const [command, ...rest] = args;
@@ -124,6 +124,13 @@ try {
     if (options.confirm !== LIVE_CONFIRMATION) {
       throw new Error(`Live execution requires --confirm ${LIVE_CONFIRMATION}`);
     }
+    const accountNumber = options["robinhood-account-number"]
+      || process.env.MURRE_ROBINHOOD_ACCOUNT_NUMBER;
+    if (typeof accountNumber !== "string" || accountNumber.trim() === "") {
+      throw new Error(
+        "Live execution requires --robinhood-account-number or MURRE_ROBINHOOD_ACCOUNT_NUMBER",
+      );
+    }
     const [policy, state, intent] = await Promise.all([
       readJson(options.policy),
       readJson(options.state),
@@ -131,12 +138,13 @@ try {
     ]);
     const session = await openRobinhood(options);
     try {
-      const result = await executeRobinhoodOrder({
+    const result = await executeRobinhoodOrder({
         policy,
         state,
         intent,
         store: new JsonlEventStore(options.ledger),
         client: session.client,
+        accountNumber,
         confirmation: options.confirm,
         at: options.at,
       });

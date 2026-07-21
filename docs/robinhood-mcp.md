@@ -1,6 +1,6 @@
 # Robinhood MCP relay
 
-Murre 0.4 includes an experimental live relay for Robinhood's official Trading
+Murre 0.6 includes an experimental live relay for Robinhood's official Trading
 MCP. It connects to `https://agent.robinhood.com/mcp/trading` over Streamable
 HTTP and authenticates through Robinhood OAuth. Murre never asks for or stores
 the user's Robinhood password.
@@ -97,22 +97,25 @@ Example intent shape:
   "venueOrder": {
     "tool": "place_equity_order",
     "arguments": {
+      "account_number": "YOUR-AGENTIC-ACCOUNT-NUMBER",
       "side": "buy",
       "symbol": "AAPL",
-      "quantity": 1,
-      "order_type": "limit",
-      "limit_price": 100,
-      "time_in_force": "gfd"
+      "type": "limit",
+      "quantity": "1",
+      "limit_price": "100",
+      "time_in_force": "gfd",
+      "market_hours": "regular_hours"
     }
   }
 }
 ```
 
 Always compare the argument enums against `robinhood-tools`; Robinhood owns the
-remote schema and may change it. Murre rejects extra order fields. The symbol,
-side, quantity, order type, and limit price are validated against the normalized
-intent before the policy is evaluated. The entire `venueOrder` object is then
-included in the intent hash and exact-order permit.
+remote schema and may change it. Murre rejects extra order fields. The
+operator-supplied account number, symbol, side, quantity, order type, limit
+price, time-in-force, and market-hours mode are validated before the policy is
+evaluated. The entire `venueOrder` object is then included in the intent hash
+and exact-order permit.
 
 The policy must allow `robinhood-mcp`, and the state asset record must independently
 confirm that venue. State freshness, price deviation, order notional, liquidity,
@@ -128,6 +131,7 @@ node src/cli.js live-order \
   --state ./state.json \
   --intent ./intent.json \
   --ledger .murre/live-events.jsonl \
+  --robinhood-account-number "$MURRE_ROBINHOOD_ACCOUNT_NUMBER" \
   --oauth-store .murre/robinhood-oauth.json \
   --confirm LIVE_ROBINHOOD_ORDER
 ```
@@ -137,10 +141,45 @@ consumption, transport, or placement failure. A successful response means the
 order was submitted to Robinhood, not necessarily filled. Confirm final status
 in Robinhood activity and reconcile the local ledger with venue order history.
 
+## Expose bounded live orders to an agent
+
+After completing OAuth, the operator can expose the same review, permit, and
+placement path as a local MCP tool:
+
+```bash
+node src/mcp-server.js \
+  --policy .murre/live-policy.json \
+  --state .murre/live-state.json \
+  --ledger .murre/live-events.jsonl \
+  --account robinhood-agentic \
+  --live-routing LIVE_ROBINHOOD_MCP \
+  --robinhood-account-number "$MURRE_ROBINHOOD_ACCOUNT_NUMBER" \
+  --oauth-store .murre/robinhood-oauth.json \
+  --live-max-order-notional 25 \
+  --live-max-session-notional 75 \
+  --live-max-orders 3
+```
+
+The connected agent receives `murre_live_order` but cannot choose the account,
+venue, credentials, policy, state, ledger, clock, order type, or ceilings.
+The operator supplies the dedicated Agentic account number outside the tool
+schema; Murre binds it into the request hash and redacts it from returned and
+stored remote results.
+Paper mutation tools are disabled for that process. Denied calls do not connect
+to Robinhood.
+
+After a permit is consumed, the state snapshot is marked used even if placement
+fails or its result is ambiguous. Reconcile Robinhood activity and provide a
+fresh state file before another attempt. The notional and count ceilings reset
+on server restart; the consumed-state gate persists in the event ledger.
+
+See [the MCP server guide](mcp-server.md) for the complete tool contract and
+client configuration.
+
 ## Remaining production boundary
 
 This adapter makes the integration real; it does not make the whole system
-production-safe. Version 0.4 still trusts local policy and state files, a local
+production-safe. Version 0.6 still trusts local policy and state files, a local
 host, the system clock, and a single-host JSONL lock. It does not yet construct
 signed state snapshots from Robinhood reads, use an ACID multi-host permit
 store, isolate tokens in an OS keychain or separate relay service, reconcile
@@ -149,4 +188,3 @@ orders automatically, or provide a kill-switch daemon and operational alerts.
 Use a separately funded Agentic account with a deliberately small balance.
 Independent security and legal review remain requirements before unattended or
 material use.
-

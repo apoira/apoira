@@ -3,11 +3,19 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import * as z from "zod/v4";
 import { hashWithDomain } from "./canonical.js";
 import { evaluate } from "./evaluate.js";
+import {
+  LIVE_CONFIRMATION,
+  ROBINHOOD_AGENTIC_ACCOUNT,
+  executeRobinhoodOrder,
+} from "./live.js";
+import { LiveSessionBudget, consumedLiveStateHashes } from "./live-session.js";
 import { executePaperOrder, runPaperCycle } from "./paper.js";
+import { closeRobinhood, connectRobinhood } from "./robinhood.js";
 import { JsonFileStateStore, readJsonFile } from "./state-store.js";
 import { JsonlEventStore } from "./store.js";
 
-const VERSION = "0.5.0";
+const VERSION = "0.6.0";
+export const LIVE_MCP_ACTIVATION = "LIVE_ROBINHOOD_MCP";
 
 function nonEmpty(value, label) {
   if (typeof value !== "string" || value.trim() === "") {
@@ -20,6 +28,14 @@ function positiveNumber(value, label) {
   const number = Number(value);
   if (!Number.isFinite(number) || number <= 0) {
     throw new TypeError(`${label} must be a positive number`);
+  }
+  return number;
+}
+
+function positiveInteger(value, label) {
+  const number = Number(value);
+  if (!Number.isSafeInteger(number) || number <= 0) {
+    throw new TypeError(`${label} must be a positive integer`);
   }
   return number;
 }
@@ -52,6 +68,70 @@ function orderIntent(args, accountId) {
   };
 }
 
+function remoteDecimal(value, label, decimals = 6) {
+  const text = value.toFixed(decimals).replace(/\.?0+$/u, "");
+  if (Number(text) !== value) {
+    throw new TypeError(`${label} supports at most ${decimals} decimal places`);
+  }
+  return text;
+}
+
+function liveOrderIntent(args, accountNumber) {
+  return {
+    id: args.intentId?.trim() || `mcp-live-${randomUUID()}`,
+    accountId: ROBINHOOD_AGENTIC_ACCOUNT,
+    assetId: args.assetId.trim().toUpperCase(),
+    side: args.side,
+    quantity: args.quantity,
+    limitPriceUsd: args.limitPriceUsd,
+    venue: "robinhood-mcp",
+    venueOrder: {
+      tool: "place_equity_order",
+      arguments: {
+        account_number: accountNumber,
+        side: args.side.toLowerCase(),
+        symbol: args.assetId.trim().toUpperCase(),
+        type: "limit",
+        quantity: remoteDecimal(args.quantity, "quantity"),
+        limit_price: remoteDecimal(args.limitPriceUsd, "limitPriceUsd"),
+        time_in_force: args.timeInForce,
+        market_hours: "regular_hours",
+      },
+    },
+  };
+}
+
+function normalizeLiveConfig(value, accountId) {
+  if (!value?.enabled) return { enabled: false };
+  if (accountId !== ROBINHOOD_AGENTIC_ACCOUNT) {
+    throw new TypeError(
+      `Live MCP routing requires accountId ${ROBINHOOD_AGENTIC_ACCOUNT}`,
+    );
+  }
+  const maxOrderNotionalUsd = positiveNumber(
+    value.maxOrderNotionalUsd,
+    "live.maxOrderNotionalUsd",
+  );
+  const maxSessionNotionalUsd = positiveNumber(
+    value.maxSessionNotionalUsd,
+    "live.maxSessionNotionalUsd",
+  );
+  if (maxSessionNotionalUsd < maxOrderNotionalUsd) {
+    throw new TypeError("live.maxSessionNotionalUsd cannot be below the per-order ceiling");
+  }
+  return {
+    enabled: true,
+    accountNumber: nonEmpty(value.accountNumber, "live.accountNumber"),
+    oauthStorePath: nonEmpty(value.oauthStorePath, "live.oauthStorePath"),
+    callbackPort: value.callbackPort,
+    maxOrderNotionalUsd,
+    maxSessionNotionalUsd,
+    maxOrders: positiveInteger(value.maxOrders, "live.maxOrders"),
+    connectRobinhood: value.connectRobinhood || connectRobinhood,
+    closeRobinhood: value.closeRobinhood || closeRobinhood,
+  };
+}
+
 function assetSummary(state) {
   return Object.entries(state.assets || {})
     .sort(([left], [right]) => left.localeCompare(right))
@@ -75,6 +155,7 @@ export function createMurreMcpServer({
   accountId,
   minTradeNotionalUsd = 100,
   now = () => new Date().toISOString(),
+  live,
 }) {
   nonEmpty(policyPath, "policyPath");
   nonEmpty(statePath, "statePath");
@@ -84,6 +165,8 @@ export function createMurreMcpServer({
   const stateStore = new JsonFileStateStore(statePath);
   const eventStore = new JsonlEventStore(ledgerPath);
   const serialize = createSerializer();
+  const liveConfig = normalizeLiveConfig(live, accountId);
+  const liveBudget = liveConfig.enabled ? new LiveSessionBudget(liveConfig) : null;
 
   async function inputs() {
     const [policy, state] = await Promise.all([
@@ -102,18 +185,26 @@ export function createMurreMcpServer({
     { name: "murre", version: VERSION },
     {
       instructions: [
-        "Murre is a paper-mode portfolio policy and execution boundary.",
+        liveConfig.enabled
+          ? "Murre is an operator-armed live portfolio policy boundary that can move real money."
+          : "Murre is a paper-mode portfolio policy and execution boundary.",
         "Use murre_status before proposing an order.",
-        "murre_check_order records a decision but never fills an order.",
-        "murre_paper_order and murre_rebalance update only the configured local paper state.",
-        "This server exposes no live Robinhood routing tool and no brokerage credentials.",
+        liveConfig.enabled
+          ? "murre_live_order can move real money in the configured Robinhood Agentic account."
+          : "murre_check_order records a decision but never fills an order.",
+        liveConfig.enabled
+          ? "Paper mutation tools are disabled while live routing is armed."
+          : "murre_paper_order and murre_rebalance update only the configured local paper state.",
+        liveConfig.enabled
+          ? "Brokerage credentials remain operator-owned and are never returned to the caller."
+          : "This server exposes no live Robinhood routing tool and no brokerage credentials.",
       ].join(" "),
     },
   );
 
   server.registerTool("murre_status", {
     title: "Murre status",
-    description: "Read the configured paper portfolio, eligible asset facts, policy identity, and ledger health.",
+    description: "Read the configured portfolio, eligible asset facts, policy identity, ledger health, and live capacity when armed.",
     inputSchema: {},
     annotations: {
       readOnlyHint: true,
@@ -124,9 +215,13 @@ export function createMurreMcpServer({
   }, async () => serialize(async () => {
     const { policy, state } = await inputs();
     const chain = await eventStore.verifyChain();
+    const stateHash = hashWithDomain("murre.state.v1", state);
+    const liveStateReady = liveConfig.enabled
+      ? !consumedLiveStateHashes(await eventStore.readAll()).has(stateHash)
+      : null;
     return response({
       schemaVersion: "murre.mcp-status.v1",
-      mode: "paper",
+      mode: liveConfig.enabled ? "live" : "paper",
       accountId,
       policy: {
         id: policy.id || null,
@@ -135,7 +230,7 @@ export function createMurreMcpServer({
       },
       state: {
         snapshotId: state.snapshotId || null,
-        hash: hashWithDomain("murre.state.v1", state),
+        hash: stateHash,
         capturedAt: state.capturedAt || null,
         portfolioValueUsd: state.portfolioValueUsd ?? null,
         cashUsd: state.cashUsd ?? null,
@@ -145,102 +240,113 @@ export function createMurreMcpServer({
       ledger: chain,
       capabilities: {
         policyChecks: true,
-        paperOrders: true,
-        paperRebalances: true,
-        liveOrders: false,
+        paperOrders: !liveConfig.enabled,
+        paperRebalances: !liveConfig.enabled,
+        liveOrders: liveConfig.enabled,
       },
+      live: liveConfig.enabled ? {
+        armed: true,
+        accountId: ROBINHOOD_AGENTIC_ACCOUNT,
+        orderType: "limit",
+        assetClass: "equity",
+        requiresFreshStateAfterEachConsumedPermit: true,
+        stateReadyForLive: liveStateReady,
+        session: liveBudget.snapshot(),
+      } : { armed: false },
     });
   }));
 
-  const orderSchema = {
-    assetId: z.string().trim().min(1).max(128).describe("Asset identifier from murre_status."),
-    side: z.enum(["BUY", "SELL"]),
-    quantity: z.number().finite().positive(),
-    limitPriceUsd: z.number().finite().positive(),
-    intentId: z.string().trim().min(1).max(160).optional()
-      .describe("Optional caller correlation ID. Murre generates one when omitted."),
-  };
+  if (!liveConfig.enabled) {
+    const orderSchema = {
+      assetId: z.string().trim().min(1).max(128).describe("Asset identifier from murre_status."),
+      side: z.enum(["BUY", "SELL"]),
+      quantity: z.number().finite().positive(),
+      limitPriceUsd: z.number().finite().positive(),
+      intentId: z.string().trim().min(1).max(160).optional()
+        .describe("Optional caller correlation ID. Murre generates one when omitted."),
+    };
 
-  server.registerTool("murre_check_order", {
-    title: "Check a paper order",
-    description: "Evaluate an exact order against the configured policy and current paper state. Records an audit receipt but never fills the order.",
-    inputSchema: orderSchema,
-    annotations: {
-      readOnlyHint: false,
-      destructiveHint: false,
-      idempotentHint: false,
-      openWorldHint: false,
-    },
-  }, async (args) => serialize(async () => {
-    const { policy, state } = await inputs();
-    const evaluatedAt = now();
-    const intent = orderIntent(args, accountId);
-    const receipt = evaluate({ policy, state, intent, at: evaluatedAt });
-    await eventStore.append("decision.recorded", {
-      source: "mcp",
-      execution: "NOT_EXECUTED",
-      receipt,
-    }, evaluatedAt);
-    return response({
-      schemaVersion: "murre.mcp-check.v1",
-      status: receipt.decision === "ALLOW" ? "ALLOWED" : "DENIED",
-      execution: "NOT_EXECUTED",
-      receipt,
-    });
-  }));
+    server.registerTool("murre_check_order", {
+      title: "Check a paper order",
+      description: "Evaluate an exact order against the configured policy and current paper state. Records an audit receipt but never fills the order.",
+      inputSchema: orderSchema,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: false,
+      },
+    }, async (args) => serialize(async () => {
+      const { policy, state } = await inputs();
+      const evaluatedAt = now();
+      const intent = orderIntent(args, accountId);
+      const receipt = evaluate({ policy, state, intent, at: evaluatedAt });
+      await eventStore.append("decision.recorded", {
+        source: "mcp",
+        execution: "NOT_EXECUTED",
+        receipt,
+      }, evaluatedAt);
+      return response({
+        schemaVersion: "murre.mcp-check.v1",
+        status: receipt.decision === "ALLOW" ? "ALLOWED" : "DENIED",
+        execution: "NOT_EXECUTED",
+        receipt,
+      });
+    }));
 
-  server.registerTool("murre_paper_order", {
-    title: "Execute a paper order",
-    description: "Evaluate one exact order, consume its single-use permit when allowed, record a paper fill, and persist the resulting local paper state.",
-    inputSchema: orderSchema,
-    annotations: {
-      readOnlyHint: false,
-      destructiveHint: true,
-      idempotentHint: false,
-      openWorldHint: false,
-    },
-  }, async (args) => serialize(async () => {
-    const { policy, state } = await inputs();
-    const result = await executePaperOrder({
-      policy,
-      state,
-      intent: orderIntent(args, accountId),
-      store: eventStore,
-      at: now(),
-    });
-    if (result.status === "FILLED") await stateStore.write(result.finalState);
-    return response(result);
-  }));
+    server.registerTool("murre_paper_order", {
+      title: "Execute a paper order",
+      description: "Evaluate one exact order, consume its single-use permit when allowed, record a paper fill, and persist the resulting local paper state.",
+      inputSchema: orderSchema,
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: false,
+        openWorldHint: false,
+      },
+    }, async (args) => serialize(async () => {
+      const { policy, state } = await inputs();
+      const result = await executePaperOrder({
+        policy,
+        state,
+        intent: orderIntent(args, accountId),
+        store: eventStore,
+        at: now(),
+      });
+      if (result.status === "FILLED") await stateStore.write(result.finalState);
+      return response(result);
+    }));
 
-  server.registerTool("murre_rebalance", {
-    title: "Run a paper rebalance",
-    description: "Turn target portfolio weights into minimal paper orders, policy-check every order, fill only allowed orders, and persist the resulting paper state.",
-    inputSchema: {
-      targets: z.record(
-        z.string().trim().min(1).max(128),
-        z.number().finite().min(0).max(1),
-      ).describe("Asset IDs mapped to target portfolio weights from 0 to 1."),
-    },
-    annotations: {
-      readOnlyHint: false,
-      destructiveHint: true,
-      idempotentHint: false,
-      openWorldHint: false,
-    },
-  }, async ({ targets }) => serialize(async () => {
-    const { policy, state } = await inputs();
-    const result = await runPaperCycle({
-      policy,
-      state,
-      targets,
-      accountId,
-      store: eventStore,
-      at: now(),
-      minTradeNotionalUsd: minimumTrade,
-    });
-    if (result.fills.length > 0) await stateStore.write(result.finalState);
-    return response(result);
-  }));
+    server.registerTool("murre_rebalance", {
+      title: "Run a paper rebalance",
+      description: "Turn target portfolio weights into minimal paper orders, policy-check every order, fill only allowed orders, and persist the resulting paper state.",
+      inputSchema: {
+        targets: z.record(
+          z.string().trim().min(1).max(128),
+          z.number().finite().min(0).max(1),
+        ).describe("Asset IDs mapped to target portfolio weights from 0 to 1."),
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: false,
+        openWorldHint: false,
+      },
+    }, async ({ targets }) => serialize(async () => {
+      const { policy, state } = await inputs();
+      const result = await runPaperCycle({
+        policy,
+        state,
+        targets,
+        accountId,
+        store: eventStore,
+        at: now(),
+        minTradeNotionalUsd: minimumTrade,
+      });
+      if (result.fills.length > 0) await stateStore.write(result.finalState);
+      return response(result);
+    }));
+  }
 
   server.registerTool("murre_recent_events", {
     title: "Read Murre audit events",
@@ -266,6 +372,94 @@ export function createMurreMcpServer({
       events: events.slice(-limit),
     });
   }));
+
+  if (liveConfig.enabled) {
+    server.registerTool("murre_live_order", {
+      title: "Submit a live Robinhood equity order",
+      description: "DANGER: moves real money. Evaluates one exact equity limit order, calls Robinhood review, consumes the permit, and submits to the configured Agentic account.",
+      inputSchema: {
+        assetId: z.string().trim().min(1).max(16)
+          .regex(/^[A-Za-z][A-Za-z0-9.-]*$/u)
+          .describe("Tradable equity ticker present in the operator-supplied state."),
+        side: z.enum(["BUY", "SELL"]),
+        quantity: z.number().finite().positive(),
+        limitPriceUsd: z.number().finite().positive(),
+        timeInForce: z.literal("gfd").default("gfd"),
+        intentId: z.string().trim().min(1).max(160).optional(),
+      },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: false,
+        openWorldHint: true,
+      },
+    }, async (args) => serialize(async () => {
+      const { policy, state } = await inputs();
+      const evaluatedAt = now();
+      const intent = liveOrderIntent(args, liveConfig.accountNumber);
+      const stateHash = hashWithDomain("murre.state.v1", state);
+      const notionalUsd = intent.quantity * intent.limitPriceUsd;
+      const verification = await eventStore.verifyChain();
+      if (!verification.valid) {
+        throw new Error(`Audit ledger failed verification: ${verification.reason}`);
+      }
+      const eventsBefore = await eventStore.readAll();
+      const limits = liveBudget.evaluate({
+        notionalUsd,
+        stateHash,
+        assetClass: state.assets?.[intent.assetId]?.assetClass,
+        consumedStateHashes: consumedLiveStateHashes(eventsBefore),
+      });
+
+      if (limits.some((limit) => !limit.pass)) {
+        const denial = {
+          schemaVersion: "murre.live-mcp-denial.v1",
+          status: "DENIED",
+          stage: "MURRE_LIVE_LIMITS",
+          evaluatedAt,
+          stateHash,
+          intentHash: hashWithDomain("murre.intent.v1", intent),
+          checks: limits,
+          session: liveBudget.snapshot(),
+        };
+        await eventStore.append("live.limit_denied", denial, evaluatedAt);
+        return response(denial);
+      }
+
+      let session;
+      try {
+        const result = await executeRobinhoodOrder({
+          policy,
+          state,
+          intent,
+          store: eventStore,
+          accountNumber: liveConfig.accountNumber,
+          clientFactory: async () => {
+            session = await liveConfig.connectRobinhood({
+              oauthStorePath: liveConfig.oauthStorePath,
+              callbackPort: liveConfig.callbackPort,
+              interactive: false,
+            });
+            return session.client;
+          },
+          confirmation: LIVE_CONFIRMATION,
+          at: evaluatedAt,
+        });
+        if (result.status === "SUBMITTED") {
+          liveBudget.reserve(notionalUsd);
+        }
+        return response({ ...result, liveSession: liveBudget.snapshot() });
+      } catch (error) {
+        const newEvents = (await eventStore.readAll()).slice(eventsBefore.length);
+        if (newEvents.some((event) => event.type === "permit.consumed")) {
+          liveBudget.reserve(notionalUsd);
+        }
+        throw error;
+      } finally {
+        await liveConfig.closeRobinhood(session);
+      }
+    }));
+  }
 
   return server;
 }

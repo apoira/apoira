@@ -3,6 +3,31 @@
 All notable changes to Murre are documented here. The project follows
 semantic versioning while the protocol is experimental.
 
+## 0.6.0 - 2026-07-21
+
+### Added
+
+- an opt-in `murre_live_order` MCP tool that routes bounded equity limit orders
+  through Robinhood's official Trading MCP;
+- explicit operator ceilings for per-order notional, total session notional,
+  and order count;
+- a ledger-persistent fresh-state gate that prevents another live attempt from
+  reusing a state snapshot after permit consumption;
+- mocked MCP protocol tests for allow, deny, session exhaustion, state reuse,
+  and ambiguous placement failure.
+
+### Security
+
+- live MCP startup requires the literal `LIVE_ROBINHOOD_MCP` activation value,
+  an existing OAuth store, and all three positive session ceilings;
+- live mode fixes the account, venue, order type, time-in-force, policy, state,
+  ledger, OAuth path, and ceilings outside the agent-callable schema;
+- the required Robinhood Agentic account number is operator-supplied, bound into
+  the remote argument hash, and redacted from agent responses and ledger bodies;
+- paper mutation tools are unavailable while the server is live-armed;
+- OAuth connection is lazy and noninteractive, so denied orders never connect
+  to Robinhood and a server cannot pause for authorization mid-call.
+
 ## 0.5.0 - 2026-07-21
 
 ### Added

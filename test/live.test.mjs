@@ -16,6 +16,7 @@ const NOW = "2026-07-20T12:00:00.000Z";
 
 function fixture() {
   return {
+    accountNumber: "TEST-AGENTIC-ACCOUNT",
     policy: {
       id: "live-order-test",
       version: "1.0.0",
@@ -56,12 +57,14 @@ function fixture() {
       venueOrder: {
         tool: "place_equity_order",
         arguments: {
+          account_number: "TEST-AGENTIC-ACCOUNT",
           side: "buy",
           symbol: "AAPL",
-          quantity: 1,
-          order_type: "limit",
-          limit_price: 100,
+          type: "limit",
+          quantity: "1",
+          limit_price: "100",
           time_in_force: "gfd",
+          market_hours: "regular_hours",
         },
       },
     },
@@ -106,7 +109,7 @@ test("binds the exact Robinhood order arguments into the permit", () => {
   assert.equal(receipt.decision, "ALLOW");
 
   const changed = structuredClone(input.intent);
-  changed.venueOrder.arguments.quantity = 2;
+  changed.venueOrder.arguments.quantity = "2";
   assert.deepEqual(verifyPermit(receipt.permit, changed, NOW), {
     valid: false,
     reason: "intent_mismatch",
@@ -115,16 +118,16 @@ test("binds the exact Robinhood order arguments into the permit", () => {
 
 test("rejects market orders and unbound execution fields", () => {
   const input = fixture();
-  input.intent.venueOrder.arguments.order_type = "market";
+  input.intent.venueOrder.arguments.type = "market";
   assert.throws(
-    () => validateRobinhoodIntent(input.intent),
+    () => validateRobinhoodIntent(input.intent, { accountNumber: input.accountNumber }),
     /limit orders only/u,
   );
 
-  input.intent.venueOrder.arguments.order_type = "limit";
+  input.intent.venueOrder.arguments.type = "limit";
   input.intent.venueOrder.arguments.amount = 500;
   assert.throws(
-    () => validateRobinhoodIntent(input.intent),
+    () => validateRobinhoodIntent(input.intent, { accountNumber: input.accountNumber }),
     /Unsupported Robinhood order arguments: amount/u,
   );
 });

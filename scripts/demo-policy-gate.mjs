@@ -8,6 +8,7 @@ import {
 } from "../src/index.js";
 
 const NOW = "2026-07-20T12:00:00.000Z";
+const DEMO_ACCOUNT_NUMBER = "DEMO-AGENTIC-ACCOUNT";
 const requestedCase = process.argv[process.argv.indexOf("--case") + 1];
 
 if (!new Set(["allow", "deny"]).has(requestedCase)) {
@@ -56,12 +57,14 @@ const intent = {
   venueOrder: {
     tool: "place_equity_order",
     arguments: {
+      account_number: DEMO_ACCOUNT_NUMBER,
       side: "buy",
       symbol: "AAPL",
-      quantity,
-      order_type: "limit",
-      limit_price: 100,
+      type: "limit",
+      quantity: String(quantity),
+      limit_price: "100",
       time_in_force: "gfd",
+      market_hours: "regular_hours",
     },
   },
 };
@@ -100,6 +103,7 @@ try {
     intent,
     store,
     client,
+    accountNumber: DEMO_ACCOUNT_NUMBER,
     confirmation: LIVE_CONFIRMATION,
     at: NOW,
   });

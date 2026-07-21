@@ -24,7 +24,23 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 - [ ] automatic order-status reconciliation
 - [ ] OS-keychain or isolated-service token custody
 
-## 0.5 - authenticated service
+## 0.5 - paper MCP server
+
+- [x] local stdio server with operator-owned file paths
+- [x] paper status, order checks, fills, rebalances, and audit reads
+- [x] serialized mutations and replace-on-write state
+- [x] real MCP-client integration test
+
+## 0.6 - operator-armed live MCP
+
+- [x] bounded `murre_live_order` agent tool
+- [x] fixed account, venue, order type, and time-in-force
+- [x] per-order, session-notional, and order-count ceilings
+- [x] ledger-persistent fresh-state gate
+- [x] paper mutation surface removed while live-armed
+- [x] mocked allow, denial, exhaustion, and ambiguous-failure tests
+
+## 0.7 - authenticated service
 
 - [ ] JSON Schema documents for every protocol object
 - [ ] signed state snapshots with key rotation
@@ -33,7 +49,7 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 - [ ] idempotency keys and crash-recovery reconciliation
 - [ ] read-only registry, pricing, and chain adapters
 
-## 0.6 - isolated relay service
+## 0.8 - isolated relay service
 
 - [ ] formally specified kernel-to-relay protocol
 - [ ] hardware- or service-backed signing keys
@@ -41,6 +57,6 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 - [ ] paper venue reconciliation and operational alerts
 - [ ] external threat-model and security review
 
-The guarded 0.4 bridge proves the venue integration but is not evidence that
+The guarded 0.6 path proves the agent-to-venue integration but is not evidence that
 the system is safe for unattended or material capital. Those uses remain
 excluded until the remaining boundaries are independently tested.
