@@ -20,9 +20,10 @@ The research system can change its models without expanding its authority.
 Only the credentialed execution boundary may route an order, and only when the
 order matches a valid permit.
 
-> Murre is not an AI fund, broker, wallet, or trading venue. Version 0.3 is a
-> paper-only reference implementation. It does not connect to live accounts or
-> hold credentials.
+> Murre is not an AI fund, broker, wallet, or trading venue. Version 0.4 adds
+> an experimental, explicitly armed bridge to Robinhood's official Trading
+> MCP. Paper mode remains the default. The live bridge can place real equity
+> orders and is not approved for unattended or material capital.
 
 ## Why this exists
 
@@ -65,7 +66,10 @@ The repository contains executable infrastructure, not a simulated dashboard:
 - a target-weight planner that routes sells before buys;
 - an end-to-end paper cycle that evaluates, consumes, fills, updates state, and
   records the complete timeline;
-- a zero-runtime-dependency CLI and Node test suite.
+- OAuth and runtime tool discovery for Robinhood's official Trading MCP;
+- a narrow live path that reviews an equity limit order, consumes the exact
+  permit, submits the same arguments, and records a content-addressed receipt;
+- a Node CLI and boundary-focused test suite.
 
 ## Quickstart
 
@@ -89,6 +93,24 @@ Run a complete paper rebalance with a temporary durable ledger:
 ```bash
 npm run demo:cycle
 ```
+
+Exercise the guarded Robinhood order path against an in-process paper MCP
+client. This invokes the production policy, permit, adapter, and event-ledger
+code without credentials, a brokerage request, or capital:
+
+```bash
+npm run demo:robinhood
+```
+
+Connect a dedicated Robinhood Agentic account without placing an order:
+
+```bash
+node src/cli.js robinhood-auth \
+  --oauth-store .murre/robinhood-oauth.json
+```
+
+See [the guarded Robinhood MCP relay](docs/robinhood-mcp.md) before enabling
+the live command.
 
 ## CLI
 
@@ -115,6 +137,17 @@ node src/cli.js paper-cycle \
 The CLI exits `0` when all evaluated orders are allowed, `2` when policy denies
 an order, `64` for invalid usage, and `1` for an operational error.
 
+Discover the authenticated Robinhood tool schemas:
+
+```bash
+node src/cli.js robinhood-tools \
+  --oauth-store .murre/robinhood-oauth.json
+```
+
+The `live-order` command handles exactly one limit order and requires the
+literal `LIVE_ROBINHOOD_ORDER` confirmation phrase. Its complete input contract
+and failure ordering are documented in [docs/robinhood-mcp.md](docs/robinhood-mcp.md).
+
 ## Trust boundary
 
 Agents receive no venue credential. They submit bounded intents containing an
@@ -135,6 +168,8 @@ src/permit.js       permit creation, verification, and consumption
 src/store.js        durable hash-chained JSONL event store
 src/portfolio.js    target-weight rebalance planning and state updates
 src/paper.js        end-to-end paper execution cycle
+src/robinhood.js    official MCP transport, OAuth, and venue calls
+src/live.js         guarded review, consume, and submit sequence
 src/cli.js          command-line interface
 test/               boundary, replay, persistence, and cycle tests
 site/               product and architecture website
@@ -142,20 +177,24 @@ site/               product and architecture website
 
 ## Security and production status
 
-The current implementation is appropriate for local paper experiments and
-protocol review. It is **not** ready to control real capital.
+The paper implementation is appropriate for local experiments and protocol
+review. The 0.4 live bridge is an integration prototype that can submit a real
+order only when explicitly armed. The system is **not** ready for unattended or
+material capital.
 
 Before live use, Murre needs authenticated and signed state inputs, a durable
 multi-host database, external key custody, an isolated relay, a formally
 specified wire protocol, reconciliation against a real venue, operational
 monitoring, and independent security review.
 
-Robinhood Chain and Robinhood MCP are candidate integrations only. No adapter
-or affiliation is claimed.
+Robinhood MCP is implemented as an experimental adapter to Robinhood's official
+remote endpoint. Murre is independent and is not affiliated with Robinhood.
+Robinhood Chain asset-registry and settlement adapters remain future work.
 
 Read the [security model](SECURITY.md), [architecture](docs/architecture.md),
 [policy model](docs/policy.md), [receipt format](docs/receipts.md), and
-[paper-mode contract](docs/paper-mode.md).
+[paper-mode contract](docs/paper-mode.md), plus the
+[Robinhood MCP relay](docs/robinhood-mcp.md).
 
 ## Development
 

@@ -65,7 +65,7 @@
           <article class="permit-outcome"><span>IF ALLOWED</span><strong>Single-use permit</strong><small>Bound to the exact order and route.</small><i>→ credentialed relay</i></article>
           <article class="deny-outcome"><span>IF DENIED</span><strong>Decision receipt</strong><small>Reason recorded. Authority remains zero.</small><i>× no route</i></article>
         </div>
-        <p class="architecture-note">The kernel, durable event chain, permit consumption, and paper cycle are implemented. Market and live venue adapters are not.</p>
+        <p class="architecture-note">The kernel, durable event chain, paper cycle, and guarded Robinhood MCP order relay are implemented. Authenticated state sync and production relay isolation are not.</p>
       </aside>
     </section>
 
@@ -204,22 +204,22 @@ decision
             <span>Policy research</span>
           </article>
         </div>
-        <p class="network-note">Robinhood Chain and Robinhood MCP are candidate integrations, not part of this prototype. Murre is independent and not affiliated with Robinhood. Availability and eligibility vary by jurisdiction.</p>
+        <p class="network-note">Robinhood MCP is available as an experimental, explicitly armed equity-order adapter. Robinhood Chain registry and settlement adapters remain future work. Murre is independent and not affiliated with Robinhood. Availability and eligibility vary by jurisdiction.</p>
       </div>
     </section>
 
     <section class="status section shell" id="status" aria-labelledby="status-title">
       <div class="section-heading compact">
         <p class="kicker">Build status</p>
-        <h2 id="status-title">The paper loop runs.<br>Live authority does not.</h2>
-        <p>No simulated metric is presented as market performance, and no decorative “live” badge stands in for a real execution path.</p>
+        <h2 id="status-title">Paper by default.<br>Live only when armed.</h2>
+        <p>The Robinhood bridge uses the official Trading MCP, reviews the exact limit order, consumes its permit, and then submits. It is an integration prototype—not approval for unattended capital.</p>
       </div>
 
       <ol class="roadmap">
         <li class="current"><span>Now</span><div><strong>Durable paper kernel + portfolio cycle</strong><p>Target-weight planning, deterministic checks, hash-chained events, single-use permits, fills, and state updates.</p></div><b>Built</b></li>
-        <li><span>Build</span><div><strong>Authenticated paper service</strong><p>Signed snapshots, durable database storage, recovery semantics, and read-only registry and market adapters.</p></div><b>Next</b></li>
-        <li><span>Connect</span><div><strong>Isolated relay prototype</strong><p>A formally specified process boundary, external key custody, paper venue reconciliation, and operational alerts.</p></div><b>Planned</b></li>
-        <li><span>Arm</span><div><strong>Live credentialed execution</strong><p>Excluded until the authorization boundary, venue adapter, and operational controls are independently reviewed.</p></div><b>Not built</b></li>
+        <li class="current"><span>Connect</span><div><strong>Guarded Robinhood MCP bridge</strong><p>OAuth, live tool discovery, pre-trade review, exact-order permits, explicit arming, and hash-chained submission receipts.</p></div><b>Experimental</b></li>
+        <li><span>Harden</span><div><strong>Authenticated service + reconciliation</strong><p>Signed venue-derived snapshots, database-backed permits, order-status recovery, rate limits, and operational alerts.</p></div><b>Next</b></li>
+        <li><span>Isolate</span><div><strong>Production relay boundary</strong><p>External token custody, independent process isolation, kill switches, security review, and jurisdiction-specific controls.</p></div><b>Not approved</b></li>
       </ol>
     </section>
 

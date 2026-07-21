@@ -10,3 +10,18 @@ export {
   verifyPermit,
 } from "./permit.js";
 export { JsonlEventStore } from "./store.js";
+export {
+  LIVE_CONFIRMATION,
+  ROBINHOOD_AGENTIC_ACCOUNT,
+  executeRobinhoodOrder,
+  validateRobinhoodIntent,
+} from "./live.js";
+export {
+  DEFAULT_CALLBACK_PORT,
+  ROBINHOOD_MCP_URL,
+  FileOAuthProvider,
+  RobinhoodMcpAdapter,
+  closeRobinhood,
+  connectRobinhood,
+  waitForOAuthCallback,
+} from "./robinhood.js";
