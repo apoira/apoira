@@ -3,6 +3,26 @@
 All notable changes to Murre are documented here. The project follows
 semantic versioning while the protocol is experimental.
 
+## 0.4.0 - 2026-07-20
+
+### Added
+
+- OAuth client registration and persistent token handling for Robinhood's
+  official Streamable HTTP Trading MCP;
+- runtime tool discovery for the remote Robinhood surface;
+- a guarded single-order live relay using
+  `review_equity_order -> permit consumption -> place_equity_order`;
+- exact binding of Robinhood symbol, side, quantity, limit price, order type,
+  and time-in-force arguments into the Murre intent hash;
+- live failure-ordering, denial, replay, and tool-error tests.
+
+### Security
+
+- live routing requires the literal `LIVE_ROBINHOOD_ORDER` operator phrase;
+- version 0.4 permits quantity-based equity limit orders only and rejects
+  market orders, notional shortcuts, and unknown venue fields;
+- OAuth material is stored outside source control under `.murre/` by default.
+
 ## 0.3.0 - 2026-07-20
 
 ### Changed

@@ -1,7 +1,7 @@
 # Architecture
 
 Murre separates portfolio intelligence from capital authority. The codebase
-contains six small components with explicit inputs and outputs.
+contains small components with explicit inputs and outputs.
 
 ## 1. Rebalance planner
 
@@ -60,9 +60,38 @@ timeline.
 
 The paper relay deliberately has no network adapter or credential.
 
+## 7. Robinhood MCP transport
+
+`connectRobinhood` uses the official MCP TypeScript client over Streamable HTTP.
+Robinhood OAuth performs dynamic client registration, PKCE authorization, token
+refresh, and connection to the dedicated Trading MCP endpoint. The local OAuth
+provider stores client registration and token material in an operator-selected,
+gitignored file. Portfolio-research code never receives this provider directly.
+
+`RobinhoodMcpAdapter` discovers the remote tool list at runtime and exposes only
+the two calls used by the first live relay: `review_equity_order` and
+`place_equity_order`.
+
+## 8. Guarded live relay
+
+`executeRobinhoodOrder` handles one quantity-based equity limit order. It
+requires a literal operator arming phrase, a clean event chain, the fixed
+logical account `robinhood-agentic`, and venue `robinhood-mcp`. It rejects
+market orders, notional shortcuts, unknown remote fields, and any mismatch
+between the normalized intent and the remote symbol, side, quantity, or limit.
+
+The remote order arguments are part of the normalized intent hash, so changing
+time-in-force or any other permitted remote field also invalidates the permit.
+The same argument object is sent to Robinhood review and placement.
+
 ## Failure ordering
 
 The system records permit consumption before producing a fill. If the process
 crashes between those steps, the permit remains spent. Recovery must reconcile
 the event log before issuing a replacement. This favors duplicate-execution
 prevention over automatic retry.
+
+The live relay follows the same ordering. It records the Robinhood review,
+consumes the permit, and only then invokes placement. A failed or ambiguous
+placement leaves the permit spent and records `order.failed`; recovery must
+inspect Robinhood order history before issuing a new intent.
