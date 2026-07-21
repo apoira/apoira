@@ -20,11 +20,10 @@ The research system can change its models without expanding its authority.
 Only the credentialed execution boundary may route an order, and only when the
 order matches a valid permit.
 
-> Murre is not an AI fund, broker, wallet, or trading venue. Version 0.5 adds
-> a local, paper-only MCP server that agents can call directly. Version 0.4 added
-> an experimental, explicitly armed bridge to Robinhood's official Trading
-> MCP. Paper mode remains the default. The live bridge can place real equity
-> orders and is not approved for unattended or material capital.
+> Murre is not an AI fund, broker, wallet, or trading venue. Version 0.6 adds an
+> opt-in live MCP tool for bounded equity limit orders through Robinhood's
+> official Trading MCP. Paper mode remains the default. Live mode can move real
+> money and is not approved for unattended or material capital.
 
 ## Why this exists
 
@@ -69,6 +68,8 @@ The repository contains executable infrastructure, not a simulated dashboard:
   records the complete timeline;
 - a stdio MCP server agents can call for status, policy checks, paper orders,
   paper rebalances, and verified audit events;
+- an operator-armed live MCP mode whose agent-callable schema excludes the
+  account, venue, credentials, policy, state, ledger, clock, and risk ceilings;
 - OAuth and runtime tool discovery for Robinhood's official Trading MCP;
 - a narrow live path that reviews an equity limit order, consumes the exact
   permit, submits the same arguments, and records a content-addressed receipt;
@@ -129,6 +130,28 @@ node src/cli.js robinhood-auth \
 See [the guarded Robinhood MCP relay](docs/robinhood-mcp.md) before enabling
 the live command.
 
+Start an agent-callable live server only after OAuth onboarding and after
+creating a policy and fresh state snapshot for the dedicated Agentic account:
+
+```bash
+node src/mcp-server.js \
+  --policy .murre/live-policy.json \
+  --state .murre/live-state.json \
+  --ledger .murre/live-events.jsonl \
+  --account robinhood-agentic \
+  --live-routing LIVE_ROBINHOOD_MCP \
+  --robinhood-account-number "$MURRE_ROBINHOOD_ACCOUNT_NUMBER" \
+  --oauth-store .murre/robinhood-oauth.json \
+  --live-max-order-notional 25 \
+  --live-max-session-notional 75 \
+  --live-max-orders 3
+```
+
+This intentionally gives the connected agent authority to submit orders up to
+the configured ceilings without a new human confirmation for every call. The
+agent receives only `murre_status`, `murre_recent_events`, and
+`murre_live_order`; paper mutation tools are removed while live mode is armed.
+
 ## CLI
 
 Evaluate one intent:
@@ -162,14 +185,17 @@ node src/cli.js robinhood-tools \
 ```
 
 The `live-order` command handles exactly one limit order and requires the
-literal `LIVE_ROBINHOOD_ORDER` confirmation phrase. Its complete input contract
-and failure ordering are documented in [docs/robinhood-mcp.md](docs/robinhood-mcp.md).
+literal `LIVE_ROBINHOOD_ORDER` confirmation phrase plus an operator-supplied
+Agentic account number. Its complete input contract and failure ordering are
+documented in [docs/robinhood-mcp.md](docs/robinhood-mcp.md).
 
 ## Trust boundary
 
-Agents receive no venue credential. They submit bounded intents containing an
-account, asset, side, quantity, limit price, and venue. Changing any field
-changes the intent hash and invalidates its permit.
+Agents receive no venue credential. In paper mode they submit bounded intents.
+In live MCP mode they submit only symbol, side, quantity, limit price, and an
+optional intent ID; the operator fixes every authority-bearing input when the
+server starts. Changing any execution field changes the intent hash and
+invalidates its permit.
 
 The reference event store serializes permit consumption with an exclusive lock
 and appends a hash-chained event before a paper fill is produced. A crash after
@@ -186,10 +212,11 @@ src/store.js        durable hash-chained JSONL event store
 src/portfolio.js    target-weight rebalance planning and state updates
 src/paper.js        end-to-end paper execution cycle
 src/state-store.js  replace-on-write local paper state
-src/mcp.js          agent-facing paper MCP tools
+src/mcp.js          agent-facing paper and operator-armed live MCP tools
 src/mcp-server.js   stdio MCP entrypoint
 src/robinhood.js    official MCP transport, OAuth, and venue calls
 src/live.js         guarded review, consume, and submit sequence
+src/live-session.js live session ceilings and fresh-state replay gate
 src/cli.js          command-line interface
 test/               boundary, replay, persistence, and cycle tests
 site/               product and architecture website
@@ -198,9 +225,10 @@ site/               product and architecture website
 ## Security and production status
 
 The paper implementation is appropriate for local experiments and protocol
-review. The 0.4 live bridge is an integration prototype that can submit a real
-order only when explicitly armed. The system is **not** ready for unattended or
-material capital.
+review. The 0.6 live MCP mode is an integration prototype that can submit real
+orders only when explicitly armed with operator-selected ceilings. A successful
+tool result means submitted, not filled. The system is **not** ready for
+unattended or material capital.
 
 Before live use, Murre needs authenticated and signed state inputs, a durable
 multi-host database, external key custody, an isolated relay, a formally

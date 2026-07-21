@@ -84,6 +84,31 @@ The remote order arguments are part of the normalized intent hash, so changing
 time-in-force or any other permitted remote field also invalidates the permit.
 The same argument object is sent to Robinhood review and placement.
 
+## 9. Agent-facing live boundary
+
+`createMurreMcpServer` may expose the relay as `murre_live_order` only when the
+operator starts a separate live process with the exact `LIVE_ROBINHOOD_MCP`
+activation value, an existing OAuth store, and explicit ceilings for per-order
+notional, session notional, and order count.
+
+The tool schema includes only the symbol, side, quantity, limit price,
+time-in-force, and optional intent ID. Account, venue, order type, policy, state,
+ledger, OAuth material, clock, Agentic account number, and ceilings remain
+server-owned. Live mode does
+not register paper mutation tools. Robinhood connection is lazy: a policy or
+session denial happens before OAuth material is loaded or a network connection
+is opened.
+
+Robinhood's required Agentic account number is bound into the exact remote
+argument hash. Known account fields and occurrences of the configured number
+are redacted before remote review and placement results are stored or returned
+to the calling agent.
+
+`LiveSessionBudget` enforces the operator ceilings in memory. A separate
+ledger-derived gate rejects any state hash associated with a consumed live
+permit. Session ceilings reset on process restart; the consumed-state gate
+survives because it is reconstructed from the verified event chain.
+
 ## Failure ordering
 
 The system records permit consumption before producing a fill. If the process
@@ -94,4 +119,5 @@ prevention over automatic retry.
 The live relay follows the same ordering. It records the Robinhood review,
 consumes the permit, and only then invokes placement. A failed or ambiguous
 placement leaves the permit spent and records `order.failed`; recovery must
-inspect Robinhood order history before issuing a new intent.
+inspect Robinhood order history and supply a fresh state snapshot before issuing
+a new intent.

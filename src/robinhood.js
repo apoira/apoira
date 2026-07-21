@@ -176,7 +176,7 @@ export function waitForOAuthCallback({
 }
 
 function newClient() {
-  return new Client({ name: "murre", version: "0.4.0" }, { capabilities: {} });
+  return new Client({ name: "murre", version: "0.6.0" }, { capabilities: {} });
 }
 
 export async function connectRobinhood({
@@ -185,6 +185,7 @@ export async function connectRobinhood({
   timeoutMs = 300_000,
   onAuthorizationUrl = () => {},
   serverUrl = ROBINHOOD_MCP_URL,
+  interactive = true,
 }) {
   const redirectUrl = `http://127.0.0.1:${callbackPort}/callback`;
   const provider = await FileOAuthProvider.create({ path: oauthStorePath, redirectUrl });
@@ -197,6 +198,11 @@ export async function connectRobinhood({
     await client.connect(transport);
   } catch (error) {
     if (!(error instanceof UnauthorizedError) || !provider.authorizationUrl) throw error;
+    if (!interactive) {
+      throw new Error(
+        "Robinhood OAuth authorization is required; run murre robinhood-auth before starting live MCP routing",
+      );
+    }
 
     const callback = waitForOAuthCallback({
       port: callbackPort,
@@ -263,4 +269,3 @@ export class RobinhoodMcpAdapter {
     return this.call("place_equity_order", args);
   }
 }
-
