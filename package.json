@@ -1,11 +1,12 @@
 {
   "name": "@murre/kernel",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Policy, paper execution, and guarded Robinhood MCP routing for autonomous portfolios.",
   "type": "module",
   "private": true,
   "bin": {
-    "murre": "./src/cli.js"
+    "murre": "./src/cli.js",
+    "murre-mcp": "./src/mcp-server.js"
   },
   "exports": {
     ".": "./src/index.js"
@@ -13,7 +14,10 @@
   "scripts": {
     "demo": "node src/cli.js evaluate --policy examples/policy.json --state examples/state.json --intent examples/intent.json --at 2026-07-20T12:00:00.000Z",
     "demo:cycle": "node scripts/demo-cycle.mjs",
+    "demo:gate": "node scripts/demo-policy-gate.mjs",
     "demo:robinhood": "node scripts/demo-robinhood-order.mjs",
+    "mcp": "node src/mcp-server.js",
+    "research": "node scripts/demo-research.mjs",
     "test": "node --test"
   },
   "engines": {

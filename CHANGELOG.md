@@ -3,6 +3,23 @@
 All notable changes to Murre are documented here. The project follows
 semantic versioning while the protocol is experimental.
 
+## 0.5.0 - 2026-07-21
+
+### Added
+
+- a local stdio MCP server for agent tool discovery and calls;
+- tools for portfolio status, exact-order checks, paper orders, target-weight
+  rebalances, and verified recent audit events;
+- replace-on-write paper state persistence and serialized MCP operations;
+- an end-to-end test that launches the server through a real MCP client.
+
+### Security
+
+- the calling agent cannot choose the account, venue, policy, state, ledger,
+  evaluation time, or credentials;
+- the agent-facing MCP surface is paper-only and does not expose the guarded
+  Robinhood live-order relay.
+
 ## 0.4.0 - 2026-07-20
 
 ### Added
