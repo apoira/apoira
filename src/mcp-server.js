@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import process from "node:process";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -9,6 +10,7 @@ import { LIVE_MCP_ACTIVATION, createMurreMcpServer } from "./mcp.js";
 function usage() {
   console.error(`Usage:
   murre-mcp --policy FILE --state FILE --ledger FILE --account ID [--min-trade-notional USD]
+  murre-mcp --config .murre/live-config.json
 
 Opt-in live routing (moves real money):
   --live-routing ${LIVE_MCP_ACTIVATION}
@@ -19,7 +21,7 @@ Opt-in live routing (moves real money):
   --live-max-orders COUNT
 
 Environment alternatives:
-  MURRE_POLICY_PATH, MURRE_STATE_PATH, MURRE_LEDGER_PATH, MURRE_ACCOUNT_ID,
+  MURRE_CONFIG_PATH, MURRE_POLICY_PATH, MURRE_STATE_PATH, MURRE_LEDGER_PATH, MURRE_ACCOUNT_ID,
   MURRE_MIN_TRADE_NOTIONAL_USD, MURRE_LIVE_ROUTING, MURRE_ROBINHOOD_OAUTH_STORE,
   MURRE_ROBINHOOD_ACCOUNT_NUMBER,
   MURRE_LIVE_MAX_ORDER_NOTIONAL_USD, MURRE_LIVE_MAX_SESSION_NOTIONAL_USD,
@@ -46,8 +48,21 @@ function required(value, label) {
   return value;
 }
 
+async function readConfigOptions(path) {
+  const config = JSON.parse(await readFile(path, "utf8"));
+  if (config?.schemaVersion !== "murre.live-config.v1") {
+    throw new Error("Unsupported Murre live config schema");
+  }
+  return Object.fromEntries(Object.entries(config)
+    .filter(([key]) => key !== "schemaVersion")
+    .map(([key, value]) => [key, String(value)]));
+}
+
 try {
-  const options = parseArgs(process.argv.slice(2));
+  const directOptions = parseArgs(process.argv.slice(2));
+  const configPath = directOptions.config || process.env.MURRE_CONFIG_PATH;
+  const configOptions = configPath ? await readConfigOptions(resolve(configPath)) : {};
+  const options = { ...configOptions, ...directOptions };
   const policyPath = required(
     options.policy || process.env.MURRE_POLICY_PATH,
     "--policy or MURRE_POLICY_PATH",

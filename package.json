@@ -17,7 +17,10 @@
     "demo:gate": "node scripts/demo-policy-gate.mjs",
     "demo:robinhood": "node scripts/demo-robinhood-order.mjs",
     "mcp": "node src/mcp-server.js",
+    "mcp:live": "node src/mcp-server.js --config .murre/live-config.json",
     "research": "node scripts/demo-research.mjs",
+    "refresh:robinhood": "node src/cli.js refresh-robinhood",
+    "setup:robinhood": "node src/cli.js setup-robinhood",
     "test": "node --test"
   },
   "engines": {

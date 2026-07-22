@@ -36,7 +36,7 @@ Murre is the second system.
 ```text
 target weights ──> rebalance planner ──> order intents
                                              │
-policy + signed state ───────────────> Murre kernel
+policy + state snapshot ────────────> Murre kernel
                                              │
                          ┌───────────────────┴───────────────────┐
                          │                                       │
@@ -67,6 +67,7 @@ The repository contains executable infrastructure, not a simulated dashboard:
 - an operator-armed live MCP mode whose agent-callable schema excludes the
   account, venue, credentials, policy, state, ledger, clock, and risk ceilings;
 - OAuth and runtime tool discovery for Robinhood's official Trading MCP;
+- one-command OAuth onboarding and Robinhood-derived portfolio snapshots;
 - a narrow live path that reviews an equity limit order, consumes the exact
   permit, submits the same arguments, and records a content-addressed receipt;
 - a Node CLI and boundary-focused test suite.
@@ -116,37 +117,42 @@ code without credentials, a brokerage request, or capital:
 npm run demo:robinhood
 ```
 
-Connect a dedicated Robinhood Agentic account without placing an order:
+Set up a dedicated Robinhood Agentic account without placing an order. This
+completes OAuth, verifies the account and remote tools, reads the portfolio,
+positions, quotes, and tradability, then creates private local files with small
+default ceilings ($25/order, $75/session, 3 orders):
 
 ```bash
-node src/cli.js robinhood-auth \
-  --oauth-store .murre/robinhood-oauth.json
+npm run setup:robinhood -- \
+  --robinhood-account-number YOUR_AGENTIC_ACCOUNT_NUMBER \
+  --symbols AAPL,MSFT
 ```
 
-See [the guarded Robinhood MCP relay](docs/robinhood-mcp.md) before enabling
-the live command.
+`--symbols` adds equities the account does not already hold. Murre never chooses
+an account for the user, and setup never reviews or places an order. OAuth
+tokens, the account number, policy, state, and ledger stay under the gitignored
+`.murre/` directory. Do not share that directory.
 
-Start an agent-callable live server only after OAuth onboarding and after
-creating a policy and fresh state snapshot for the dedicated Agentic account:
+After reviewing `.murre/live-policy.json`, start the agent-callable server:
 
 ```bash
-node src/mcp-server.js \
-  --policy .murre/live-policy.json \
-  --state .murre/live-state.json \
-  --ledger .murre/live-events.jsonl \
-  --account robinhood-agentic \
-  --live-routing LIVE_ROBINHOOD_MCP \
-  --robinhood-account-number "$MURRE_ROBINHOOD_ACCOUNT_NUMBER" \
-  --oauth-store .murre/robinhood-oauth.json \
-  --live-max-order-notional 25 \
-  --live-max-session-notional 75 \
-  --live-max-orders 3
+npm run mcp:live
 ```
 
 This intentionally gives the connected agent authority to submit orders up to
 the configured ceilings without a new human confirmation for every call. The
 agent receives only `murre_status`, `murre_recent_events`, and
 `murre_live_order`; paper mutation tools are removed while live mode is armed.
+
+Before another live attempt, reconcile Robinhood activity and refresh only the
+broker-derived state. The command preserves the policy and audit ledger:
+
+```bash
+npm run refresh:robinhood
+```
+
+See [the guarded Robinhood MCP relay](docs/robinhood-mcp.md) before enabling
+live routing.
 
 ## CLI
 
@@ -185,6 +191,13 @@ literal `LIVE_ROBINHOOD_ORDER` confirmation phrase plus an operator-supplied
 Agentic account number. Its complete input contract and failure ordering are
 documented in [docs/robinhood-mcp.md](docs/robinhood-mcp.md).
 
+Bootstrap and refresh the generated live configuration:
+
+```bash
+npm run setup:robinhood -- --robinhood-account-number YOUR_ACCOUNT --symbols AAPL
+npm run refresh:robinhood
+```
+
 ## Trust boundary
 
 Agents receive no venue credential. In paper mode they submit bounded intents.
@@ -211,6 +224,7 @@ src/state-store.js  replace-on-write local paper state
 src/mcp.js          agent-facing paper and operator-armed live MCP tools
 src/mcp-server.js   stdio MCP entrypoint
 src/robinhood.js    official MCP transport, OAuth, and venue calls
+src/robinhood-setup.js authenticated read-only setup and state refresh
 src/live.js         guarded review, consume, and submit sequence
 src/live-session.js live session ceilings and fresh-state replay gate
 src/cli.js          command-line interface
@@ -226,7 +240,9 @@ orders only when explicitly armed with operator-selected ceilings. A successful
 tool result means submitted, not filled. The system is **not** ready for
 unattended or material capital.
 
-Before live use, Murre needs authenticated and signed state inputs, a durable
+Setup derives local state from authenticated Robinhood reads, but those
+snapshots are not signed or independently attested. Before material live use,
+Murre needs signed state inputs, a durable
 multi-host database, external key custody, an isolated relay, a formally
 specified wire protocol, reconciliation against a real venue, operational
 monitoring, and independent security review.
