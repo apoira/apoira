@@ -14,6 +14,11 @@ export { JsonFileStateStore, readJsonFile } from "./state-store.js";
 export { LIVE_MCP_ACTIVATION, createMurreMcpServer } from "./mcp.js";
 export { LiveSessionBudget, consumedLiveStateHashes } from "./live-session.js";
 export {
+  mandateChangesFromOptions,
+  promptMandateChanges,
+  updateMandateFiles,
+} from "./mandate.js";
+export {
   LIVE_CONFIRMATION,
   ROBINHOOD_AGENTIC_ACCOUNT,
   executeRobinhoodOrder,

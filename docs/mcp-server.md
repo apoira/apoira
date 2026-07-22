@@ -85,6 +85,16 @@ more than three orders. Quote freshness, a 1% limit-price band, concentration,
 gross exposure, cash, inventory, and tradability checks remain active. Review
 `.murre/live-policy.json` before starting the server.
 
+Edit Murre's portfolio rules from the terminal with an interactive prompt. Press Enter to
+keep any current value:
+
+```powershell
+npm run configure
+```
+
+The command updates the policy and hard live-session ceilings together. Restart
+the live server after every configuration change.
+
 Robinhood's quote tool does not expose displayed market depth. The generated
 snapshot therefore sets `availableLiquidityUsd` to the smaller operator-defined
 order ceiling and records `liquidityBasis: "configured_order_cap"`. This is a

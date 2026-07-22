@@ -5,6 +5,11 @@ import { dirname, join } from "node:path";
 import process from "node:process";
 import { evaluate } from "./evaluate.js";
 import { LIVE_CONFIRMATION, executeRobinhoodOrder } from "./live.js";
+import {
+  mandateChangesFromOptions,
+  promptMandateChanges,
+  updateMandateFiles,
+} from "./mandate.js";
 import { runPaperCycle } from "./paper.js";
 import {
   DEFAULT_CALLBACK_PORT,
@@ -19,6 +24,7 @@ function usage() {
   murre evaluate --policy FILE --state FILE --intent FILE [--at ISO_TIMESTAMP]
   murre paper-cycle --policy FILE --state FILE --targets FILE --ledger FILE --account ID [--at ISO_TIMESTAMP]
   murre setup-robinhood --robinhood-account-number ACCOUNT [--symbols AAPL,MSFT] [--max-order-notional USD] [--max-session-notional USD] [--max-orders COUNT] [--directory DIR]
+  murre configure [--config FILE] [--max-order-notional USD] [--max-session-notional USD] [--max-orders COUNT] [--max-limit-price-deviation-pct PCT] [--max-position-pct PCT] [--max-gross-exposure-pct PCT] [--min-cash-pct PCT] [--max-quote-age-seconds SECONDS] [--min-available-liquidity USD] [--permit-ttl-seconds SECONDS]
   murre refresh-robinhood [--config FILE]
   murre robinhood-auth [--oauth-store FILE] [--callback-port PORT]
   murre robinhood-tools [--oauth-store FILE] [--callback-port PORT]
@@ -120,6 +126,13 @@ try {
     });
     console.log(JSON.stringify(result, null, 2));
     process.exitCode = result.deniedOrders === 0 ? 0 : 2;
+  } else if (command === "configure") {
+    const configPath = options.config || ".murre/live-config.json";
+    const changes = mandateChangesFromOptions(options);
+    const result = Object.keys(changes).length === 0
+      ? await promptMandateChanges({ configPath })
+      : await updateMandateFiles({ configPath, changes });
+    console.log(`\nMurre configuration updated.\n${JSON.stringify(result.values, null, 2)}\n\n${result.next}`);
   } else if (command === "setup-robinhood") {
     const accountNumber = options["robinhood-account-number"]
       || process.env.MURRE_ROBINHOOD_ACCOUNT_NUMBER;

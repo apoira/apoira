@@ -135,6 +135,27 @@ tokens, the account number, policy, state, and ledger stay under the gitignored
 
 After reviewing `.murre/live-policy.json`, start the agent-callable server:
 
+You can edit Murre's generated portfolio rules directly in the terminal. Press Enter to
+keep any current value:
+
+```bash
+npm run configure
+```
+
+For scripts and automated deployments, the same editor accepts flags:
+
+```bash
+npm run configure -- \
+  --max-order-notional 25 \
+  --max-session-notional 75 \
+  --max-orders 3 \
+  --max-position-pct 20 \
+  --min-cash-pct 10
+```
+
+Restart the live server after changing the configuration. Then start the agent-callable
+server:
+
 ```bash
 npm run mcp:live
 ```
