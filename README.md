@@ -6,6 +6,8 @@
 
 **Financial tools agents can call.**
 
+[Website](https://murre.xyz) · [X / @murreMCP](https://x.com/murreMCP)
+
 Murre is an open MCP toolkit for agentic finance. Today it connects agents to
 Robinhood account state, user-defined policy, guarded live execution, and a
 hash-chained event history.
