@@ -68,9 +68,15 @@ refresh, and connection to the dedicated Trading MCP endpoint. The local OAuth
 provider stores client registration and token material in an operator-selected,
 gitignored file. Portfolio-research code never receives this provider directly.
 
-`RobinhoodMcpAdapter` discovers the remote tool list at runtime and exposes only
-the two calls used by the first live relay: `review_equity_order` and
-`place_equity_order`.
+`RobinhoodMcpAdapter` discovers the remote tool list at runtime. The live relay
+requires `review_equity_order` and `place_equity_order`; the read-only research
+path requires quote, fundamentals, technical-indicator, and earnings tools.
+Missing tools fail before Murre presents a result as complete.
+
+`researchEquity` normalizes those public-market responses into one timestamped
+evidence object and adds a domain-separated evidence hash. It receives an
+authenticated MCP client but never receives the OAuth provider, Agentic account
+number, or an order route.
 
 ## 8. Guarded live relay
 
@@ -86,15 +92,17 @@ The same argument object is sent to Robinhood review and placement.
 
 ## 9. Agent-facing live boundary
 
-`createMurreMcpServer` may expose the relay as `murre_live_order` only when the
-operator starts a separate live process with the exact `LIVE_ROBINHOOD_MCP`
-activation value, an existing OAuth store, and explicit ceilings for per-order
-notional, session notional, and order count.
+`createMurreMcpServer` exposes `murre_research_equity` in authenticated
+read-only research mode and in live mode. Research mode does not register any
+order tool. The relay appears as `murre_live_order` only when the operator
+starts a separate live process with the exact `LIVE_ROBINHOOD_MCP` activation
+value, an existing OAuth store, and explicit ceilings for per-order notional,
+session notional, and order count.
 
-The tool schema includes only the symbol, side, quantity, limit price,
-time-in-force, and optional intent ID. Account, venue, order type, policy, state,
-ledger, OAuth material, clock, Agentic account number, and ceilings remain
-server-owned. Live mode does
+The research schema includes only a symbol. The order schema includes only the
+symbol, side, quantity, limit price, time-in-force, and optional intent ID.
+Account, venue, order type, policy, state, ledger, OAuth material, clock,
+Agentic account number, and ceilings remain server-owned. Live mode does
 not register paper mutation tools. Robinhood connection is lazy: a policy or
 session denial happens before OAuth material is loaded or a network connection
 is opened.

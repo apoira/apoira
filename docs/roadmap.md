@@ -33,6 +33,7 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 
 ## 0.6 - operator-armed live MCP
 
+- [x] hash-addressed public-equity research over authenticated Robinhood tools
 - [x] bounded `murre_live_order` agent tool
 - [x] fixed account, venue, order type, and time-in-force
 - [x] per-order, session-notional, and order-count ceilings

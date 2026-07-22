@@ -11,6 +11,10 @@ function usage() {
   console.error(`Usage:
   murre-mcp --policy FILE --state FILE --ledger FILE --account ID [--min-trade-notional USD]
   murre-mcp --config .murre/live-config.json
+  murre-mcp --config .murre/live-config.json --mode research
+
+Read-only Robinhood research:
+  --mode research
 
 Opt-in live routing (moves real money):
   --live-routing ${LIVE_MCP_ACTIVATION}
@@ -82,6 +86,10 @@ try {
   const minTradeNotionalUsd = options["min-trade-notional"]
     || process.env.MURRE_MIN_TRADE_NOTIONAL_USD
     || 100;
+  const mode = options.mode || "live";
+  if (!["live", "research"].includes(mode)) {
+    throw new Error("--mode must be live or research");
+  }
   const liveRouting = options["live-routing"] || process.env.MURRE_LIVE_ROUTING;
   const liveOptionsPresent = [
     liveRouting,
@@ -99,6 +107,9 @@ try {
   if (liveOptionsPresent && liveRouting !== LIVE_MCP_ACTIVATION) {
     throw new Error(`Live routing requires --live-routing ${LIVE_MCP_ACTIVATION}`);
   }
+  if (mode === "research" && liveRouting !== LIVE_MCP_ACTIVATION) {
+    throw new Error("Research mode requires authenticated Robinhood configuration");
+  }
   const oauthStorePath = liveRouting === LIVE_MCP_ACTIVATION
     ? resolve(required(
       options["oauth-store"] || process.env.MURRE_ROBINHOOD_OAUTH_STORE,
@@ -112,6 +123,7 @@ try {
   }
   const live = liveRouting === LIVE_MCP_ACTIVATION ? {
     enabled: true,
+    researchOnly: mode === "research",
     accountNumber: required(
       options["robinhood-account-number"] || process.env.MURRE_ROBINHOOD_ACCOUNT_NUMBER,
       "--robinhood-account-number or MURRE_ROBINHOOD_ACCOUNT_NUMBER",
@@ -142,8 +154,10 @@ try {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error(
-    live.enabled
-      ? `Murre MCP connected with LIVE Robinhood routing for account ${accountId}.`
+    live.enabled && live.researchOnly
+      ? `Murre MCP connected to Robinhood in read-only research mode for account ${accountId}.`
+      : live.enabled
+        ? `Murre MCP connected with LIVE Robinhood routing for account ${accountId}.`
       : `Murre MCP connected in paper mode for account ${accountId}.`,
   );
 } catch (error) {
