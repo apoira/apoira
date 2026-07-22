@@ -546,4 +546,24 @@ test("starts the stdio server in live mode only with the explicit activation con
   const status = await client.callTool({ name: "murre_status", arguments: {} });
   assert.equal(status.structuredContent.live.armed, true);
   assert.equal(status.structuredContent.live.session.maxSessionNotionalUsd, 50);
+
+  const researchTransport = new StdioClientTransport({
+    command: process.execPath,
+    args: [serverPath, "--config", configPath, "--mode", "research"],
+    cwd: repository,
+    stderr: "pipe",
+  });
+  const researchClient = new Client({ name: "murre-research-stdio-test", version: "1.0.0" });
+  context.after(() => researchTransport.close());
+  await researchClient.connect(researchTransport);
+  const researchTools = await researchClient.listTools();
+  assert.equal(
+    researchTools.tools.some((tool) => tool.name === "murre_research_equity"),
+    true,
+  );
+  assert.equal(researchTools.tools.some((tool) => tool.name === "murre_live_order"), false);
+  assert.equal(researchTools.tools.some((tool) => tool.name === "murre_paper_order"), false);
+  const researchStatus = await researchClient.callTool({ name: "murre_status", arguments: {} });
+  assert.equal(researchStatus.structuredContent.mode, "research");
+  assert.equal(researchStatus.structuredContent.live.armed, false);
 });

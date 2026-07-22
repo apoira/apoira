@@ -9,13 +9,12 @@
 [Website](https://murre.xyz) · [X / @murreMCP](https://x.com/murreMCP)
 
 Murre is an open MCP toolkit for agentic finance. Today it connects agents to
-Robinhood account state, user-defined policy, guarded live execution, and a
-hash-chained event history.
+Robinhood public-equity research, account state, user-defined policy, guarded
+live execution, and a hash-chained event history.
 
-The project is expanding into research, portfolio construction, monitoring,
-tokenized assets, and additional venues. Those capabilities share one rule:
-account access, credentials, and execution authority remain outside the calling
-model.
+The project is expanding into portfolio construction, monitoring, tokenized
+assets, and additional venues. Those capabilities share one rule: account
+access, credentials, and execution authority remain outside the calling model.
 
 For every proposed order, Murre turns independently supplied state and a
 versioned policy into one of two proof objects:
@@ -82,6 +81,8 @@ The repository contains executable infrastructure, not a simulated dashboard:
   account, venue, credentials, policy, state, ledger, clock, and risk ceilings;
 - OAuth and runtime tool discovery for Robinhood's official Trading MCP;
 - one-command OAuth onboarding and Robinhood-derived portfolio snapshots;
+- a read-only `murre_research_equity` tool that assembles quotes, fundamentals,
+  RSI, and earnings into timestamped, hash-addressed evidence;
 - a narrow live path that reviews an equity limit order, consumes the exact
   permit, submits the same arguments, and records a content-addressed receipt;
 - a Node CLI and boundary-focused test suite.
@@ -147,10 +148,8 @@ an account for the user, and setup never reviews or places an order. OAuth
 tokens, the account number, policy, state, and ledger stay under the gitignored
 `.murre/` directory. Do not share that directory.
 
-After reviewing `.murre/live-policy.json`, start the agent-callable server:
-
-You can edit Murre's generated portfolio rules directly in the terminal. Press Enter to
-keep any current value:
+You can edit Murre's generated portfolio rules directly in the terminal. Press
+Enter to keep any current value:
 
 ```bash
 npm run configure
@@ -167,8 +166,31 @@ npm run configure -- \
   --min-cash-pct 10
 ```
 
-Restart the live server after changing the configuration. Then start the agent-callable
-server:
+Start Murre in read-only research mode first:
+
+```bash
+npm run mcp:research
+```
+
+This mode exposes `murre_status`, `murre_research_equity`, and
+`murre_recent_events`. It does not register a paper or live order tool. Ask the
+connected agent to research one public equity:
+
+```text
+Use murre_research_equity to research AAPL. Return the evidence.
+```
+
+The tool reads Robinhood's quote, fundamentals, daily RSI, and earnings tools.
+It returns normalized public-market evidence with its observation time and a
+domain-separated SHA-256 hash. It does not read the Agentic account or call an
+order tool. The same path is available as a terminal demonstration:
+
+```bash
+npm run research -- --symbol AAPL
+```
+
+To give the connected agent bounded real-order authority instead, restart Murre
+in live mode after reviewing `.murre/live-policy.json`:
 
 ```bash
 npm run mcp:live
@@ -176,8 +198,9 @@ npm run mcp:live
 
 This intentionally gives the connected agent authority to submit orders up to
 the configured ceilings without a new human confirmation for every call. The
-agent receives only `murre_status`, `murre_recent_events`, and
-`murre_live_order`; paper mutation tools are removed while live mode is armed.
+agent receives `murre_status`, `murre_research_equity`,
+`murre_recent_events`, and `murre_live_order`; paper mutation tools are removed
+while live mode is armed.
 
 Before another live attempt, reconcile Robinhood activity and refresh only the
 broker-derived state. The command preserves the policy and audit ledger:
@@ -236,10 +259,10 @@ npm run refresh:robinhood
 ## Trust boundary
 
 Agents receive no venue credential. In paper mode they submit bounded intents.
-In live MCP mode they submit only symbol, side, quantity, limit price, and an
-optional intent ID; the operator fixes every authority-bearing input when the
-server starts. Changing any execution field changes the intent hash and
-invalidates its permit.
+In live MCP mode the read-only research call accepts one public symbol. Order
+calls accept only symbol, side, quantity, limit price, and an optional intent
+ID; the operator fixes every authority-bearing input when the server starts.
+Changing any execution field changes the intent hash and invalidates its permit.
 
 The reference event store serializes permit consumption with an exclusive lock
 and appends a hash-chained event before a paper fill is produced. A crash after
@@ -260,6 +283,7 @@ src/mcp.js          agent-facing paper and operator-armed live MCP tools
 src/mcp-server.js   stdio MCP entrypoint
 src/robinhood.js    official MCP transport, OAuth, and venue calls
 src/robinhood-setup.js authenticated read-only setup and state refresh
+src/research.js     normalized, hash-addressed public-equity evidence
 src/live.js         guarded review, consume, and submit sequence
 src/live-session.js live session ceilings and fresh-state replay gate
 src/cli.js          command-line interface

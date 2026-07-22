@@ -21,6 +21,7 @@ unexpired, unconsumed permit produced from the configured policy and state.
 - missing, malformed, stale, or ineligible asset facts;
 - concurrent use of one local event store.
 - remote tool-list changes and malformed tool errors;
+- missing, malformed, or internally inconsistent public-market research data;
 - attempts to substitute market, notional, or altered venue orders.
 
 ## Enforced invariants

@@ -81,8 +81,20 @@ node src/cli.js robinhood-tools \
   --oauth-store .murre/robinhood-oauth.json
 ```
 
-Murre checks that `review_equity_order` and `place_equity_order` are present at
-runtime instead of assuming the server's tool list is permanent.
+Murre checks every required research and order tool at runtime instead of
+assuming the server's tool list is permanent.
+
+## Read-only equity research
+
+The authenticated MCP server exposes `murre_research_equity` alongside the
+guarded order route. It accepts one public-equity symbol and calls Robinhood's
+quote, fundamentals, technical-indicator, and earnings tools. Murre normalizes
+the result into a timestamped evidence object and commits to that object with a
+domain-separated SHA-256 hash.
+
+The research call does not receive the Agentic account number, read account
+holdings, review an order, or place an order. Its output is evidence for the
+calling agent to interpret, not a trade recommendation or permission to trade.
 
 ## Live intent
 
@@ -165,6 +177,15 @@ Press Enter to retain a current value. The editor synchronizes the policy with
 the hard per-order, per-session, and order-count ceilings. Restart the server
 after any edit.
 
+For research without an order tool, start the read-only server:
+
+```bash
+npm run mcp:research
+```
+
+It exposes `murre_status`, `murre_research_equity`, and
+`murre_recent_events`. It does not register paper mutation or live order tools.
+
 After reviewing the configuration, expose the same review, permit, and placement
 path as a local MCP tool:
 
@@ -172,8 +193,9 @@ path as a local MCP tool:
 npm run mcp:live
 ```
 
-The connected agent receives `murre_live_order` but cannot choose the account,
-venue, credentials, policy, state, ledger, clock, order type, or ceilings.
+The connected agent receives the read-only `murre_research_equity` tool and the
+guarded `murre_live_order` tool but cannot choose the account, venue,
+credentials, policy, state, ledger, clock, order type, or ceilings.
 The operator supplies the dedicated Agentic account number outside the tool
 schema; Murre binds it into the request hash and redacts it from returned and
 stored remote results.

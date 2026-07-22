@@ -13,6 +13,7 @@ export { JsonlEventStore } from "./store.js";
 export { JsonFileStateStore, readJsonFile } from "./state-store.js";
 export { LIVE_MCP_ACTIVATION, createMurreMcpServer } from "./mcp.js";
 export { LiveSessionBudget, consumedLiveStateHashes } from "./live-session.js";
+export { researchEquity } from "./research.js";
 export {
   mandateChangesFromOptions,
   promptMandateChanges,

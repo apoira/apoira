@@ -1,12 +1,13 @@
 # Murre MCP server
 
-Murre runs as a local stdio MCP server in one of two modes. Paper mode is the
-default. Live mode is a separate, explicitly armed process that can submit real
-equity limit orders through Robinhood's official Trading MCP.
+Murre runs as a local stdio MCP server in one of three modes. Paper mode is the
+default. Robinhood research mode is authenticated but read-only. Live mode is a
+separate, explicitly armed process that can submit real equity limit orders
+through Robinhood's official Trading MCP.
 
 The operator, not the calling agent, fixes the policy, state, ledger, account,
-clock, OAuth store, and live ceilings when the server starts. Neither mode
-exposes arbitrary file access or a tool for changing policy.
+clock, OAuth store, and live ceilings when the server starts. No mode exposes
+arbitrary file access or a tool for changing policy.
 
 ## Paper-mode tools
 
@@ -38,16 +39,36 @@ node src/mcp-server.js `
   --account paper-fund-01
 ```
 
+## Robinhood research-mode tools
+
+| Tool | Effect |
+| --- | --- |
+| `murre_status` | Reports read-only research mode and supplied portfolio facts. |
+| `murre_research_equity` | Reads public Robinhood quotes, fundamentals, RSI, and earnings. |
+| `murre_recent_events` | Reads records from the verified hash-chained ledger. |
+
+After Robinhood setup, start this mode with:
+
+```powershell
+npm run mcp:research
+```
+
+Neither paper mutation nor live order tools are registered. The research tool
+accepts only an equity symbol and never receives the Agentic account number.
+
 ## Live-mode tools
 
 | Tool | Effect |
 | --- | --- |
 | `murre_status` | Reads policy, supplied portfolio facts, ledger health, and remaining session capacity. |
+| `murre_research_equity` | Reads public Robinhood quotes, fundamentals, RSI, and earnings; never places an order. |
 | `murre_live_order` | Evaluates, reviews, consumes, and submits one bounded equity limit order. |
 | `murre_recent_events` | Reads records from the verified hash-chained ledger. |
 
-Paper mutation tools are not registered in live mode. The agent can provide
-only `ticker`, `side`, `quantity`, `limitPriceUsd`, `timeInForce: "gfd"`, and an
+Paper mutation tools are not registered in live mode. The research tool accepts
+only an equity symbol. It uses public market-data calls and never receives the
+account number or an order route. For a live order, the agent can provide only
+`ticker`, `side`, `quantity`, `limitPriceUsd`, `timeInForce: "gfd"`, and an
 optional `intentId`. The server fixes:
 
 - account `robinhood-agentic`;
@@ -61,7 +82,26 @@ The live slice supports quantity-based long equity limit orders only. It does
 not support options, crypto, tokenized private assets, market orders, notional
 shortcuts, or short selling.
 
-## Prepare live mode
+## Research an equity
+
+After authenticated setup, a connected agent can call:
+
+```json
+{
+  "name": "murre_research_equity",
+  "arguments": { "symbol": "AAPL" }
+}
+```
+
+Murre calls `get_equity_quotes`, `get_equity_fundamentals`,
+`get_equity_technical_indicators` for a 14-day RSI, and
+`get_earnings_results`. The response includes normalized price context,
+52-week range, valuation, relative volume, RSI, earnings history, the next
+verified earnings date when available, source timestamps, and an evidence hash.
+It is market evidence, not a recommendation. No review or placement tool is
+called.
+
+## Prepare Robinhood modes
 
 Run setup from an interactive terminal. It authenticates with Robinhood,
 requires the exact operator-supplied Agentic account number, verifies that the
@@ -102,7 +142,14 @@ fail-closed execution budget, not a claim about market liquidity. Setup also
 fails when non-equity holdings would make the supported portfolio snapshot
 incomplete.
 
-Start the live server from its private local config:
+Start the read-only research server from its private local config:
+
+```powershell
+npm run mcp:research
+```
+
+This process does not register `murre_live_order`. To delegate bounded real
+order authority instead, stop it and start the live server:
 
 ```powershell
 npm run mcp:live

@@ -10,6 +10,7 @@ import {
 } from "./live.js";
 import { LiveSessionBudget, consumedLiveStateHashes } from "./live-session.js";
 import { executePaperOrder, runPaperCycle } from "./paper.js";
+import { researchEquity } from "./research.js";
 import { closeRobinhood, connectRobinhood } from "./robinhood.js";
 import { JsonFileStateStore, readJsonFile } from "./state-store.js";
 import { JsonlEventStore } from "./store.js";
@@ -108,6 +109,15 @@ function normalizeLiveConfig(value, accountId) {
       `Live MCP routing requires accountId ${ROBINHOOD_AGENTIC_ACCOUNT}`,
     );
   }
+  const shared = {
+    enabled: true,
+    researchOnly: value.researchOnly === true,
+    oauthStorePath: nonEmpty(value.oauthStorePath, "live.oauthStorePath"),
+    callbackPort: value.callbackPort,
+    connectRobinhood: value.connectRobinhood || connectRobinhood,
+    closeRobinhood: value.closeRobinhood || closeRobinhood,
+  };
+  if (shared.researchOnly) return shared;
   const maxOrderNotionalUsd = positiveNumber(
     value.maxOrderNotionalUsd,
     "live.maxOrderNotionalUsd",
@@ -120,15 +130,11 @@ function normalizeLiveConfig(value, accountId) {
     throw new TypeError("live.maxSessionNotionalUsd cannot be below the per-order ceiling");
   }
   return {
-    enabled: true,
+    ...shared,
     accountNumber: nonEmpty(value.accountNumber, "live.accountNumber"),
-    oauthStorePath: nonEmpty(value.oauthStorePath, "live.oauthStorePath"),
-    callbackPort: value.callbackPort,
     maxOrderNotionalUsd,
     maxSessionNotionalUsd,
     maxOrders: positiveInteger(value.maxOrders, "live.maxOrders"),
-    connectRobinhood: value.connectRobinhood || connectRobinhood,
-    closeRobinhood: value.closeRobinhood || closeRobinhood,
   };
 }
 
@@ -166,7 +172,9 @@ export function createMurreMcpServer({
   const eventStore = new JsonlEventStore(ledgerPath);
   const serialize = createSerializer();
   const liveConfig = normalizeLiveConfig(live, accountId);
-  const liveBudget = liveConfig.enabled ? new LiveSessionBudget(liveConfig) : null;
+  const liveOrdersEnabled = liveConfig.enabled && !liveConfig.researchOnly;
+  const serverMode = liveOrdersEnabled ? "live" : (liveConfig.enabled ? "research" : "paper");
+  const liveBudget = liveOrdersEnabled ? new LiveSessionBudget(liveConfig) : null;
 
   async function inputs() {
     const [policy, state] = await Promise.all([
@@ -184,21 +192,25 @@ export function createMurreMcpServer({
   const server = new McpServer(
     { name: "murre", version: VERSION },
     {
-      instructions: [
-        liveConfig.enabled
-          ? "Murre is an operator-armed live portfolio policy boundary that can move real money."
-          : "Murre is a paper-mode portfolio policy and execution boundary.",
+      instructions: (serverMode === "live" ? [
+        "Murre is an operator-armed live portfolio policy boundary that can move real money.",
         "Use murre_status before proposing an order.",
-        liveConfig.enabled
-          ? "murre_live_order can move real money in the configured Robinhood Agentic account."
-          : "murre_check_order records a decision but never fills an order.",
-        liveConfig.enabled
-          ? "Paper mutation tools are disabled while live routing is armed."
-          : "murre_paper_order and murre_rebalance update only the configured local paper state.",
-        liveConfig.enabled
-          ? "Brokerage credentials remain operator-owned and are never returned to the caller."
-          : "This server exposes no live Robinhood routing tool and no brokerage credentials.",
-      ].join(" "),
+        "murre_research_equity reads public Robinhood market data and never places an order.",
+        "murre_live_order can move real money in the configured Robinhood Agentic account.",
+        "Paper mutation tools are disabled while live routing is armed.",
+        "Brokerage credentials remain operator-owned and are never returned to the caller.",
+      ] : serverMode === "research" ? [
+        "Murre is connected to Robinhood in read-only equity research mode.",
+        "murre_research_equity reads public market data and never places an order.",
+        "No paper or live order tool is registered in this mode.",
+        "Brokerage credentials remain operator-owned and are never returned to the caller.",
+      ] : [
+        "Murre is a paper-mode portfolio policy and execution boundary.",
+        "Use murre_status before proposing an order.",
+        "murre_check_order records a decision but never fills an order.",
+        "murre_paper_order and murre_rebalance update only the configured local paper state.",
+        "This server exposes no live Robinhood routing tool and no brokerage credentials.",
+      ]).join(" "),
     },
   );
 
@@ -216,12 +228,12 @@ export function createMurreMcpServer({
     const { policy, state } = await inputs();
     const chain = await eventStore.verifyChain();
     const stateHash = hashWithDomain("murre.state.v1", state);
-    const liveStateReady = liveConfig.enabled
+    const liveStateReady = liveOrdersEnabled
       ? !consumedLiveStateHashes(await eventStore.readAll()).has(stateHash)
       : null;
     return response({
       schemaVersion: "murre.mcp-status.v1",
-      mode: liveConfig.enabled ? "live" : "paper",
+      mode: serverMode,
       accountId,
       policy: {
         id: policy.id || null,
@@ -240,11 +252,12 @@ export function createMurreMcpServer({
       ledger: chain,
       capabilities: {
         policyChecks: true,
-        paperOrders: !liveConfig.enabled,
-        paperRebalances: !liveConfig.enabled,
-        liveOrders: liveConfig.enabled,
+        paperOrders: serverMode === "paper",
+        paperRebalances: serverMode === "paper",
+        equityResearch: liveConfig.enabled,
+        liveOrders: liveOrdersEnabled,
       },
-      live: liveConfig.enabled ? {
+      live: liveOrdersEnabled ? {
         armed: true,
         accountId: ROBINHOOD_AGENTIC_ACCOUNT,
         orderType: "limit",
@@ -252,7 +265,10 @@ export function createMurreMcpServer({
         requiresFreshStateAfterEachConsumedPermit: true,
         stateReadyForLive: liveStateReady,
         session: liveBudget.snapshot(),
-      } : { armed: false },
+      } : {
+        armed: false,
+        researchOnly: serverMode === "research",
+      },
     });
   }));
 
@@ -374,6 +390,41 @@ export function createMurreMcpServer({
   }));
 
   if (liveConfig.enabled) {
+    server.registerTool("murre_research_equity", {
+      title: "Research a public equity",
+      description: "Read Robinhood quotes, fundamentals, RSI, and earnings for one equity. Returns timestamped, hash-addressed evidence and never places an order.",
+      inputSchema: {
+        symbol: z.string().trim().min(1).max(15)
+          .regex(/^[A-Za-z][A-Za-z0-9.-]*$/u)
+          .describe("Public equity ticker to research, such as AAPL."),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+      },
+    }, async ({ symbol }) => serialize(async () => {
+      let session;
+      try {
+        session = await liveConfig.connectRobinhood({
+          oauthStorePath: liveConfig.oauthStorePath,
+          callbackPort: liveConfig.callbackPort,
+          interactive: false,
+        });
+        return response(await researchEquity({
+          client: session.client,
+          symbol,
+          at: now(),
+        }));
+      } finally {
+        await liveConfig.closeRobinhood(session);
+      }
+    }));
+
+  }
+
+  if (liveOrdersEnabled) {
     server.registerTool("murre_live_order", {
       title: "Submit a live Robinhood equity order",
       description: "DANGER: moves real money. Evaluates one exact equity limit order, calls Robinhood review, consumes the permit, and submits to the configured Agentic account.",

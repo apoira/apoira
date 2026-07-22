@@ -17,6 +17,7 @@
     "demo:gate": "node scripts/demo-policy-gate.mjs",
     "demo:robinhood": "node scripts/demo-robinhood-order.mjs",
     "mcp": "node src/mcp-server.js",
+    "mcp:research": "node src/mcp-server.js --config .murre/live-config.json --mode research",
     "mcp:live": "node src/mcp-server.js --config .murre/live-config.json",
     "configure": "node src/cli.js configure",
     "research": "node scripts/demo-research.mjs",
