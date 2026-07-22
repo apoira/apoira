@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import process from "node:process";
 import { evaluate } from "./evaluate.js";
 import { LIVE_CONFIRMATION, executeRobinhoodOrder } from "./live.js";
@@ -10,12 +11,15 @@ import {
   closeRobinhood,
   connectRobinhood,
 } from "./robinhood.js";
+import { normalizeSymbols, setupRobinhood } from "./robinhood-setup.js";
 import { JsonlEventStore } from "./store.js";
 
 function usage() {
   console.error(`Usage:
   murre evaluate --policy FILE --state FILE --intent FILE [--at ISO_TIMESTAMP]
   murre paper-cycle --policy FILE --state FILE --targets FILE --ledger FILE --account ID [--at ISO_TIMESTAMP]
+  murre setup-robinhood --robinhood-account-number ACCOUNT [--symbols AAPL,MSFT] [--max-order-notional USD] [--max-session-notional USD] [--max-orders COUNT] [--directory DIR]
+  murre refresh-robinhood [--config FILE]
   murre robinhood-auth [--oauth-store FILE] [--callback-port PORT]
   murre robinhood-tools [--oauth-store FILE] [--callback-port PORT]
   murre live-order --policy FILE --state FILE --intent FILE --ledger FILE --robinhood-account-number ACCOUNT --confirm ${LIVE_CONFIRMATION} [--oauth-store FILE] [--at ISO_TIMESTAMP]`);
@@ -42,6 +46,24 @@ function positiveInteger(value, fallback, name) {
     throw new TypeError(`${name} must be a positive integer`);
   }
   return parsed;
+}
+
+function positiveNumber(value, fallback, name) {
+  const parsed = value === undefined ? fallback : Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    throw new TypeError(`${name} must be a positive number`);
+  }
+  return parsed;
+}
+
+function redactError(error, secret) {
+  const raw = String(error?.message || error);
+  const message = typeof secret === "string" && secret !== ""
+    ? raw.split(secret).join("[REDACTED]")
+    : raw;
+  const safe = new Error(message);
+  safe.name = error?.name || "Error";
+  return safe;
 }
 
 async function openRobinhood(options) {
@@ -98,6 +120,78 @@ try {
     });
     console.log(JSON.stringify(result, null, 2));
     process.exitCode = result.deniedOrders === 0 ? 0 : 2;
+  } else if (command === "setup-robinhood") {
+    const accountNumber = options["robinhood-account-number"]
+      || process.env.MURRE_ROBINHOOD_ACCOUNT_NUMBER;
+    if (typeof accountNumber !== "string" || accountNumber.trim() === "") {
+      throw new Error(
+        "Setup requires --robinhood-account-number or MURRE_ROBINHOOD_ACCOUNT_NUMBER",
+      );
+    }
+    const directory = options.directory || ".murre";
+    const oauthStorePath = options["oauth-store"] || join(directory, "robinhood-oauth.json");
+    const session = await openRobinhood({ ...options, "oauth-store": oauthStorePath });
+    try {
+      try {
+        const result = await setupRobinhood({
+          client: session.client,
+          accountNumber,
+          symbols: normalizeSymbols(options.symbols),
+          directory,
+          oauthStorePath,
+          maxOrderNotionalUsd: positiveNumber(
+            options["max-order-notional"],
+            25,
+            "max-order-notional",
+          ),
+          maxSessionNotionalUsd: positiveNumber(
+            options["max-session-notional"],
+            75,
+            "max-session-notional",
+          ),
+          maxOrders: positiveInteger(options["max-orders"], 3, "max-orders"),
+          at: options.at,
+        });
+        console.log(JSON.stringify(result, null, 2));
+      } catch (error) {
+        throw redactError(error, accountNumber);
+      }
+    } finally {
+      await closeRobinhood(session);
+    }
+  } else if (command === "refresh-robinhood") {
+    const configPath = options.config || ".murre/live-config.json";
+    const config = await readJson(configPath);
+    if (config?.schemaVersion !== "murre.live-config.v1") {
+      throw new Error("Unsupported Murre live config schema");
+    }
+    const directory = dirname(config.state);
+    const session = await openRobinhood({
+      ...options,
+      "oauth-store": config["oauth-store"],
+    });
+    try {
+      try {
+        const result = await setupRobinhood({
+          client: session.client,
+          accountNumber: config["robinhood-account-number"],
+          symbols: normalizeSymbols(config.symbols),
+          directory,
+          oauthStorePath: config["oauth-store"],
+          maxOrderNotionalUsd: config["live-max-order-notional"],
+          maxSessionNotionalUsd: config["live-max-session-notional"],
+          maxOrders: config["live-max-orders"],
+          writePolicy: false,
+          writeConfig: false,
+          at: options.at,
+        });
+        console.log(JSON.stringify({ ...result, refreshed: true }, null, 2));
+      } catch (error) {
+        throw redactError(error, String(config["robinhood-account-number"] || ""));
+      }
+    } finally {
+      await closeRobinhood(session);
+    }
   } else if (command === "robinhood-auth" || command === "robinhood-tools") {
     const session = await openRobinhood(options);
     try {

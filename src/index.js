@@ -28,3 +28,8 @@ export {
   connectRobinhood,
   waitForOAuthCallback,
 } from "./robinhood.js";
+export {
+  normalizeSymbols,
+  robinhoodToolData,
+  setupRobinhood,
+} from "./robinhood-setup.js";

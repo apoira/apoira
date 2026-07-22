@@ -40,20 +40,29 @@ after consumption. If placement fails or the process crashes after consumption,
 the permit remains spent and the operator must reconcile Robinhood order history
 before attempting a replacement.
 
-## Authenticate
+## One-command setup
 
 Robinhood requires a primary individual account in good standing and creates a
-separate Agentic account during OAuth onboarding. Authentication is supported
-only on desktop.
+separate Agentic account during OAuth onboarding. Run setup on a desktop:
 
 ```bash
-node src/cli.js robinhood-auth \
-  --oauth-store .murre/robinhood-oauth.json
+npm run setup:robinhood -- \
+  --robinhood-account-number YOUR_AGENTIC_ACCOUNT_NUMBER \
+  --symbols AAPL,MSFT
 ```
 
-The command prints a Robinhood authorization URL and waits on a loopback
-callback. Open that URL in a desktop browser, sign in directly with Robinhood,
-and approve the connection.
+The command prints a Robinhood authorization URL when needed and waits on a
+loopback callback. It then validates the operator-supplied account and remote
+tool surface; reads the portfolio, equity positions, quotes, and account-level
+tradability; and creates a conservative policy, a fresh state snapshot, a
+persistent ledger, and a private live-server config. It never calls an order
+review or placement tool.
+
+The remote quote schema does not provide displayed depth. Generated state marks
+liquidity as `configured_order_cap`, bounded by the operator's maximum order
+notional. That field is an execution budget, not measured market liquidity.
+Setup fails closed when unsupported non-equity holdings would make the local
+portfolio snapshot incomplete.
 
 OAuth client registration, access tokens, refresh tokens, the PKCE verifier,
 and transient OAuth state are stored in the selected JSON file with owner-only
@@ -61,6 +70,9 @@ mode where the operating system honors POSIX file permissions. `.murre/` is
 gitignored. Treat this file as a live brokerage credential: do not commit,
 upload, paste, or share it. Revoke the connection from Robinhood if the host or
 file may be compromised.
+
+`.murre/live-config.json` also contains the Agentic account number and is
+sensitive local configuration. It is gitignored, but not encrypted.
 
 Discover the current server-owned schemas after connecting:
 
@@ -143,21 +155,11 @@ in Robinhood activity and reconcile the local ledger with venue order history.
 
 ## Expose bounded live orders to an agent
 
-After completing OAuth, the operator can expose the same review, permit, and
-placement path as a local MCP tool:
+After setup and policy review, expose the same review, permit, and placement
+path as a local MCP tool:
 
 ```bash
-node src/mcp-server.js \
-  --policy .murre/live-policy.json \
-  --state .murre/live-state.json \
-  --ledger .murre/live-events.jsonl \
-  --account robinhood-agentic \
-  --live-routing LIVE_ROBINHOOD_MCP \
-  --robinhood-account-number "$MURRE_ROBINHOOD_ACCOUNT_NUMBER" \
-  --oauth-store .murre/robinhood-oauth.json \
-  --live-max-order-notional 25 \
-  --live-max-session-notional 75 \
-  --live-max-orders 3
+npm run mcp:live
 ```
 
 The connected agent receives `murre_live_order` but cannot choose the account,
@@ -173,6 +175,13 @@ fails or its result is ambiguous. Reconcile Robinhood activity and provide a
 fresh state file before another attempt. The notional and count ceilings reset
 on server restart; the consumed-state gate persists in the event ledger.
 
+After reconciling Robinhood activity, refresh only the broker-derived state.
+This preserves the policy, config, and audit ledger:
+
+```bash
+npm run refresh:robinhood
+```
+
 See [the MCP server guide](mcp-server.md) for the complete tool contract and
 client configuration.
 
@@ -180,8 +189,9 @@ client configuration.
 
 This adapter makes the integration real; it does not make the whole system
 production-safe. Version 0.6 still trusts local policy and state files, a local
-host, the system clock, and a single-host JSONL lock. It does not yet construct
-signed state snapshots from Robinhood reads, use an ACID multi-host permit
+host, the system clock, and a single-host JSONL lock. Setup constructs state
+from authenticated Robinhood reads, but it does not sign or independently
+attest that local snapshot. Murre does not yet use an ACID multi-host permit
 store, isolate tokens in an OS keychain or separate relay service, reconcile
 orders automatically, or provide a kill-switch daemon and operational alerts.
 

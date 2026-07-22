@@ -476,6 +476,7 @@ test("starts the stdio server in live mode only with the explicit activation con
   const statePath = join(directory, "state.json");
   const ledgerPath = join(directory, "events.jsonl");
   const oauthPath = join(directory, "oauth.json");
+  const configPath = join(directory, "live-config.json");
   const at = new Date().toISOString();
   await Promise.all([
     writeFile(policyPath, JSON.stringify({
@@ -513,23 +514,24 @@ test("starts the stdio server in live mode only with the explicit activation con
     writeFile(oauthPath, JSON.stringify({
       schemaVersion: "murre.robinhood-oauth.v1",
     }), "utf8"),
+    writeFile(configPath, JSON.stringify({
+      schemaVersion: "murre.live-config.v1",
+      policy: policyPath,
+      state: statePath,
+      ledger: ledgerPath,
+      account: "robinhood-agentic",
+      "live-routing": "LIVE_ROBINHOOD_MCP",
+      "robinhood-account-number": "TEST-AGENTIC-003",
+      "oauth-store": oauthPath,
+      "live-max-order-notional": 20,
+      "live-max-session-notional": 50,
+      "live-max-orders": 2,
+    }), "utf8"),
   ]);
 
   const transport = new StdioClientTransport({
     command: process.execPath,
-    args: [
-      serverPath,
-      "--policy", policyPath,
-      "--state", statePath,
-      "--ledger", ledgerPath,
-      "--account", "robinhood-agentic",
-      "--live-routing", "LIVE_ROBINHOOD_MCP",
-      "--robinhood-account-number", "TEST-AGENTIC-003",
-      "--oauth-store", oauthPath,
-      "--live-max-order-notional", "20",
-      "--live-max-session-notional", "50",
-      "--live-max-orders", "2",
-    ],
+    args: [serverPath, "--config", configPath],
     cwd: repository,
     stderr: "pipe",
   });

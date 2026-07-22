@@ -20,7 +20,7 @@ The roadmap is ordered by trust-boundary maturity, not marketing milestones.
 - [x] Robinhood review before single-use permit consumption
 - [x] one-order live relay with explicit operator arming
 - [x] fail-closed tests with mocked remote tools
-- [ ] authenticated Robinhood-derived state snapshots
+- [x] authenticated Robinhood-derived local state snapshots
 - [ ] automatic order-status reconciliation
 - [ ] OS-keychain or isolated-service token custody
 

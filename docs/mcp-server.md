@@ -63,34 +63,39 @@ shortcuts, or short selling.
 
 ## Prepare live mode
 
-First complete Robinhood OAuth in an interactive terminal. The MCP server never
-opens a browser or waits for OAuth during an agent call.
+Run setup from an interactive terminal. It authenticates with Robinhood,
+requires the exact operator-supplied Agentic account number, verifies that the
+account is accessible to this agent, and calls only read tools. Setup does not
+review or place an order.
 
 ```powershell
-node src/cli.js robinhood-auth `
-  --oauth-store .murre/robinhood-oauth.json
+npm run setup:robinhood -- `
+  --robinhood-account-number YOUR_AGENTIC_ACCOUNT_NUMBER `
+  --symbols AAPL,MSFT
 ```
 
-Create a live policy that allows `robinhood-mcp` and a fresh state snapshot for
-`robinhood-agentic`. Every asset the agent may trade must independently record
-the venue, eligibility, reference price, price timestamp, liquidity, position,
-and portfolio facts required by the policy. A local snapshot is operator input;
-Murre 0.6 does not authenticate it against Robinhood.
+The command reads `get_accounts`, `get_portfolio`, `get_equity_positions`,
+`get_equity_quotes`, and `get_equity_tradability`. It writes the OAuth store,
+policy, broker-derived state, persistent ledger, and live server configuration
+under `.murre/`. Existing equity positions are included automatically;
+`--symbols` adds equities that are not currently held.
 
-Start the live server with the exact activation value and all three ceilings:
+The generated policy defaults to $25 per order, a $75 session ceiling, and no
+more than three orders. Quote freshness, a 1% limit-price band, concentration,
+gross exposure, cash, inventory, and tradability checks remain active. Review
+`.murre/live-policy.json` before starting the server.
+
+Robinhood's quote tool does not expose displayed market depth. The generated
+snapshot therefore sets `availableLiquidityUsd` to the smaller operator-defined
+order ceiling and records `liquidityBasis: "configured_order_cap"`. This is a
+fail-closed execution budget, not a claim about market liquidity. Setup also
+fails when non-equity holdings would make the supported portfolio snapshot
+incomplete.
+
+Start the live server from its private local config:
 
 ```powershell
-node src/mcp-server.js `
-  --policy .murre/live-policy.json `
-  --state .murre/live-state.json `
-  --ledger .murre/live-events.jsonl `
-  --account robinhood-agentic `
-  --live-routing LIVE_ROBINHOOD_MCP `
-  --robinhood-account-number $env:MURRE_ROBINHOOD_ACCOUNT_NUMBER `
-  --oauth-store .murre/robinhood-oauth.json `
-  --live-max-order-notional 25 `
-  --live-max-session-notional 75 `
-  --live-max-orders 3
+npm run mcp:live
 ```
 
 Environment alternatives are `MURRE_LIVE_ROUTING`,
@@ -106,10 +111,11 @@ confirmation for each order. Keep the Agentic account separately funded and the
 ceilings deliberately small.
 
 The Agentic account number must be copied by the operator from the dedicated
-account; Murre never defaults it from `get_accounts`. Prefer the environment
-variable so it is not written into an MCP client configuration, and never
-commit it. Murre binds it into the exact remote argument hash but redacts known
-account fields and the configured number from responses and event bodies.
+account; Murre never defaults it from `get_accounts`. Setup stores it only in
+`.murre/live-config.json`, which is gitignored but not encrypted. Never commit,
+upload, paste, or share `.murre/`. Murre binds it into the exact remote argument
+hash but redacts known account fields and the configured number from responses
+and event bodies.
 
 ## Fresh-state and restart behavior
 
@@ -117,7 +123,11 @@ Murre records the state hash used for each live decision. After a permit is
 consumed, including when placement fails or its result is ambiguous, that state
 cannot authorize another live attempt. Inspect Robinhood activity, reconcile the
 submitted order, and replace the state file with a fresh snapshot before calling
-the tool again.
+the tool again. After reconciling Robinhood activity, refresh only the state:
+
+```powershell
+npm run refresh:robinhood
+```
 
 Order-count and notional ceilings are in-memory session controls and reset when
 the server restarts. The fresh-state gate is rebuilt from the ledger and survives
@@ -158,11 +168,17 @@ The common paths may instead be supplied through `MURRE_POLICY_PATH`,
 The process speaks MCP over stdin/stdout. A manually started terminal appears
 idle after the startup message; an MCP client normally launches the process.
 
+For the generated live config, point the client at `src/mcp-server.js` with
+`--config C:\absolute\path\to\murre\.murre\live-config.json`. The config file
+contains the private account number, while the agent-facing tool schema does not.
+
 ## Current boundary
 
 Live MCP mode makes Murre callable real-money infrastructure, but not
 production-safe infrastructure. It still trusts local files, the host, and the
-operator; lacks authenticated brokerage state, automatic order reconciliation,
+operator. Setup derives state through authenticated Robinhood reads, but the
+resulting local file is not signed or independently attested. Murre still lacks
+automatic order reconciliation,
 multi-host transactional permit storage, and isolated credential custody; and
 has not received an independent security review. It is not approved for
 unattended or material capital.
