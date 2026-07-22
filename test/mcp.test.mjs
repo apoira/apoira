@@ -561,6 +561,10 @@ test("starts the stdio server in live mode only with the explicit activation con
     researchTools.tools.some((tool) => tool.name === "murre_research_equity"),
     true,
   );
+  assert.equal(
+    researchTools.tools.some((tool) => tool.name === "murre_compare_equities"),
+    true,
+  );
   assert.equal(researchTools.tools.some((tool) => tool.name === "murre_live_order"), false);
   assert.equal(researchTools.tools.some((tool) => tool.name === "murre_paper_order"), false);
   const researchStatus = await researchClient.callTool({ name: "murre_status", arguments: {} });

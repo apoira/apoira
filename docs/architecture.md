@@ -92,8 +92,9 @@ The same argument object is sent to Robinhood review and placement.
 
 ## 9. Agent-facing live boundary
 
-`createMurreMcpServer` exposes `murre_research_equity` in authenticated
-read-only research mode and in live mode. Research mode does not register any
+`createMurreMcpServer` exposes `murre_research_equity` and
+`murre_compare_equities` in authenticated read-only research mode and in live
+mode. Research mode does not register any
 order tool. The relay appears as `murre_live_order` only when the operator
 starts a separate live process with the exact `LIVE_ROBINHOOD_MCP` activation
 value, an existing OAuth store, and explicit ceilings for per-order notional,

@@ -6,6 +6,7 @@ import test from "node:test";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import {
+  compareEquities,
   createMurreMcpServer,
   hashWithDomain,
   researchEquity,
@@ -30,15 +31,17 @@ function researchVenueClient(calls) {
     },
     async callTool(request) {
       calls.push(structuredClone(request));
+      const symbol = request.arguments.symbol || request.arguments.symbols?.[0];
+      const isMsft = symbol === "MSFT";
       if (request.name === "get_equity_quotes") {
         return toolResult({
           results: [{
             quote: {
-              symbol: "AAPL",
-              adjusted_previous_close: "205",
-              last_trade_price: "210",
+              symbol,
+              adjusted_previous_close: isMsft ? "500" : "205",
+              last_trade_price: isMsft ? "495" : "210",
               venue_last_trade_time: "2026-07-22T14:59:00Z",
-              last_non_reg_trade_price: "211",
+              last_non_reg_trade_price: isMsft ? "496" : "211",
               venue_last_non_reg_trade_time: "2026-07-22T15:01:00Z",
             },
           }],
@@ -47,19 +50,21 @@ function researchVenueClient(calls) {
       if (request.name === "get_equity_fundamentals") {
         return toolResult({
           results: [{
-            symbol: "AAPL",
-            low_52_weeks: "160",
-            high_52_weeks: "220",
-            pe_ratio: "31.5",
-            pb_ratio: "48.2",
-            dividend_yield: "0.5",
-            volume: "12000000",
+            symbol,
+            low_52_weeks: isMsft ? "350" : "160",
+            high_52_weeks: isMsft ? "550" : "220",
+            pe_ratio: isMsft ? "38.2" : "31.5",
+            pb_ratio: isMsft ? "12.4" : "48.2",
+            dividend_yield: isMsft ? "0.7" : "0.5",
+            volume: isMsft ? "9000000" : "12000000",
             average_volume_2_weeks: "10000000",
           }],
         });
       }
       if (request.name === "get_equity_technical_indicators") {
-        return toolResult({ indicators: [{ series: [{ value: "72.5" }] }] });
+        return toolResult({
+          indicators: [{ series: [{ value: isMsft ? "55.1" : "72.5" }] }],
+        });
       }
       if (request.name === "get_earnings_results") {
         return toolResult({
@@ -133,6 +138,44 @@ test("builds hash-addressed equity research from authenticated Robinhood tools",
     period: 14,
   });
   assert.deepEqual(calls[3].arguments, { symbol: "AAPL" });
+});
+
+test("compares multiple equities with one hash-addressed result", async () => {
+  const calls = [];
+  const result = await compareEquities({
+    client: researchVenueClient(calls),
+    symbols: ["aapl", "MSFT", "AAPL"],
+    at: AT,
+  });
+
+  assert.equal(result.schemaVersion, "murre.equity-comparison.v1");
+  assert.equal(result.status, "COMPLETE");
+  assert.deepEqual(result.symbols, ["AAPL", "MSFT"]);
+  assert.equal(result.source.accountDataRead, false);
+  assert.equal(result.source.orderToolsCalled, false);
+  assert.equal(result.items.length, 2);
+  assert.equal(result.items[0].symbol, "AAPL");
+  assert.equal(result.items[1].symbol, "MSFT");
+  assert.equal(result.comparison[0].priceUsd, 211);
+  assert.equal(result.comparison[1].priceUsd, 496);
+  assert.equal(result.comparison[1].rsi14, 55.1);
+  assert.equal(result.comparison[0].evidenceHash, result.items[0].evidenceHash);
+  assert.match(result.evidenceHash, /^[a-f0-9]{64}$/u);
+  const { evidenceHash, ...evidence } = result;
+  assert.equal(evidenceHash, hashWithDomain("murre.equity-comparison.v1", evidence));
+  assert.equal(calls.length, 8);
+  assert.deepEqual(calls.map((call) => call.name), [...RESEARCH_TOOLS, ...RESEARCH_TOOLS]);
+});
+
+test("requires two unique symbols for an equity comparison", async () => {
+  await assert.rejects(
+    compareEquities({
+      client: researchVenueClient([]),
+      symbols: ["AAPL", "aapl"],
+      at: AT,
+    }),
+    /at least 2 unique equity tickers/u,
+  );
 });
 
 test("exposes equity research through read-only MCP mode", async (context) => {
@@ -212,16 +255,24 @@ test("exposes equity research through read-only MCP mode", async (context) => {
 
   const listed = await client.listTools();
   const tool = listed.tools.find((candidate) => candidate.name === "murre_research_equity");
+  const compareTool = listed.tools.find(
+    (candidate) => candidate.name === "murre_compare_equities",
+  );
   assert.ok(tool);
+  assert.ok(compareTool);
   assert.equal(listed.tools.some((candidate) => candidate.name === "murre_live_order"), false);
   assert.equal(listed.tools.some((candidate) => candidate.name === "murre_paper_order"), false);
   assert.deepEqual(Object.keys(tool.inputSchema.properties), ["symbol"]);
   assert.equal(tool.annotations.readOnlyHint, true);
   assert.equal(tool.annotations.destructiveHint, false);
+  assert.deepEqual(Object.keys(compareTool.inputSchema.properties), ["symbols"]);
+  assert.equal(compareTool.annotations.readOnlyHint, true);
+  assert.equal(compareTool.annotations.destructiveHint, false);
 
   const status = await client.callTool({ name: "murre_status", arguments: {} });
   assert.equal(status.structuredContent.mode, "research");
   assert.equal(status.structuredContent.capabilities.equityResearch, true);
+  assert.equal(status.structuredContent.capabilities.equityComparison, true);
   assert.equal(status.structuredContent.capabilities.liveOrders, false);
   assert.equal(status.structuredContent.live.armed, false);
   assert.equal(status.structuredContent.live.researchOnly, true);
@@ -235,4 +286,16 @@ test("exposes equity research through read-only MCP mode", async (context) => {
   assert.equal(connections, 1);
   assert.equal(closes, 1);
   assert.deepEqual(calls.map((call) => call.name), RESEARCH_TOOLS);
+
+  const comparison = await client.callTool({
+    name: "murre_compare_equities",
+    arguments: { symbols: ["AAPL", "MSFT"] },
+  });
+  assert.equal(comparison.isError, undefined);
+  assert.deepEqual(comparison.structuredContent.symbols, ["AAPL", "MSFT"]);
+  assert.equal(comparison.structuredContent.comparison[1].symbol, "MSFT");
+  assert.equal(comparison.structuredContent.source.accountDataRead, false);
+  assert.equal(connections, 2);
+  assert.equal(closes, 2);
+  assert.equal(calls.length, 12);
 });

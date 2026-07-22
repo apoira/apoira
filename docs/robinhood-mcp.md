@@ -86,8 +86,9 @@ assuming the server's tool list is permanent.
 
 ## Read-only equity research
 
-The authenticated MCP server exposes `murre_research_equity` alongside the
-guarded order route. It accepts one public-equity symbol and calls Robinhood's
+The authenticated MCP server exposes `murre_research_equity` and
+`murre_compare_equities` alongside the guarded order route. The first accepts
+one public-equity symbol; the second accepts 2–5 symbols. Both call Robinhood's
 quote, fundamentals, technical-indicator, and earnings tools. Murre normalizes
 the result into a timestamped evidence object and commits to that object with a
 domain-separated SHA-256 hash.
@@ -183,8 +184,9 @@ For research without an order tool, start the read-only server:
 npm run mcp:research
 ```
 
-It exposes `murre_status`, `murre_research_equity`, and
-`murre_recent_events`. It does not register paper mutation or live order tools.
+It exposes `murre_status`, `murre_research_equity`,
+`murre_compare_equities`, and `murre_recent_events`. It does not register paper
+mutation or live order tools.
 
 After reviewing the configuration, expose the same review, permit, and placement
 path as a local MCP tool:
@@ -193,8 +195,9 @@ path as a local MCP tool:
 npm run mcp:live
 ```
 
-The connected agent receives the read-only `murre_research_equity` tool and the
-guarded `murre_live_order` tool but cannot choose the account, venue,
+The connected agent receives the read-only `murre_research_equity` and
+`murre_compare_equities` tools plus the guarded `murre_live_order` tool, but
+cannot choose the account, venue,
 credentials, policy, state, ledger, clock, order type, or ceilings.
 The operator supplies the dedicated Agentic account number outside the tool
 schema; Murre binds it into the request hash and redacts it from returned and

@@ -176,7 +176,7 @@ export function waitForOAuthCallback({
 }
 
 function newClient() {
-  return new Client({ name: "murre", version: "0.6.0" }, { capabilities: {} });
+  return new Client({ name: "murre", version: "0.6.1" }, { capabilities: {} });
 }
 
 export async function connectRobinhood({

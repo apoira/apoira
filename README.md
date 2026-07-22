@@ -83,6 +83,8 @@ The repository contains executable infrastructure, not a simulated dashboard:
 - one-command OAuth onboarding and Robinhood-derived portfolio snapshots;
 - a read-only `murre_research_equity` tool that assembles quotes, fundamentals,
   RSI, and earnings into timestamped, hash-addressed evidence;
+- a read-only `murre_compare_equities` tool that compares 2–5 symbols with
+  complete per-symbol evidence and one hash for the combined result;
 - a narrow live path that reviews an equity limit order, consumes the exact
   permit, submits the same arguments, and records a content-addressed receipt;
 - a Node CLI and boundary-focused test suite.
@@ -172,12 +174,18 @@ Start Murre in read-only research mode first:
 npm run mcp:research
 ```
 
-This mode exposes `murre_status`, `murre_research_equity`, and
-`murre_recent_events`. It does not register a paper or live order tool. Ask the
-connected agent to research one public equity:
+This mode exposes `murre_status`, `murre_research_equity`,
+`murre_compare_equities`, and `murre_recent_events`. It does not register a
+paper or live order tool. Ask the connected agent to research one public equity:
 
 ```text
 Use murre_research_equity to research AAPL. Return the evidence.
+```
+
+Or compare up to five names in one call:
+
+```text
+Use murre_compare_equities to compare AAPL, MSFT, and GOOGL. Return the evidence.
 ```
 
 The tool reads Robinhood's quote, fundamentals, daily RSI, and earnings tools.
@@ -199,8 +207,8 @@ npm run mcp:live
 This intentionally gives the connected agent authority to submit orders up to
 the configured ceilings without a new human confirmation for every call. The
 agent receives `murre_status`, `murre_research_equity`,
-`murre_recent_events`, and `murre_live_order`; paper mutation tools are removed
-while live mode is armed.
+`murre_compare_equities`, `murre_recent_events`, and `murre_live_order`; paper
+mutation tools are removed while live mode is armed.
 
 Before another live attempt, reconcile Robinhood activity and refresh only the
 broker-derived state. The command preserves the policy and audit ledger:
@@ -259,9 +267,10 @@ npm run refresh:robinhood
 ## Trust boundary
 
 Agents receive no venue credential. In paper mode they submit bounded intents.
-In live MCP mode the read-only research call accepts one public symbol. Order
-calls accept only symbol, side, quantity, limit price, and an optional intent
-ID; the operator fixes every authority-bearing input when the server starts.
+In live MCP mode the read-only research tools accept one public symbol or a
+2–5 symbol comparison. Order calls accept only symbol, side, quantity, limit
+price, and an optional intent ID; the operator fixes every authority-bearing
+input when the server starts.
 Changing any execution field changes the intent hash and invalidates its permit.
 
 The reference event store serializes permit consumption with an exclusive lock

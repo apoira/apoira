@@ -1,6 +1,6 @@
 {
   "name": "@murre/kernel",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Financial tools and guarded Robinhood MCP routing for autonomous agents.",
   "type": "module",
   "private": true,

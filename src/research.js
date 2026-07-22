@@ -113,31 +113,41 @@ function nextEarnings(rows, requestedAt) {
   }) || rows.find((row) => row.actualEpsUsd === null && row.verified) || null;
 }
 
-export async function researchEquity({
-  client,
-  symbol,
-  at = new Date().toISOString(),
-  lookbackDays = 90,
-}) {
-  const normalizedSymbol = normalizeSymbol(symbol);
+function normalizeRequest(at, lookbackDays) {
   const requestedAtMs = Date.parse(at);
   if (!Number.isFinite(requestedAtMs)) throw new TypeError("at must be a valid timestamp");
   if (!Number.isSafeInteger(lookbackDays) || lookbackDays < 30 || lookbackDays > 365) {
     throw new TypeError("lookbackDays must be an integer from 30 to 365");
   }
-  const requestedAt = new Date(requestedAtMs).toISOString();
-  const startTime = new Date(requestedAtMs - lookbackDays * 86_400_000).toISOString();
+  return {
+    requestedAtMs,
+    requestedAt: new Date(requestedAtMs).toISOString(),
+  };
+}
+
+async function researchAdapter(client) {
   const adapter = new RobinhoodMcpAdapter(client);
   for (const name of RESEARCH_TOOLS) await adapter.requireTool(name);
+  return adapter;
+}
+
+async function researchEquityWithAdapter({
+  adapter,
+  symbol,
+  requestedAt,
+  requestedAtMs,
+  lookbackDays,
+}) {
+  const startTime = new Date(requestedAtMs - lookbackDays * 86_400_000).toISOString();
 
   const [quoteResult, fundamentalsResult, rsiResult, earningsResult] = await Promise.all([
-    adapter.call("get_equity_quotes", { symbols: [normalizedSymbol] }),
+    adapter.call("get_equity_quotes", { symbols: [symbol] }),
     adapter.call("get_equity_fundamentals", {
-      symbols: [normalizedSymbol],
+      symbols: [symbol],
       bounds: "regular",
     }),
     adapter.call("get_equity_technical_indicators", {
-      symbol: normalizedSymbol,
+      symbol,
       type: "rsi",
       interval: "day",
       start_time: startTime,
@@ -147,7 +157,7 @@ export async function researchEquity({
       output: "latest",
       period: 14,
     }),
-    adapter.call("get_earnings_results", { symbol: normalizedSymbol }),
+    adapter.call("get_earnings_results", { symbol }),
   ]);
 
   const quoteData = robinhoodToolData(quoteResult, "get_equity_quotes");
@@ -161,21 +171,21 @@ export async function researchEquity({
   );
   const earningsData = robinhoodToolData(earningsResult, "get_earnings_results");
   const quoteBundle = (quoteData.results || []).find(
-    (row) => row?.quote?.symbol === normalizedSymbol,
+    (row) => row?.quote?.symbol === symbol,
   ) || quoteData.results?.[0];
-  const quote = latestQuote(quoteBundle, normalizedSymbol);
+  const quote = latestQuote(quoteBundle, symbol);
   const quoteFields = quoteBundle.quote;
   const fundamentals = (fundamentalsData.results || []).find(
-    (row) => !row?.symbol || row.symbol === normalizedSymbol,
+    (row) => !row?.symbol || row.symbol === symbol,
   );
-  if (!fundamentals) throw new Error(`Robinhood returned no fundamentals for ${normalizedSymbol}`);
+  if (!fundamentals) throw new Error(`Robinhood returned no fundamentals for ${symbol}`);
   const rsiSeries = indicatorData.indicators?.[0]?.series || [];
   const rsiValue = optionalNumber(rsiSeries.at(-1)?.value ?? rsiSeries[0]?.value);
-  if (!Number.isFinite(rsiValue)) throw new Error(`Robinhood returned no RSI value for ${normalizedSymbol}`);
+  if (!Number.isFinite(rsiValue)) throw new Error(`Robinhood returned no RSI value for ${symbol}`);
 
   const priorCloseUsd = finiteNumber(
     quoteFields.adjusted_previous_close,
-    `${normalizedSymbol} adjusted previous close`,
+    `${symbol} adjusted previous close`,
   );
   const low52WeekUsd = optionalNumber(fundamentals.low_52_weeks);
   const high52WeekUsd = optionalNumber(fundamentals.high_52_weeks);
@@ -189,7 +199,7 @@ export async function researchEquity({
   const evidence = {
     schemaVersion: "murre.equity-research.v1",
     status: "COMPLETE",
-    symbol: normalizedSymbol,
+    symbol,
     requestedAt,
     observedAt: new Date(quote.observedAtMs).toISOString(),
     source: {
@@ -242,5 +252,81 @@ export async function researchEquity({
   return {
     ...evidence,
     evidenceHash: hashWithDomain("murre.equity-research.v1", evidence),
+  };
+}
+
+export async function researchEquity({
+  client,
+  symbol,
+  at = new Date().toISOString(),
+  lookbackDays = 90,
+}) {
+  const normalizedSymbol = normalizeSymbol(symbol);
+  const request = normalizeRequest(at, lookbackDays);
+  const adapter = await researchAdapter(client);
+  return researchEquityWithAdapter({
+    adapter,
+    symbol: normalizedSymbol,
+    ...request,
+    lookbackDays,
+  });
+}
+
+export async function compareEquities({
+  client,
+  symbols,
+  at = new Date().toISOString(),
+  lookbackDays = 90,
+}) {
+  if (!Array.isArray(symbols) || symbols.length < 2 || symbols.length > 5) {
+    throw new TypeError("symbols must contain from 2 to 5 equity tickers");
+  }
+  const normalizedSymbols = [...new Set(symbols.map(normalizeSymbol))];
+  if (normalizedSymbols.length < 2) {
+    throw new TypeError("symbols must contain at least 2 unique equity tickers");
+  }
+  const request = normalizeRequest(at, lookbackDays);
+  const adapter = await researchAdapter(client);
+  const items = [];
+  for (const symbol of normalizedSymbols) {
+    items.push(await researchEquityWithAdapter({
+      adapter,
+      symbol,
+      ...request,
+      lookbackDays,
+    }));
+  }
+
+  const evidence = {
+    schemaVersion: "murre.equity-comparison.v1",
+    status: "COMPLETE",
+    requestedAt: request.requestedAt,
+    symbols: normalizedSymbols,
+    source: {
+      provider: "robinhood-trading-mcp",
+      publicMarketDataOnly: true,
+      accountDataRead: false,
+      orderToolsCalled: false,
+    },
+    comparison: items.map((item) => ({
+      symbol: item.symbol,
+      observedAt: item.observedAt,
+      priceUsd: item.market.priceUsd,
+      dayChangePct: item.market.dayChangePct,
+      range52WeekPositionPct: item.range52Week.positionPct,
+      peRatio: item.valuation.peRatio,
+      dividendYieldPct: item.valuation.dividendYieldPct,
+      relativeVolume: item.liquidity.relativeVolume,
+      rsi14: item.momentum.value,
+      rsiBand: item.momentum.band,
+      earningsBeatRatePct: item.earnings.beatRatePct,
+      nextVerifiedEarningsDate: item.earnings.nextVerified?.reportDate || null,
+      evidenceHash: item.evidenceHash,
+    })),
+    items,
+  };
+  return {
+    ...evidence,
+    evidenceHash: hashWithDomain("murre.equity-comparison.v1", evidence),
   };
 }

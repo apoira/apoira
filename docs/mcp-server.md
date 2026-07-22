@@ -45,6 +45,7 @@ node src/mcp-server.js `
 | --- | --- |
 | `murre_status` | Reports read-only research mode and supplied portfolio facts. |
 | `murre_research_equity` | Reads public Robinhood quotes, fundamentals, RSI, and earnings. |
+| `murre_compare_equities` | Compares 2–5 equities with complete evidence and a combined hash. |
 | `murre_recent_events` | Reads records from the verified hash-chained ledger. |
 
 After Robinhood setup, start this mode with:
@@ -53,8 +54,8 @@ After Robinhood setup, start this mode with:
 npm run mcp:research
 ```
 
-Neither paper mutation nor live order tools are registered. The research tool
-accepts only an equity symbol and never receives the Agentic account number.
+Neither paper mutation nor live order tools are registered. The research tools
+accept only public symbols and never receive the Agentic account number.
 
 ## Live-mode tools
 
@@ -62,11 +63,12 @@ accepts only an equity symbol and never receives the Agentic account number.
 | --- | --- |
 | `murre_status` | Reads policy, supplied portfolio facts, ledger health, and remaining session capacity. |
 | `murre_research_equity` | Reads public Robinhood quotes, fundamentals, RSI, and earnings; never places an order. |
+| `murre_compare_equities` | Compares 2–5 equities using only public market data. |
 | `murre_live_order` | Evaluates, reviews, consumes, and submits one bounded equity limit order. |
 | `murre_recent_events` | Reads records from the verified hash-chained ledger. |
 
-Paper mutation tools are not registered in live mode. The research tool accepts
-only an equity symbol. It uses public market-data calls and never receives the
+Paper mutation tools are not registered in live mode. The research tools accept
+only equity symbols. They use public market-data calls and never receive the
 account number or an order route. For a live order, the agent can provide only
 `ticker`, `side`, `quantity`, `limitPriceUsd`, `timeInForce: "gfd"`, and an
 optional `intentId`. The server fixes:
@@ -100,6 +102,19 @@ Murre calls `get_equity_quotes`, `get_equity_fundamentals`,
 verified earnings date when available, source timestamps, and an evidence hash.
 It is market evidence, not a recommendation. No review or placement tool is
 called.
+
+To compare several names without repeated agent round trips:
+
+```json
+{
+  "name": "murre_compare_equities",
+  "arguments": { "symbols": ["AAPL", "MSFT", "GOOGL"] }
+}
+```
+
+The response retains every per-symbol research object, adds a compact
+side-by-side view, and hashes the combined evidence. Symbols are deduplicated
+and the call is limited to five names.
 
 ## Prepare Robinhood modes
 

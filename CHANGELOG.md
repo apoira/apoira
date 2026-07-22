@@ -3,6 +3,17 @@
 All notable changes to Murre are documented here. The project follows
 semantic versioning while the protocol is experimental.
 
+## 0.6.1 - 2026-07-22
+
+### Added
+
+- `murre_compare_equities`, a read-only MCP tool for comparing 2–5 public
+  equities in one authenticated Robinhood session;
+- complete per-symbol research objects, a compact comparison view, and a
+  domain-separated hash over the combined evidence;
+- explicit response fields confirming that comparison reads no account data
+  and calls no order tools.
+
 ## 0.6.0 - 2026-07-21
 
 ### Added

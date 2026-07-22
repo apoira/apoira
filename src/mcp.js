@@ -10,12 +10,12 @@ import {
 } from "./live.js";
 import { LiveSessionBudget, consumedLiveStateHashes } from "./live-session.js";
 import { executePaperOrder, runPaperCycle } from "./paper.js";
-import { researchEquity } from "./research.js";
+import { compareEquities, researchEquity } from "./research.js";
 import { closeRobinhood, connectRobinhood } from "./robinhood.js";
 import { JsonFileStateStore, readJsonFile } from "./state-store.js";
 import { JsonlEventStore } from "./store.js";
 
-const VERSION = "0.6.0";
+const VERSION = "0.6.1";
 export const LIVE_MCP_ACTIVATION = "LIVE_ROBINHOOD_MCP";
 
 function nonEmpty(value, label) {
@@ -196,12 +196,14 @@ export function createMurreMcpServer({
         "Murre is an operator-armed live portfolio policy boundary that can move real money.",
         "Use murre_status before proposing an order.",
         "murre_research_equity reads public Robinhood market data and never places an order.",
+        "murre_compare_equities compares 2 to 5 public equities without reading the account.",
         "murre_live_order can move real money in the configured Robinhood Agentic account.",
         "Paper mutation tools are disabled while live routing is armed.",
         "Brokerage credentials remain operator-owned and are never returned to the caller.",
       ] : serverMode === "research" ? [
         "Murre is connected to Robinhood in read-only equity research mode.",
         "murre_research_equity reads public market data and never places an order.",
+        "murre_compare_equities compares 2 to 5 public equities without reading the account.",
         "No paper or live order tool is registered in this mode.",
         "Brokerage credentials remain operator-owned and are never returned to the caller.",
       ] : [
@@ -255,6 +257,7 @@ export function createMurreMcpServer({
         paperOrders: serverMode === "paper",
         paperRebalances: serverMode === "paper",
         equityResearch: liveConfig.enabled,
+        equityComparison: liveConfig.enabled,
         liveOrders: liveOrdersEnabled,
       },
       live: liveOrdersEnabled ? {
@@ -415,6 +418,40 @@ export function createMurreMcpServer({
         return response(await researchEquity({
           client: session.client,
           symbol,
+          at: now(),
+        }));
+      } finally {
+        await liveConfig.closeRobinhood(session);
+      }
+    }));
+
+    server.registerTool("murre_compare_equities", {
+      title: "Compare public equities",
+      description: "Research and compare 2 to 5 public equities in one call. Returns complete per-symbol evidence, a compact comparison, and a combined evidence hash. Never reads the account or places an order.",
+      inputSchema: {
+        symbols: z.array(
+          z.string().trim().min(1).max(15)
+            .regex(/^[A-Za-z][A-Za-z0-9.-]*$/u),
+        ).min(2).max(5)
+          .describe("Two to five public equity tickers to compare, such as AAPL, MSFT, and GOOGL."),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true,
+      },
+    }, async ({ symbols }) => serialize(async () => {
+      let session;
+      try {
+        session = await liveConfig.connectRobinhood({
+          oauthStorePath: liveConfig.oauthStorePath,
+          callbackPort: liveConfig.callbackPort,
+          interactive: false,
+        });
+        return response(await compareEquities({
+          client: session.client,
+          symbols,
           at: now(),
         }));
       } finally {
