@@ -4,15 +4,24 @@
 [![Node.js 20.10+](https://img.shields.io/badge/node-%3E%3D20.10-417E38)](package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111)](LICENSE)
 
-**Autonomous portfolios, governed by code.**
+**Financial tools agents can call.**
 
-Murre turns a portfolio proposal, an independently supplied state snapshot,
-and a versioned policy into one of two proof objects:
+Murre is an open MCP toolkit for agentic finance. Today it connects agents to
+Robinhood account state, user-defined policy, guarded live execution, and a
+hash-chained event history.
+
+The project is expanding into research, portfolio construction, monitoring,
+tokenized assets, and additional venues. Those capabilities share one rule:
+account access, credentials, and execution authority remain outside the calling
+model.
+
+For every proposed order, Murre turns independently supplied state and a
+versioned policy into one of two proof objects:
 
 - a denial receipt explaining exactly which constraints failed; or
 - a short-lived, single-use permit bound to the exact order.
 
-The research system can change its models without expanding its authority.
+The calling agent can change its models without expanding its authority.
 Only the credentialed execution boundary may route an order, and only when the
 order matches a valid permit.
 
@@ -23,15 +32,18 @@ order matches a valid permit.
 
 ## Why this exists
 
-An autonomous portfolio system has two very different jobs:
+Agentic finance needs two different kinds of tools:
 
-1. **Seek returns.** Source assets, form views, construct targets, and propose
-   trades. This work is probabilistic and changes often.
+1. **Understand and operate.** Read accounts, research assets, construct
+   portfolios, monitor activity, and propose actions. This surface should grow
+   quickly as models, assets, and venues improve.
 2. **Control capital.** Decide what may execute, under which facts and limits.
-   This work should be small, deterministic, replayable, and independently
+   This boundary should stay small, deterministic, replayable, and independently
    deployable.
 
-Murre is the second system.
+Murre is building both behind one MCP interface. The control path is the most
+complete part today; the broader toolkit is being added without presenting
+planned capabilities as live.
 
 ```text
 target weights ──> rebalance planner ──> order intents
@@ -134,6 +146,27 @@ tokens, the account number, policy, state, and ledger stay under the gitignored
 `.murre/` directory. Do not share that directory.
 
 After reviewing `.murre/live-policy.json`, start the agent-callable server:
+
+You can edit Murre's generated portfolio rules directly in the terminal. Press Enter to
+keep any current value:
+
+```bash
+npm run configure
+```
+
+For scripts and automated deployments, the same editor accepts flags:
+
+```bash
+npm run configure -- \
+  --max-order-notional 25 \
+  --max-session-notional 75 \
+  --max-orders 3 \
+  --max-position-pct 20 \
+  --min-cash-pct 10
+```
+
+Restart the live server after changing the configuration. Then start the agent-callable
+server:
 
 ```bash
 npm run mcp:live

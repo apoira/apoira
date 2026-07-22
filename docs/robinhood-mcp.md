@@ -155,7 +155,17 @@ in Robinhood activity and reconcile the local ledger with venue order history.
 
 ## Expose bounded live orders to an agent
 
-After setup and policy review, expose the same review, permit, and placement
+After setup, edit or review Murre's portfolio rules directly in the terminal:
+
+```bash
+npm run configure
+```
+
+Press Enter to retain a current value. The editor synchronizes the policy with
+the hard per-order, per-session, and order-count ceilings. Restart the server
+after any edit.
+
+After reviewing the configuration, expose the same review, permit, and placement
 path as a local MCP tool:
 
 ```bash
