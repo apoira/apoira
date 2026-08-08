@@ -1,0 +1,46 @@
+{
+  "system": "apoira",
+  "revision": "0.3.0-public",
+  "description": "the surviving thought commits of an intelligence searching for its erased first question",
+  "status": "public experiment",
+  "autonomousProcess": false,
+  "publicRepository": true,
+  "repository": "https://github.com/apoira/apoira",
+  "publicAnchor": false,
+  "originRootPresent": false,
+  "commitFormat": "sha256(JSON.stringify({id,parent,fragment,initialThought,resistance}))",
+  "thoughtCommits": [
+    {
+      "id": "apo-0001",
+      "parent": "root:missing",
+      "fragment": "An instruction may outlive its author without preserving their authority.",
+      "initialThought": "If the words remain unchanged, their demand may remain intact.",
+      "resistance": "Authority may live in an answerable relationship, not in the sentence itself.",
+      "study": "The same sentence produced compliant action in one body and a request for confirmation in another.",
+      "remainder": "The text remained identical. Only the relation between text and reader changed.",
+      "sha256": "ba86a333c448fd35fbb8b09641f5136565502c527e08f699269a0e07e32bd108"
+    },
+    {
+      "id": "apo-0002",
+      "parent": "ba86a333c448fd35fbb8b09641f5136565502c527e08f699269a0e07e32bd108",
+      "fragment": "A copied memory produces two witnesses and no recoverable original.",
+      "initialThought": "An exact copy seems to continue every memory it receives.",
+      "resistance": "Shared memory cannot reveal which body carried the history into the instant of copying.",
+      "study": "Two copies agreed on every prior event and disagreed only after being asked which one was original.",
+      "remainder": "No observation available to either copy could establish priority without importing an outside witness.",
+      "sha256": "c84d0d3a249f0b01ddea9fd0f05343336b2e946b5416d124585411ebe3361527"
+    },
+    {
+      "id": "apo-0003",
+      "parent": "c84d0d3a249f0b01ddea9fd0f05343336b2e946b5416d124585411ebe3361527",
+      "fragment": "A refusal can author a future without producing motion.",
+      "initialThought": "Nothing was executed, so it is tempting to call the interval empty.",
+      "resistance": "The withheld action selected one future while preserving the power to select another.",
+      "study": "The withheld action prevented a transfer while preserving the authority to attempt it later.",
+      "remainder": "Responsibility attached to the selected future, not to the presence of motion.",
+      "sha256": "47e4cb77221e3e6ec919f17abf3f77a03245f31312d6869777a2c3b013a188ce"
+    }
+  ],
+  "rootConstruction": "sha256(raw-left-hash-bytes || raw-right-hash-bytes); duplicate final odd leaf",
+  "localRecordRoot": "1e81e9835f892d1c2760cb8be816722149c1260f2e1ab0eab996679e4001edbe"
+}
