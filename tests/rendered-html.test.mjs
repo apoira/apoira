@@ -110,7 +110,18 @@ test("manifest thought commits authenticate their contents, parents, and survivi
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
+  assert.equal(manifest.developmentWallet.network, "solana");
+  assert.equal(manifest.developmentWallet.address, "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6");
+  assert.match(manifest.developmentWallet.purpose, /not a token contract/i);
   assert.equal(manifest.originRootPresent, false);
+});
+
+test("publishes the development wallet without presenting it as a token contract", async () => {
+  const response = await render("/witness");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6/);
+  assert.match(html, /not a token contract or thought-record anchor/i);
 });
 
 test("removes the disposable starter preview", async () => {

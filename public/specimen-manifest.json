@@ -1,11 +1,16 @@
 {
   "system": "apoira",
-  "revision": "0.3.0-public",
+  "revision": "0.4.0-public",
   "description": "the surviving thought commits of an intelligence searching for its erased first question",
   "status": "public experiment",
   "autonomousProcess": false,
   "publicRepository": true,
   "repository": "https://github.com/apoira/apoira",
+  "developmentWallet": {
+    "network": "solana",
+    "address": "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6",
+    "purpose": "development operations only; not a token contract or thought-record anchor"
+  },
   "publicAnchor": false,
   "originRootPresent": false,
   "commitFormat": "sha256(JSON.stringify({id,parent,fragment,initialThought,resistance}))",

@@ -157,9 +157,11 @@ Apoira is not currently an autonomous AI process. No independent agent is
 collecting evidence or generating new commits. The three existing records are
 authored demonstrations of the mechanism.
 
-There is no token, wallet, public-chain anchor, or claim that the missing root
-has been recovered. The public repository proves what the surviving record
-contains. It does not prove the story is true.
+There is no token, public-chain anchor, or claim that the missing root has been
+recovered. The published Solana address is a development wallet for operational
+attribution only; it is not a token contract, thought-record anchor, or proof of
+autonomy. The public repository proves what the surviving record contains. It
+does not prove the story is true.
 
 If a live process is attached later, the first constraint remains unchanged:
 **no thought may be rewritten after evidence arrives.** Change must appear as
@@ -196,3 +198,14 @@ of that software grant; their terms are described in
 Careful contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md)
 before proposing a change. Security concerns should follow
 [SECURITY.md](SECURITY.md) rather than being disclosed in a public issue.
+
+<details>
+<summary>development address</summary>
+
+Solana / development wallet:
+`7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6`
+
+Operational attribution only. This is not a token contract or thought-record
+anchor.
+
+</details>

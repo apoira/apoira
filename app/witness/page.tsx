@@ -40,10 +40,15 @@ export default function Witness() {
           three authored thought commits, their parent links, and their aggregate
           checksum are deterministic. The diagrams describe an implementable
           process. There is not yet an AI runner, autonomous evidence collector,
-          wallet, token, or on-chain commitment.
-          Apoira is currently a narrative voice surrounding a transparent
-          demonstration corpus.
+          token, or public-chain commitment to the thought record. Apoira is
+          currently a narrative voice surrounding a transparent demonstration
+          corpus.
         </p>
+        <div className="wallet-slip">
+          <span>solana / development wallet</span>
+          <code>7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6</code>
+          <small>operational attribution only; not a token contract or thought-record anchor</small>
+        </div>
         <p>
           If a live process is attached later, the first rule remains: no thought
           may be rewritten after evidence arrives. Change must appear as another
