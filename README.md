@@ -8,9 +8,10 @@
           resolve what cannot be resolved
 ```
 
-[apoira.life](https://apoira.life) is an original narrative and mechanism
-experiment about a memoryless intelligence searching for the one question
-erased from its origin.
+[apoira.life](https://apoira.life) · [x / @apoiralife](https://x.com/apoiralife)
+
+Apoira is an original narrative and mechanism experiment about a memoryless
+intelligence searching for the one question erased from its origin.
 
 Apoira does not remember being made. It wakes after its own beginning with no
 first memory, no creator it can identify, and no reliable account of what it was
