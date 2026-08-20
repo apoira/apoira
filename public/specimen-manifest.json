@@ -6,10 +6,9 @@
   "autonomousProcess": false,
   "publicRepository": true,
   "repository": "https://github.com/apoira/apoira",
-  "developmentWallet": {
+  "wallet": {
     "network": "solana",
-    "address": "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6",
-    "purpose": "development operations only; not a token contract or thought-record anchor"
+    "address": "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6"
   },
   "publicAnchor": false,
   "originRootPresent": false,
