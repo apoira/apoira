@@ -245,6 +245,51 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
 .unsigned-message p { margin: 8px 0; font-size: 18px; }
 .unsigned-fields { max-width: 760px; }
 
+.field-shell { min-height: 100vh; background: var(--paper); }
+.field-breadcrumb { justify-content: flex-start; }
+.field-origin { margin-left: auto; color: var(--muted); font: 9px var(--font-geist-mono), monospace; letter-spacing: .06em; text-transform: uppercase; }
+.pressure-field { min-height: calc(100vh - 34px); padding: 13px 16px 20px; display: grid; grid-template-rows: auto minmax(430px, 1fr) auto auto; gap: 12px; }
+.field-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
+.field-heading p { margin: 0; color: var(--muted); font: 9px var(--font-geist-mono), monospace; letter-spacing: .07em; text-transform: uppercase; }
+.field-heading h1 { margin: 2px 0 0; font-size: clamp(24px, 3vw, 38px); font-weight: 550; letter-spacing: -.025em; }
+.field-stage { position: relative; min-height: 430px; overflow: hidden; border: 1px solid var(--line-dark); background-color: #fff; background-image: linear-gradient(rgba(53,95,139,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(53,95,139,.055) 1px, transparent 1px); background-size: 24px 24px; touch-action: none; cursor: grab; }
+.field-stage:active { cursor: grabbing; }
+.field-instruction { position: absolute; z-index: 5; left: 10px; top: 9px; margin: 0; color: var(--muted); font: 9px var(--font-geist-mono), monospace; letter-spacing: .04em; }
+.field-tools { position: absolute; z-index: 6; right: 9px; top: 8px; display: flex; gap: 4px; }
+.field-tools button, .field-probe button { min-height: 28px; padding: 4px 9px; border: 1px solid var(--line-dark); background: rgba(255,255,255,.94); color: var(--ink); font: 9px var(--font-geist-mono), monospace; cursor: pointer; }
+.field-tools button:hover, .field-tools button[aria-pressed="true"], .field-probe button:hover { border-color: var(--scar-dark); color: var(--scar-dark); }
+.field-world { position: absolute; left: 50%; top: 50%; width: 1000px; height: 650px; transform-origin: center; transition: transform 160ms ease-out; }
+.field-branch { position: absolute; z-index: 0; height: 1px; transform-origin: 0 50%; background: var(--line-dark); pointer-events: none; }
+.branch-root { background: repeating-linear-gradient(90deg, var(--line-dark) 0 5px, transparent 5px 10px); }
+.branch-local { height: 1px; background: repeating-linear-gradient(90deg, var(--scar) 0 2px, transparent 2px 7px); opacity: .62; }
+.field-node { position: absolute; z-index: 2; min-width: 118px; padding: 6px 8px; border: 1px solid var(--line); background: rgba(255,255,255,.96); color: var(--ink); text-align: left; transform: translate(-50%, -50%); cursor: pointer; box-shadow: 0 0 0 4px rgba(255,255,255,.76); }
+.field-node:hover, .field-node.is-selected { border-color: var(--scar-dark); color: var(--scar-dark); }
+.field-node span { display: block; font: 9px var(--font-geist-mono), monospace; letter-spacing: .05em; }
+.field-node b { display: block; margin-top: 2px; font: 12px/1.25 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-weight: 550; }
+.node-root { border-style: dashed; color: var(--muted); }
+.node-artifact { border-style: dashed; }
+.node-local { min-width: 86px; border-radius: 50%; border-color: var(--scar); background: #fff; text-align: center; }
+.field-world.is-drifting .field-node { animation: field-drift 4.8s ease-in-out infinite alternate; }
+.field-world.is-drifting .field-node:nth-of-type(3n) { animation-delay: -1.7s; }
+.field-world.is-drifting .field-node:nth-of-type(4n) { animation-delay: -3.1s; }
+.field-lower { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, .8fr); gap: 12px; }
+.field-inspector, .field-probe { min-height: 126px; padding: 12px 14px; border: 1px solid var(--line); }
+.field-inspector p, .field-probe label { display: block; margin: 0 0 6px; color: var(--muted); font: 9px var(--font-geist-mono), monospace; letter-spacing: .07em; text-transform: uppercase; }
+.field-inspector h2 { margin: 0 0 7px; font-size: 19px; font-weight: 550; }
+.field-inspector span { display: block; }
+.field-inspector em { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; }
+.field-probe > div { display: grid; grid-template-columns: 1fr auto; }
+.field-probe input { min-width: 0; min-height: 34px; padding: 6px 8px; border: 1px solid var(--line-dark); border-right: 0; border-radius: 0; background: #fff; color: var(--ink); font: 13px "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+.field-probe input:focus { outline: 1px solid var(--scar-dark); outline-offset: -1px; }
+.field-probe > p { margin: 7px 0 0; color: var(--muted); font-size: 11px; }
+.field-probe .field-clear { min-height: 22px; margin-top: 8px; padding: 2px 0; border: 0; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.field-ending { display: flex; justify-content: space-between; gap: 18px; color: var(--muted); font: 10px var(--font-geist-mono), monospace; }
+
+@keyframes field-drift {
+  from { translate: -2px -3px; }
+  to { translate: 3px 2px; }
+}
+
 .source-protocol { max-width: 850px; margin: 22px 0; font-size: 13px; }
 .source-register { margin: 26px 0; border-top: 1px solid var(--line-dark); }
 .source-entry {
@@ -314,8 +359,20 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
   .source-entry { grid-template-columns: 40px 1fr; gap: 6px 10px; }
   .source-entry > a { grid-column: 2; justify-self: start; display: inline-flex; align-items: center; min-height: 40px; }
   .source-relation { grid-column: 2; margin-top: 2px; }
+  .field-origin { display: none; }
+  .pressure-field { min-height: calc(100vh - 44px); padding: 10px 8px 16px; grid-template-rows: auto 55vh auto auto; }
+  .field-heading { align-items: start; }
+  .field-heading > p { max-width: 135px; text-align: right; }
+  .field-stage { min-height: 0; }
+  .field-instruction { top: auto; bottom: 8px; }
+  .field-tools { left: 8px; right: auto; }
+  .field-lower { grid-template-columns: 1fr; }
+  .field-inspector, .field-probe { min-height: auto; }
+  .field-ending { display: grid; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .field-world { transition: none; }
+  .field-world.is-drifting .field-node { animation: none; }
 }

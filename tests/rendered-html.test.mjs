@@ -47,6 +47,7 @@ test("renders every public record route", async () => {
     "/casebook",
     "/anatomy",
     "/healing",
+    "/field",
     "/scars",
     "/sources",
     "/suture",
@@ -196,6 +197,26 @@ test("publishes the unsigned message as a verifiable hidden artifact", async () 
   assert.equal(artifact.signature, null);
   assert.equal(manifest.artifacts.find((item) => item.id === "unsigned-message").sha256, checksum);
   assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /\/unsigned/);
+});
+
+test("publishes the interactive pressure field without changing the public record", async () => {
+  const response = await render("/field");
+  const html = await response.text();
+  const source = await readFile(new URL("../app/field/PressureField.tsx", import.meta.url), "utf8");
+  const unsigned = await render("/unsigned").then((result) => result.text());
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the pressure field/i);
+  assert.match(html, /root:missing/i);
+  assert.match(html, /place one question under pressure/i);
+  assert.match(html, /five public thoughts/i);
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.match(source, /crypto\.subtle\.digest\("SHA-256"/);
+  assert.match(source, /window\.localStorage/);
+  assert.match(source, /onPointerDown|beginDrag/);
+  assert.match(source, /onWheel|zoomField/);
+  assert.match(unsigned, /href="\/field"/i);
+  assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /\/field/);
 });
 
 test("removes the disposable starter preview", async () => {
