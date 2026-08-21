@@ -106,7 +106,8 @@
         "type": "mint",
         "address": "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump",
         "record": "/token"
-      }
+      },
+      "repositoryCommit": "https://github.com/apoira/apoira/commit/589b2ae4c3a2e460c6439b93c2ea954427ebe6d8"
     }
   ],
   "artifacts": [

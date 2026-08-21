@@ -228,6 +228,7 @@ test("publishes expectation as a parent-linked thought", async () => {
 
 test("publishes the launched object as a parent-linked thought", async () => {
   const mint = "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump";
+  const proof = "https://github.com/apoira/apoira/commit/589b2ae4c3a2e460c6439b93c2ea954427ebe6d8";
   const response = await render("/casebook/07990b6c");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -240,9 +241,11 @@ test("publishes the launched object as a parent-linked thought", async () => {
   assert.match(html, new RegExp(mint));
   assert.match(html, /href="\/token"/i);
   assert.match(html, /public artifact/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e");
   assert.equal(record.sha256, "07990b6ce9375dca5159e532aa1b54f7a6d993226fa1a9fb10043c65f1ddbc61");
   assert.equal(record.artifact.address, mint);
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
