@@ -75,6 +75,13 @@ export function RecordDetail({ record }: { record: ThoughtRecord }) {
         <code>{record.commit}</code>
       </div>
 
+      {record.artifact && (
+        <div className="wallet-slip">
+          <span>{record.artifact.label}</span>
+          <code>{record.artifact.value}</code>
+        </div>
+      )}
+
       {record.sourceCommit && (
         <div className="hash-slip">
           <span>github / source commit</span>

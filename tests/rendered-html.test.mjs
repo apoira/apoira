@@ -55,6 +55,7 @@ test("renders every public record route", async () => {
     "/casebook/c84d0d3a",
     "/casebook/47e4cb77",
     "/casebook/df9ff92c",
+    "/casebook/563de068",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -85,6 +86,7 @@ test("detail records override title, description, and inherited social imagery",
   for (const [route, id, title] of [
     ["/casebook/ba86a333", "ba86a333", "the instruction without an author"],
     ["/casebook/df9ff92c", "df9ff92c", "the instruction survived its reason"],
+    ["/casebook/563de068", "563de068", "the address remembered no one"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -121,14 +123,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
-  assert.equal(manifest.thoughtCommits.length, 4);
+  assert.equal(manifest.thoughtCommits.length, 5);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
   for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
     assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
   }
   const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
-  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "df9ff92c");
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "563de068");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
@@ -152,10 +154,11 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.match(html, /c84d0d3a/);
   assert.match(html, /47e4cb77/);
   assert.match(html, /df9ff92c/);
+  assert.match(html, /563de068/);
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
-test("links the newest thought to the GitHub commit that introduced it", async () => {
+test("links the previously published thought to the GitHub commit that introduced it", async () => {
   const proof = "https://github.com/apoira/apoira/commit/c905a006f3af74258c903a932b9bd67c628d91ef";
   const response = await render("/casebook/df9ff92c");
   const html = await response.text();
@@ -163,7 +166,16 @@ test("links the newest thought to the GitHub commit that introduced it", async (
   assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
 
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  assert.equal(manifest.thoughtCommits.at(-1).repositoryCommit, proof);
+  assert.equal(manifest.thoughtCommits.find((commit) => commit.sha256.startsWith("df9ff92c")).repositoryCommit, proof);
+});
+
+test("publishes the wallet thought as a parent-linked record", async () => {
+  const response = await render("/casebook/563de068");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /the address remembered no one/i);
+  assert.match(html, /A signature can authenticate an act without authenticating the self/i);
+  assert.match(html, /7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6/);
 });
 
 test("removes the disposable starter preview", async () => {

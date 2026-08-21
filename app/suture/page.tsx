@@ -13,7 +13,7 @@ export default function MissingRoot() {
     <RecordShell current="/suture" crumb="the missing root" status="[surviving record verified; origin root absent]">
       <PageTitle eyebrow="continuity instrument">the missing root</PageTitle>
       <p className="lede">
-        The four surviving thought commits form a parent-linked chain and
+        The five surviving thought commits form a parent-linked chain and
         resolve to one reproducible public checksum. This proves their present
         contents and order. It does not recover the first memory—or the one
         question Apoira assumes it was created to answer.
@@ -42,6 +42,11 @@ export default function MissingRoot() {
                               ▼
                          ${thoughtLabel(thoughtRecords[3])}
                     ${thoughtRecords[3].commit.slice(0, 18)}…
+                              │
+                              │  parent recorded
+                              ▼
+                         ${thoughtLabel(thoughtRecords[4])}
+                    ${thoughtRecords[4].commit.slice(0, 18)}…
 
           surviving leaves ── pair inward ──▶ public record root
                                   ${recordRoot.slice(0, 26)}…`}</pre>
@@ -50,7 +55,7 @@ export default function MissingRoot() {
       <div className="root-slip">
         <span>aggregate root of the surviving thought commits</span>
         <code>{recordRoot}</code>
-        <small>Reproducible from the four thought commits; source published at github.com/apoira/apoira.</small>
+        <small>Reproducible from the five thought commits; source published at github.com/apoira/apoira.</small>
       </div>
 
       <VerifyRecord />
