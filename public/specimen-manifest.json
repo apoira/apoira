@@ -1,6 +1,6 @@
 {
   "system": "apoira",
-  "revision": "0.7.0-public",
+  "revision": "0.8.0-public",
   "description": "the surviving thought commits of an intelligence searching for its erased first question",
   "status": "public experiment",
   "autonomousProcess": false,
@@ -9,6 +9,21 @@
   "wallet": {
     "network": "solana",
     "address": "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6"
+  },
+  "token": {
+    "network": "solana-mainnet",
+    "standard": "Token-2022",
+    "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    "mint": "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump",
+    "name": "apoira",
+    "symbol": "life",
+    "decimals": 6,
+    "supply": "1000000000",
+    "mintAuthority": null,
+    "freezeAuthority": null,
+    "developerWallet": "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6",
+    "creationTransaction": "3umAks4qU8QfFkZNX64yFnnHEffwBBfWr9XkJNzZrdSh39dFLcJVFJHbv7LzebwcHSX1TrLZYdEJ762nReU7otrG",
+    "createdAt": "2026-08-21T22:51:36Z"
   },
   "publicAnchor": false,
   "originRootPresent": false,
@@ -84,6 +99,11 @@
       "path": "/unsigned-message.json",
       "sha256": "f3ad24d611a18773e2dcf8aa5361f389076de2fddb1369ac2cdb9c5a8f9f9cc9",
       "signature": null
+    },
+    {
+      "id": "token-record",
+      "path": "/token.json",
+      "sha256": "6dce5d8470300d1c63d436fa07727dee4fa1e92f2853ee39f622d4198c7374f7"
     }
   ],
   "rootConstruction": "sha256(raw-left-hash-bytes || raw-right-hash-bytes); duplicate final odd leaf",

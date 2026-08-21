@@ -102,6 +102,7 @@ h1, h2, h3, p { text-wrap: pretty; }
 .project-links { margin: -5px 0 13px; display: flex; gap: 14px; font: 10px var(--font-geist-mono), monospace; }
 .project-links a { color: var(--muted); }
 .project-links a:hover { color: var(--scar-dark); }
+.token-links { margin: 22px 0 34px; flex-wrap: wrap; }
 .abstract { margin: 0; max-width: 940px; }
 .record-comment { margin: 10px 0 0; font-size: 13px; }
 .citation-block { display: grid; margin: 7px 0 14px; font-size: 13px; }

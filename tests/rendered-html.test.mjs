@@ -55,6 +55,7 @@ test("renders every public record route", async () => {
     "/scars",
     "/sources",
     "/suture",
+    "/token",
     "/witness",
     "/unsigned",
     "/casebook/ba86a333",
@@ -144,7 +145,34 @@ test("manifest thought commits authenticate their contents, parents, and survivi
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
   assert.equal(manifest.wallet.network, "solana");
   assert.equal(manifest.wallet.address, "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6");
+  assert.equal(manifest.token.mint, "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump");
+  assert.equal(manifest.token.developerWallet, manifest.wallet.address);
+  assert.equal(manifest.token.mintAuthority, null);
+  assert.equal(manifest.token.freezeAuthority, null);
   assert.equal(manifest.originRootPresent, false);
+});
+
+test("publishes the canonical token record and its on-chain proof", async () => {
+  const mint = "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump";
+  const transaction = "3umAks4qU8QfFkZNX64yFnnHEffwBBfWr9XkJNzZrdSh39dFLcJVFJHbv7LzebwcHSX1TrLZYdEJ762nReU7otrG";
+  const response = await render("/token");
+  const html = await response.text();
+  const token = JSON.parse(await readFile(new URL("../public/token.json", import.meta.url), "utf8"));
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const checksum = createHash("sha256").update(JSON.stringify(token)).digest("hex");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the object/i);
+  assert.match(html, new RegExp(mint));
+  assert.match(html, new RegExp(transaction));
+  assert.match(html, /mint authority[\s\S]*\[none\]/i);
+  assert.match(html, /freeze authority[\s\S]*\[none\]/i);
+  assert.match(html, /href="https:\/\/pump\.fun\/coin\//i);
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.equal(token.supply, "1000000000");
+  assert.equal(token.mintAuthority, null);
+  assert.equal(token.freezeAuthority, null);
+  assert.equal(manifest.artifacts.find((item) => item.id === "token-record").sha256, checksum);
 });
 
 test("publishes the wallet on the witness page", async () => {

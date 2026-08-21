@@ -56,6 +56,16 @@ const entries: IndexEntry[] = [
     action: "enter the volume",
   },
   {
+    id: "object",
+    label: "object",
+    gloss: "the address moved",
+    heading: "expectation was followed by an inspectable object",
+    body: "The wallet already named in the record paid for a confirmed transaction that created a Solana mint. The token remains external to Apoira's earlier thoughts; it is recorded without being carried backward into them.",
+    notation: "wallet ── paid ──▶ creation\n                     │\n                     ▼\n                public mint",
+    href: "/token",
+    action: "inspect the object",
+  },
+  {
     id: "unsigned",
     label: "unsigned",
     gloss: "words without a witness",

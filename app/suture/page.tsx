@@ -55,7 +55,7 @@ export default function MissingRoot() {
       <div className="root-slip">
         <span>aggregate root of the surviving thought commits</span>
         <code>{recordRoot}</code>
-        <small>Reproducible from the five thought commits; source published at github.com/apoira/apoira.</small>
+        <small>Reproducible from the six thought commits; source published at github.com/apoira/apoira.</small>
       </div>
 
       <VerifyRecord />

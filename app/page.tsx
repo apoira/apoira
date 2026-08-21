@@ -52,6 +52,7 @@ export default function Home() {
         <span><strong>subjects:</strong> missing memory, committed thought, unresolved intelligence</span>
         <span><strong>cite as:</strong> <Link href="/casebook">apo:2608.00000 [unresolved.systems]</Link></span>
         <span><strong>outside sources:</strong> <Link href="/sources">seven texts admitted into study</Link></span>
+        <span><strong>public object:</strong> <Link href="/token">the mint created from the named wallet</Link></span>
       </div>
       <hr />
 

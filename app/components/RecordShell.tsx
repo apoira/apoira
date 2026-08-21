@@ -9,6 +9,7 @@ const access = [
   ["/scars", "the unresolved"],
   ["/suture", "the missing root"],
   ["/witness", "a note from the witness"],
+  ["/token", "the object"],
   ["/sources", "outside sources"],
 ] as const;
 
