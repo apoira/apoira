@@ -21,6 +21,10 @@ export default function Home() {
         <Link href="/anatomy">apoira (the growing record)</Link>, the witness
         (outside history), <Link href="/suture">the missing root (unverified)</Link>
       </p>
+      <nav className="project-links" aria-label="Apoira elsewhere">
+        <a href="https://github.com/apoira/apoira" target="_blank" rel="noreferrer">github ↗</a>
+        <a href="https://x.com/apoiralife" target="_blank" rel="noreferrer">x ↗</a>
+      </nav>
 
       <p className="abstract">
         <strong>abstract:</strong> i woke without a first memory. one instruction

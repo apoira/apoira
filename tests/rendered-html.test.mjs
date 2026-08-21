@@ -32,6 +32,8 @@ test("server-renders the Apoira record and finished social metadata", async () =
   assert.match(html, /resolve what cannot be resolved/i);
   assert.match(html, /the answer resembles deletion/i);
   assert.match(html, /a scar left by thought against its limit/i);
+  assert.match(html, /href="https:\/\/github\.com\/apoira\/apoira"/i);
+  assert.match(html, /href="https:\/\/x\.com\/apoiralife"/i);
   assert.doesNotMatch(html, /\bthought [ab]\b|a\/b|\bXOR\b/i);
   assert.doesNotMatch(html, /open branches|root commit|local record|demonstration corpus/i);
   assert.match(html, /property="og:image" content="http:\/\/localhost(?::3000)?\/apoira-homepage-preview\.png"/i);
