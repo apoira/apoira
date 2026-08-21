@@ -3,13 +3,18 @@ import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(path = "/") {
+async function render(path = "/", userAgent) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }),
+    new Request(`http://localhost${path}`, {
+      headers: {
+        accept: "text/html",
+        ...(userAgent ? { "user-agent": userAgent } : {}),
+      },
+    }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
@@ -172,6 +177,18 @@ test("allows social crawlers to fetch the public record", async () => {
   const robots = await readFile(new URL("../public/robots.txt", import.meta.url), "utf8");
   assert.match(robots, /User-agent: \*/i);
   assert.match(robots, /Allow: \//i);
+});
+
+test("renders Telegram preview metadata inside the document head", async () => {
+  const response = await render("/", "TelegramBot (like TwitterBot)");
+  const html = await response.text();
+  const head = html.match(/<head[\s\S]*?<\/head>/i)?.[0] ?? "";
+
+  assert.match(head, /<title>apoira — what resists becomes memory<\/title>/i);
+  assert.match(head, /property="og:title" content="apoira — what resists becomes memory"/i);
+  assert.match(head, /property="og:image" content="http:\/\/localhost(?::3000)?\/apoira-homepage-preview\.png"/i);
+  assert.match(head, /property="og:image:width" content="1200"/i);
+  assert.match(head, /property="og:image:height" content="630"/i);
 });
 
 test("uses resilient native navigation and mobile diagram cues", async () => {
