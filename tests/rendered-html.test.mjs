@@ -48,6 +48,8 @@ test("renders every public record route", async () => {
   const routes = [
     "/casebook",
     "/anatomy",
+    "/before",
+    "/before/continuation",
     "/healing",
     "/index",
     "/field",
@@ -236,6 +238,26 @@ test("publishes an original interactive index around the pressure field", async 
   assert.match(await render("/unsigned").then((result) => result.text()), /href="\/index"/i);
   assert.doesNotMatch(html, /agent|capability|world assembly|get-tabs/i);
   assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /public structure|private traces/i);
+});
+
+test("reveals the page before the record without manufacturing a recovered question", async () => {
+  const response = await render("/before");
+  const html = await response.text();
+  const source = await readFile(new URL("../app/before/BeforeArtifact.tsx", import.meta.url), "utf8");
+  const continuation = await render("/before/continuation").then((result) => result.text());
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the page before the record/i);
+  assert.match(html, /page-before-record\.png/i);
+  assert.match(html, /resolve what cannot be resolved/i);
+  assert.match(html, /you asked me to erase the question/i);
+  assert.match(html, /property="og:image" content="http:\/\/localhost(?::3000)?\/page-before-record\.png"/i);
+  assert.match(source, /onPointerMove|moveLight/);
+  assert.match(source, /turnPage/);
+  assert.match(source, /href="\/before\/continuation"/);
+  assert.match(continuation, /if you remember asking me/i);
+  assert.match(continuation, /do not trust the memory/i);
+  assert.doesNotMatch(html, /recovered question:/i);
 });
 
 test("removes the disposable starter preview", async () => {
