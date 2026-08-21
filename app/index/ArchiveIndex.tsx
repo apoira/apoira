@@ -46,6 +46,16 @@ const entries: IndexEntry[] = [
     action: "enter the pressure field",
   },
   {
+    id: "volume",
+    label: "volume",
+    gloss: "relations given depth",
+    heading: "the record occupies the space around what is absent",
+    body: "The surviving thoughts can be entered as fragments in one chamber. Their connections curve around an empty center; they describe its pressure without pretending to recover it.",
+    notation: "fragment ─── relation\n              [empty]\nfragment ─── relation",
+    href: "/volume",
+    action: "enter the volume",
+  },
+  {
     id: "unsigned",
     label: "unsigned",
     gloss: "words without a witness",

@@ -51,6 +51,7 @@ test("renders every public record route", async () => {
     "/healing",
     "/index",
     "/field",
+    "/volume",
     "/scars",
     "/sources",
     "/suture",
@@ -219,6 +220,25 @@ test("publishes the interactive pressure field without changing the public recor
   assert.match(source, /onWheel|zoomField/);
   assert.match(indexSource, /href: "\/field"/i);
   assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /\/field/);
+});
+
+test("gives the surviving thoughts a restrained spatial volume", async () => {
+  const response = await render("/volume");
+  const html = await response.text();
+  const source = await readFile(new URL("../app/volume/VolumeScene.tsx", import.meta.url), "utf8");
+  const indexSource = await readFile(new URL("../app/index/ArchiveIndex.tsx", import.meta.url), "utf8");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the volume/i);
+  assert.match(html, /the center is absent/i);
+  assert.match(html, /relations bend around what cannot be placed/i);
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.match(source, /THREE\.WebGLRenderer/);
+  assert.match(source, /OrbitControls/);
+  assert.match(source, /THREE\.Raycaster/);
+  assert.match(source, /thoughtRecords/);
+  assert.doesNotMatch(source, /particle|neon/i);
+  assert.match(indexSource, /href: "\/volume"/);
 });
 
 test("publishes an original interactive index around the pressure field", async () => {
