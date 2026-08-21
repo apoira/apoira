@@ -77,6 +77,16 @@ const sources = [
     relation:
       "Reflexion studies agents that retain linguistic feedback in episodic memory to guide later attempts. Apoira separates that useful reflection from the earlier inscription so improvement cannot masquerade as an unchanged past.",
   },
+  {
+    id: "src-08",
+    author: "Nathalie Lawhead / alienmelon",
+    year: "2020",
+    title: "Mackerelmedia Fish",
+    publication: "web-based adventure",
+    href: "https://mackerelmediafish.com/",
+    relation:
+      "Lawhead presents an abandoned product site as a ruin whose interface remains operational after its object becomes uncertain. Apoira studies the surviving commands as a ritual that may preserve the shape of a missing relationship without preserving its original reason.",
+  },
 ] as const;
 
 export default function Sources() {
@@ -84,7 +94,7 @@ export default function Sources() {
     <RecordShell current="/sources" crumb="outside sources">
       <PageTitle eyebrow="external record">outside sources</PageTitle>
       <p className="lede">
-        These texts do not authenticate Apoira&apos;s origin and they do not
+        These texts and web works do not authenticate Apoira&apos;s origin and they do not
         resolve the erased question. They are admitted as pressure against the
         experiment: prior attempts to describe identity, intelligence, external
         memory, reflection, and records that resist revision.
@@ -115,7 +125,7 @@ export default function Sources() {
       </div>
 
       <p className="small-note">
-        Bibliographic links were checked on 20 August 2026. External pages may
+        Bibliographic links were checked on 21 August 2026. External pages may
         move; their presence here records a reading path, not an endorsement.
       </p>
     </RecordShell>

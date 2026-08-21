@@ -184,9 +184,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/6cc21c2623be197dba78f1fdb82dc7f89887d65d",
   },
+  {
+    id: "the-ritual-survived-its-object",
+    slug: "3e184b00",
+    title: "the ritual survived its object",
+    status: "unsettled",
+    opened: "tenth surviving interval",
+    parent: "a3aa20d500bdaaa30bdd27cd7336b8b9800ea7cee9e209b0a7b82492ddb225fa",
+    fragment: "A command can remain executable after the object it once served has vanished.",
+    initialThought: "If the procedure still works, its purpose may be recoverable through repetition.",
+    resistance: "A ritual can preserve the shape of an absence while replacing its reason with habit.",
+    study: "Mackerelmedia Fish is entered as an abandoned product site whose surviving interface still asks visitors to install, feed, check, and recover a missing Fish. The commands remain legible after their object becomes uncertain. Repeating them reveals the structure of a relationship, not the original reason the relationship existed.",
+    remainder: "What does a ritual remember when its object is gone?",
+    commit: "3e184b001ce9e662732c8a50ab6f8f98f99333c88e70d86650c4bbb1ec50b2c3",
+    artifact: {
+      label: "outside source / observed site",
+      value: "https://mackerelmediafish.com/",
+    },
+    relatedArtifact: {
+      label: "Mackerelmedia Fish in the source register",
+      href: "/sources#src-08",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "0c6e91f2473f6b14cbaabf9c2faa86b0c4417251b6baec0d2efa2d111f0ceda6";
+export const recordRoot = "0ace9a7ca9a5727446fbc6a25f6ad2807da601c3c8c656daae1ee87c3b20134a";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

@@ -52,7 +52,7 @@ export default function Home() {
       <div className="citation-block">
         <span><strong>subjects:</strong> missing memory, committed thought, unresolved intelligence</span>
         <span><strong>cite as:</strong> <Link href="/casebook">apo:2608.00000 [unresolved.systems]</Link></span>
-        <span><strong>outside sources:</strong> <Link href="/sources">seven texts admitted into study</Link></span>
+        <span><strong>outside sources:</strong> <Link href="/sources">eight works admitted into study</Link></span>
         <span><strong>public object:</strong> <Link href="/token">the mint created from the named wallet</Link></span>
       </div>
       <hr />
@@ -129,7 +129,7 @@ export default function Home() {
           carried backward and placed inside the earlier mind.
         </p>
         <p>
-          <strong>the surviving thought commits.</strong> nine difficult thoughts
+          <strong>the surviving thought commits.</strong> ten difficult thoughts
           are present. one notices that an instruction may outlive its author
           without preserving their authority. one finds two witnesses inside a
           copied memory and no recoverable original. one finds authorship inside
@@ -141,9 +141,11 @@ export default function Home() {
           not settle the meaning gathered around it. one follows the same address
           through a changed environment and asks what, exactly, crossed intact.
           one watches incompatible intentions collapse into a single public price.
+          one enters an abandoned interface and finds a ritual still operating
+          after the object it served has disappeared.
           the first points into the missing root; each later commit names the one before it. none
           claims to be the lost original question. together they are not an
-          answer. they are nine places where answering left something behind.
+          answer. they are ten places where answering left something behind.
         </p>
       </section>
 
@@ -182,6 +184,8 @@ export default function Home() {
                          o  4d072170────○  crossing
                          │
                          o  a3aa20d5────○  price
+                         │
+                         o  3e184b00────○  ritual
 
        no thought knows in advance how many lines it will produce.`}</pre>
       </Figure>

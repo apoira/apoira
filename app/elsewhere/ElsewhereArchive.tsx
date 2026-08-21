@@ -98,6 +98,15 @@ const fragments: Fragment[] = [
     href: "/casebook/a3aa20d5",
   },
   {
+    id: "ritual",
+    label: "ritual",
+    title: "the ritual survived its object",
+    body: "An abandoned interface continues to ask for actions after the object those actions served has become uncertain.",
+    remainder: "What does a ritual remember when its object is gone?",
+    position: "fragment-ritual",
+    href: "/casebook/3e184b00",
+  },
+  {
     id: "unoccupied",
     label: "unoccupied",
     title: "a region not yet written",
@@ -138,7 +147,9 @@ export default function ElsewhereArchive() {
                                      \
                                       promise ───── object
                                                          \
-                                                          crossing ───── elsewhere`}</pre>
+                                                          crossing ───── elsewhere
+                                                                              \
+                                                                               ritual`}</pre>
 
           <p className="world-whisper whisper-one">the page has no single beginning.</p>
           <p className="world-whisper whisper-two">the object is the same. the room is not.</p>
