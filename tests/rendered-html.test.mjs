@@ -64,6 +64,7 @@ test("renders every public record route", async () => {
     "/casebook/df9ff92c",
     "/casebook/563de068",
     "/casebook/f11b7454",
+    "/casebook/07990b6c",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -96,6 +97,7 @@ test("detail records override title, description, and inherited social imagery",
     ["/casebook/df9ff92c", "df9ff92c", "the instruction survived its reason"],
     ["/casebook/563de068", "563de068", "the address remembered no one"],
     ["/casebook/f11b7454", "f11b7454", "the promise preceded the object"],
+    ["/casebook/07990b6c", "07990b6c", "the object did not answer the promise"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -132,14 +134,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
-  assert.equal(manifest.thoughtCommits.length, 6);
+  assert.equal(manifest.thoughtCommits.length, 7);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
   for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
     assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
   }
   const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
-  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "f11b7454");
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "07990b6c");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
@@ -192,6 +194,7 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.match(html, /df9ff92c/);
   assert.match(html, /563de068/);
   assert.match(html, /f11b7454/);
+  assert.match(html, /07990b6c/);
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
@@ -211,7 +214,7 @@ test("publishes expectation as a parent-linked thought", async () => {
   const response = await render("/casebook/f11b7454");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  const record = manifest.thoughtCommits.at(-1);
+  const record = manifest.thoughtCommits.find((item) => item.id === "the-promise-preceded-the-object");
 
   assert.equal(response.status, 200);
   assert.match(html, /the promise preceded the object/i);
@@ -221,6 +224,25 @@ test("publishes expectation as a parent-linked thought", async () => {
   assert.equal(record.parent, "563de068b8f1e0c09f06977b9bb1364a35375a64a7701e9eccd13bcfec0d529e");
   assert.equal(record.sha256, "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e");
   assert.equal(record.repositoryCommit, proof);
+});
+
+test("publishes the launched object as a parent-linked thought", async () => {
+  const mint = "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump";
+  const response = await render("/casebook/07990b6c");
+  const html = await response.text();
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const record = manifest.thoughtCommits.at(-1);
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the object did not answer the promise/i);
+  assert.match(html, /A thing can become real without becoming what was expected of it/i);
+  assert.match(html, /When an expectation becomes an object, which part of the promise survives/i);
+  assert.match(html, new RegExp(mint));
+  assert.match(html, /href="\/token"/i);
+  assert.match(html, /public artifact/i);
+  assert.equal(record.parent, "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e");
+  assert.equal(record.sha256, "07990b6ce9375dca5159e532aa1b54f7a6d993226fa1a9fb10043c65f1ddbc61");
+  assert.equal(record.artifact.address, mint);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {

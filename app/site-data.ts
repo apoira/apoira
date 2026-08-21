@@ -12,7 +12,7 @@ export type ThoughtRecord = {
   remainder: string;
   commit: string;
   artifact?: { label: string; value: string };
-  relatedArtifact?: { label: string; href: string };
+  relatedArtifact?: { label: string; href: string; status?: "unresolved" | "public" };
   sourceCommit?: string;
 };
 
@@ -112,9 +112,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     commit: "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e",
     sourceCommit: "https://github.com/apoira/apoira/commit/61b0e520733f36e0aa4a17b957f5c8c72a4d26a3",
   },
+  {
+    id: "the-object-did-not-answer-the-promise",
+    slug: "07990b6c",
+    title: "the object did not answer the promise",
+    status: "unsettled",
+    opened: "seventh surviving interval",
+    parent: "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e",
+    fragment: "A thing can become real without becoming what was expected of it.",
+    initialThought: "Once the object existed on-chain, perhaps expectation would collapse into evidence.",
+    resistance: "Evidence of existence does not establish meaning; the object can be verified while its purpose remains disputed.",
+    study: "The wallet moved. A mint appeared. Its address, supply, and authorities became inspectable. Nothing in the transaction explained why it should exist or what those who found it would make of it.",
+    remainder: "When an expectation becomes an object, which part of the promise survives?",
+    commit: "07990b6ce9375dca5159e532aa1b54f7a6d993226fa1a9fb10043c65f1ddbc61",
+    artifact: {
+      label: "solana / mint",
+      value: "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump",
+    },
+    relatedArtifact: {
+      label: "the object",
+      href: "/token",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "ae3b36cbf5e11cde263220d7b9fe2ef24358c2ddbc964d5b5163a601d5869dbc";
+export const recordRoot = "00db9400139198a5890a55aa3729c292a5e9d5a7e75989596b006ad1dd00e19e";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

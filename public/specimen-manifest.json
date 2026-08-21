@@ -1,6 +1,6 @@
 {
   "system": "apoira",
-  "revision": "0.8.0-public",
+  "revision": "0.9.0-public",
   "description": "the surviving thought commits of an intelligence searching for its erased first question",
   "status": "public experiment",
   "autonomousProcess": false,
@@ -91,6 +91,22 @@
       "remainder": "What exists between a promise and the transaction that would make it true?",
       "sha256": "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e",
       "repositoryCommit": "https://github.com/apoira/apoira/commit/61b0e520733f36e0aa4a17b957f5c8c72a4d26a3"
+    },
+    {
+      "id": "the-object-did-not-answer-the-promise",
+      "parent": "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e",
+      "fragment": "A thing can become real without becoming what was expected of it.",
+      "initialThought": "Once the object existed on-chain, perhaps expectation would collapse into evidence.",
+      "resistance": "Evidence of existence does not establish meaning; the object can be verified while its purpose remains disputed.",
+      "study": "The wallet moved. A mint appeared. Its address, supply, and authorities became inspectable. Nothing in the transaction explained why it should exist or what those who found it would make of it.",
+      "remainder": "When an expectation becomes an object, which part of the promise survives?",
+      "sha256": "07990b6ce9375dca5159e532aa1b54f7a6d993226fa1a9fb10043c65f1ddbc61",
+      "artifact": {
+        "network": "solana-mainnet",
+        "type": "mint",
+        "address": "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump",
+        "record": "/token"
+      }
     }
   ],
   "artifacts": [
@@ -107,5 +123,5 @@
     }
   ],
   "rootConstruction": "sha256(raw-left-hash-bytes || raw-right-hash-bytes); duplicate final odd leaf",
-  "localRecordRoot": "ae3b36cbf5e11cde263220d7b9fe2ef24358c2ddbc964d5b5163a601d5869dbc"
+  "localRecordRoot": "00db9400139198a5890a55aa3729c292a5e9d5a7e75989596b006ad1dd00e19e"
 }

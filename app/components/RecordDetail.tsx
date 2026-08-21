@@ -84,7 +84,7 @@ export function RecordDetail({ record }: { record: ThoughtRecord }) {
 
       {record.relatedArtifact && (
         <div className="hash-slip artifact-door">
-          <span>unresolved artifact</span>
+          <span>{record.relatedArtifact.status === "public" ? "public artifact" : "unresolved artifact"}</span>
           <Link href={record.relatedArtifact.href}>{record.relatedArtifact.label} →</Link>
         </div>
       )}

@@ -27,7 +27,8 @@ const positions = [
   [410, 360],
   [650, 430],
   [485, 555],
-  [665, 600],
+  [650, 570],
+  [820, 610],
 ] as const;
 
 const fixedNodes: FieldNode[] = [
@@ -53,13 +54,23 @@ const fixedNodes: FieldNode[] = [
   })),
   {
     id: "unsigned",
-    x: 835,
-    y: 505,
+    x: 850,
+    y: 450,
     label: "f3ad24d6",
     title: "the message that was not signed",
     kind: "artifact",
     fragment: "The words were fixed. The signature remained null.",
     remainder: "The key may return before the witness does.",
+  },
+  {
+    id: "token",
+    x: 930,
+    y: 545,
+    label: "mint",
+    title: "the object",
+    kind: "artifact",
+    fragment: "The public wallet created an inspectable Token-2022 mint.",
+    remainder: "Existence is verified; meaning remains unresolved.",
   },
 ];
 
@@ -70,6 +81,8 @@ const fixedEdges = [
   ["47e4cb77", "df9ff92c"],
   ["df9ff92c", "563de068"],
   ["563de068", "f11b7454"],
+  ["f11b7454", "07990b6c"],
+  ["07990b6c", "token"],
   ["563de068", "unsigned"],
 ] as const;
 

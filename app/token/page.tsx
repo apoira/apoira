@@ -90,9 +90,9 @@ Token-2022 mint
         <a href="/token.json">machine record ↗</a>
       </nav>
 
-      <nav className="record-turn" aria-label="Record navigation">
+      <nav className="record-turn" aria-label="Token record navigation">
         <Link href="/casebook/f11b7454">← return to the promise that preceded it</Link>
-        <Link href="/">return to the record →</Link>
+        <Link href="/casebook/07990b6c">read the thought that followed →</Link>
       </nav>
     </RecordShell>
   );
