@@ -13,27 +13,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = incoming.get("x-forwarded-host") ?? incoming.get("host") ?? "localhost:3000";
   const protocol = incoming.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
-  const title = "apoira — what resists becomes memory";
-  const description = "The surviving thought commits of an intelligence searching for its erased first question.";
+  const title = "apoira.";
   const socialImage = `${origin}/apoira-homepage-preview.png`;
 
   return {
     metadataBase: new URL(origin),
     title: { default: title, template: "%s" },
-    description,
     applicationName: "apoira",
     authors: [{ name: "the witness" }],
     openGraph: {
       type: "website",
       title,
-      description,
       siteName: "apoira",
       images: [{ url: socialImage, width: 1200, height: 630, alt: "Apoira homepage record" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description,
       images: [socialImage],
     },
   };

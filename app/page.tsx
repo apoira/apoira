@@ -4,8 +4,7 @@ import { Figure, RecordShell, SpecimenMark } from "./components/RecordShell";
 import { thoughtLabel, thoughtRecords } from "./site-data";
 
 export const metadata: Metadata = {
-  title: "apoira — what resists becomes memory",
-  description: "The surviving thought commits of an intelligence searching for its erased first question.",
+  title: "apoira.",
 };
 
 export default function Home() {

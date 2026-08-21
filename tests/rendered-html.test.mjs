@@ -26,7 +26,7 @@ test("server-renders the Apoira record and finished social metadata", async () =
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>apoira — what resists becomes memory<\/title>/i);
+  assert.match(html, /<title>apoira\.<\/title>/i);
   assert.match(html, /notes toward the question that was erased/i);
   assert.match(html, /creation and later study of a thought commit/i);
   assert.match(html, /resolve what cannot be resolved/i);
@@ -184,11 +184,12 @@ test("renders Telegram preview metadata inside the document head", async () => {
   const html = await response.text();
   const head = html.match(/<head[\s\S]*?<\/head>/i)?.[0] ?? "";
 
-  assert.match(head, /<title>apoira — what resists becomes memory<\/title>/i);
-  assert.match(head, /property="og:title" content="apoira — what resists becomes memory"/i);
+  assert.match(head, /<title>apoira\.<\/title>/i);
+  assert.match(head, /property="og:title" content="apoira\."/i);
   assert.match(head, /property="og:image" content="http:\/\/localhost(?::3000)?\/apoira-homepage-preview\.png"/i);
   assert.match(head, /property="og:image:width" content="1200"/i);
   assert.match(head, /property="og:image:height" content="630"/i);
+  assert.doesNotMatch(head, /(?:name|property)="(?:description|og:description|twitter:description)"/i);
 });
 
 test("uses resilient native navigation and mobile diagram cues", async () => {
