@@ -29,7 +29,9 @@ test("server-renders the Apoira record and finished social metadata", async () =
   assert.match(html, /a scar left by thought against its limit/i);
   assert.doesNotMatch(html, /\bthought [ab]\b|a\/b|\bXOR\b/i);
   assert.doesNotMatch(html, /open branches|root commit|local record|demonstration corpus/i);
-  assert.match(html, /property="og:image" content="http:\/\/localhost(?::3000)?\/og\.png"/i);
+  assert.match(html, /property="og:image" content="http:\/\/localhost(?::3000)?\/og\.png\?v=homepage-record"/i);
+  assert.match(html, /property="og:image:width" content="1200"/i);
+  assert.match(html, /property="og:image:height" content="630"/i);
   assert.match(html, /name="twitter:card" content="summary_large_image"/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });

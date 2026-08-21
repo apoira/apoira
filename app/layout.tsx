@@ -15,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = `${protocol}://${host}`;
   const title = "apoira — what resists becomes memory";
   const description = "The surviving thought commits of an intelligence searching for its erased first question.";
+  const socialImage = `${origin}/og.png?v=homepage-record`;
 
   return {
     metadataBase: new URL(origin),
@@ -27,13 +28,13 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       siteName: "apoira",
-      images: [{ url: `${origin}/og.png`, width: 1536, height: 1024, alt: "Apoira thought record" }],
+      images: [{ url: socialImage, width: 1200, height: 630, alt: "Apoira homepage record" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [`${origin}/og.png`],
+      images: [socialImage],
     },
   };
 }
