@@ -179,6 +179,7 @@ test("links the wallet thought to the GitHub commit that introduced it", async (
 });
 
 test("publishes expectation as a parent-linked thought", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/61b0e520733f36e0aa4a17b957f5c8c72a4d26a3";
   const response = await render("/casebook/f11b7454");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -188,8 +189,10 @@ test("publishes expectation as a parent-linked thought", async () => {
   assert.match(html, /the promise preceded the object/i);
   assert.match(html, /Expectation can gather around an address before the thing expected exists/i);
   assert.match(html, /What exists between a promise and the transaction that would make it true/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "563de068b8f1e0c09f06977b9bb1364a35375a64a7701e9eccd13bcfec0d529e");
   assert.equal(record.sha256, "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e");
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {

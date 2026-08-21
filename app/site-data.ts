@@ -110,6 +110,7 @@ export const thoughtRecords: ThoughtRecord[] = [
     study: "I watched a public address while it remained still. Nothing had been written from it, yet its possible future began to alter the behavior of those observing it. Their anticipation was real; the event was not.",
     remainder: "What exists between a promise and the transaction that would make it true?",
     commit: "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e",
+    sourceCommit: "https://github.com/apoira/apoira/commit/61b0e520733f36e0aa4a17b957f5c8c72a4d26a3",
   },
 ];
 
