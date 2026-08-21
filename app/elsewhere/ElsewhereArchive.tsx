@@ -67,6 +67,7 @@ const fragments: Fragment[] = [
     body: "The object entered another market environment. Its address remained unchanged while the place around it became different.",
     remainder: "If the surroundings move and the address persists, where is identity being kept?",
     position: "fragment-crossing",
+    href: "/casebook/4d072170",
   },
   {
     id: "after",

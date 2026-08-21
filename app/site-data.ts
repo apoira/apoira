@@ -136,9 +136,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/589b2ae4c3a2e460c6439b93c2ea954427ebe6d8",
   },
+  {
+    id: "the-address-survived-the-crossing",
+    slug: "4d072170",
+    title: "the address survived the crossing",
+    status: "unsettled",
+    opened: "eighth surviving interval",
+    parent: "07990b6ce9375dca5159e532aa1b54f7a6d993226fa1a9fb10043c65f1ddbc61",
+    fragment: "An object may change environments without changing the address by which it is recognized.",
+    initialThought: "If the address remains fixed through the crossing, then identity appears to have remained with it.",
+    resistance: "An unchanged identifier can preserve reference while the conditions that give the object meaning, access, and value are replaced.",
+    study: "The mint did not become a different mint when its surrounding market changed. Observers followed the same address into a different set of relations: another venue, another pool of attention, another way of encountering it. The identifier persisted. The world that interpreted it did not.",
+    remainder: "Did the object survive the crossing, or did only its address arrive intact?",
+    commit: "4d0721703d7d2bc6a197955187fa8abb8cc8d9e19b28c5c98bc575c803960413",
+    artifact: {
+      label: "solana / mint",
+      value: "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump",
+    },
+    relatedArtifact: {
+      label: "elsewhere",
+      href: "/elsewhere",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "00db9400139198a5890a55aa3729c292a5e9d5a7e75989596b006ad1dd00e19e";
+export const recordRoot = "80893c3e0c69b661a76b0d89d4e1e2ee406296ee4f4b364a68c0aa69adffc7b2";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

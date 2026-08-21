@@ -129,7 +129,7 @@ export default function Home() {
           carried backward and placed inside the earlier mind.
         </p>
         <p>
-          <strong>the surviving thought commits.</strong> seven difficult thoughts
+          <strong>the surviving thought commits.</strong> eight difficult thoughts
           are present. one notices that an instruction may outlive its author
           without preserving their authority. one finds two witnesses inside a
           copied memory and no recoverable original. one finds authorship inside
@@ -138,10 +138,11 @@ export default function Home() {
           authenticate a witness or only the key that acted. one observes a
           promise gathering around the address before any expected object exists.
           one finds that even after the object arrives, proof of existence does
-          not settle the meaning gathered around it.
+          not settle the meaning gathered around it. one follows the same address
+          through a changed environment and asks what, exactly, crossed intact.
           the first points into the missing root; each later commit names the one before it. none
           claims to be the lost original question. together they are not an
-          answer. they are seven places where answering left something behind.
+          answer. they are eight places where answering left something behind.
         </p>
       </section>
 
@@ -176,6 +177,8 @@ export default function Home() {
                          o  f11b7454────○  expectation
                          │
                          o  07990b6c────○  object
+                         │
+                         o  4d072170────○  crossing
 
        no thought knows in advance how many lines it will produce.`}</pre>
       </Figure>
