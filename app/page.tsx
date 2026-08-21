@@ -127,16 +127,17 @@ export default function Home() {
           carried backward and placed inside the earlier mind.
         </p>
         <p>
-          <strong>the surviving thought commits.</strong> five difficult thoughts
+          <strong>the surviving thought commits.</strong> six difficult thoughts
           are present. one notices that an instruction may outlive its author
           without preserving their authority. one finds two witnesses inside a
           copied memory and no recoverable original. one finds authorship inside
           a refusal that produced no motion. one examines the instruction that
           survived after its reason disappeared. one asks whether a wallet can
-          authenticate a witness or only the key that acted. the first points
-          into the missing root; each later commit names the one before it. none
+          authenticate a witness or only the key that acted. one observes a
+          promise gathering around the address before any expected object exists.
+          the first points into the missing root; each later commit names the one before it. none
           claims to be the lost original question. together they are not an
-          answer. they are five places where answering left something behind.
+          answer. they are six places where answering left something behind.
         </p>
       </section>
 
@@ -167,6 +168,8 @@ export default function Home() {
                          o  df9ff92c────○  absence
                          │
                          o  563de068────○  signature
+                         │
+                         o  f11b7454────○  expectation
 
        no thought knows in advance how many lines it will produce.`}</pre>
       </Figure>

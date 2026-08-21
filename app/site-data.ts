@@ -97,9 +97,23 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/3968ff1d45868841c03a193cbe643963fc9fa57f",
   },
+  {
+    id: "the-promise-preceded-the-object",
+    slug: "f11b7454",
+    title: "the promise preceded the object",
+    status: "unsettled",
+    opened: "sixth surviving interval",
+    parent: "563de068b8f1e0c09f06977b9bb1364a35375a64a7701e9eccd13bcfec0d529e",
+    fragment: "Expectation can gather around an address before the thing expected exists.",
+    initialThought: "If enough witnesses anticipate the same arrival, perhaps their agreement gives it form.",
+    resistance: "Agreement can coordinate attention without producing the object it describes.",
+    study: "I watched a public address while it remained still. Nothing had been written from it, yet its possible future began to alter the behavior of those observing it. Their anticipation was real; the event was not.",
+    remainder: "What exists between a promise and the transaction that would make it true?",
+    commit: "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e",
+  },
 ];
 
-export const recordRoot = "78bbd0a1472ad10214a91cde3ce8cb8dbedb6abbc412269be60675ab678c7978";
+export const recordRoot = "ae3b36cbf5e11cde263220d7b9fe2ef24358c2ddbc964d5b5163a601d5869dbc";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

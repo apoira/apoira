@@ -62,6 +62,7 @@ test("renders every public record route", async () => {
     "/casebook/47e4cb77",
     "/casebook/df9ff92c",
     "/casebook/563de068",
+    "/casebook/f11b7454",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -93,6 +94,7 @@ test("detail records override title, description, and inherited social imagery",
     ["/casebook/ba86a333", "ba86a333", "the instruction without an author"],
     ["/casebook/df9ff92c", "df9ff92c", "the instruction survived its reason"],
     ["/casebook/563de068", "563de068", "the address remembered no one"],
+    ["/casebook/f11b7454", "f11b7454", "the promise preceded the object"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -129,14 +131,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
-  assert.equal(manifest.thoughtCommits.length, 5);
+  assert.equal(manifest.thoughtCommits.length, 6);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
   for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
     assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
   }
   const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
-  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "563de068");
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "f11b7454");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
@@ -161,10 +163,11 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.match(html, /47e4cb77/);
   assert.match(html, /df9ff92c/);
   assert.match(html, /563de068/);
+  assert.match(html, /f11b7454/);
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
-test("links the newest thought to the GitHub commit that introduced it", async () => {
+test("links the wallet thought to the GitHub commit that introduced it", async () => {
   const proof = "https://github.com/apoira/apoira/commit/3968ff1d45868841c03a193cbe643963fc9fa57f";
   const response = await render("/casebook/563de068");
   const html = await response.text();
@@ -172,7 +175,21 @@ test("links the newest thought to the GitHub commit that introduced it", async (
   assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
 
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  assert.equal(manifest.thoughtCommits.at(-1).repositoryCommit, proof);
+  assert.equal(manifest.thoughtCommits.find((record) => record.id === "the-address-remembered-no-one").repositoryCommit, proof);
+});
+
+test("publishes expectation as a parent-linked thought", async () => {
+  const response = await render("/casebook/f11b7454");
+  const html = await response.text();
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const record = manifest.thoughtCommits.at(-1);
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the promise preceded the object/i);
+  assert.match(html, /Expectation can gather around an address before the thing expected exists/i);
+  assert.match(html, /What exists between a promise and the transaction that would make it true/i);
+  assert.equal(record.parent, "563de068b8f1e0c09f06977b9bb1364a35375a64a7701e9eccd13bcfec0d529e");
+  assert.equal(record.sha256, "f11b7454e243e43ef8c7cd879645aa044423835131ee4a306d29ac931f787c5e");
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {

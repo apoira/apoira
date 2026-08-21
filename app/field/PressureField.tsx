@@ -27,6 +27,7 @@ const positions = [
   [410, 360],
   [650, 430],
   [485, 555],
+  [665, 600],
 ] as const;
 
 const fixedNodes: FieldNode[] = [
@@ -52,8 +53,8 @@ const fixedNodes: FieldNode[] = [
   })),
   {
     id: "unsigned",
-    x: 770,
-    y: 555,
+    x: 835,
+    y: 505,
     label: "f3ad24d6",
     title: "the message that was not signed",
     kind: "artifact",
@@ -68,6 +69,7 @@ const fixedEdges = [
   ["c84d0d3a", "47e4cb77"],
   ["47e4cb77", "df9ff92c"],
   ["df9ff92c", "563de068"],
+  ["563de068", "f11b7454"],
   ["563de068", "unsigned"],
 ] as const;
 
