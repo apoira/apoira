@@ -76,16 +76,6 @@ const entries: IndexEntry[] = [
     action: "inspect the source register",
   },
   {
-    id: "before",
-    label: "before",
-    gloss: "a page older than the record",
-    heading: "the record begins after this page",
-    body: "The sheet belongs to no surviving thought. Its front carries the instruction as pressure. Its reverse suggests that the erasure was requested rather than suffered.",
-    notation: "page          present\nparent        none\nhand          unrecognized",
-    href: "/before",
-    action: "examine the page",
-  },
-  {
     id: "missing",
     label: "",
     gloss: "",
