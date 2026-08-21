@@ -47,6 +47,7 @@ test("renders every public record route", async () => {
     "/casebook",
     "/anatomy",
     "/healing",
+    "/index",
     "/field",
     "/scars",
     "/sources",
@@ -203,7 +204,7 @@ test("publishes the interactive pressure field without changing the public recor
   const response = await render("/field");
   const html = await response.text();
   const source = await readFile(new URL("../app/field/PressureField.tsx", import.meta.url), "utf8");
-  const unsigned = await render("/unsigned").then((result) => result.text());
+  const indexSource = await readFile(new URL("../app/index/ArchiveIndex.tsx", import.meta.url), "utf8");
 
   assert.equal(response.status, 200);
   assert.match(html, /the pressure field/i);
@@ -214,8 +215,25 @@ test("publishes the interactive pressure field without changing the public recor
   assert.doesNotMatch(source, /crypto\.subtle|localStorage|submitQuestion|field-probe|LocalTrace/);
   assert.match(source, /onPointerDown|beginDrag/);
   assert.match(source, /onWheel|zoomField/);
-  assert.match(unsigned, /href="\/field"/i);
+  assert.match(indexSource, /href: "\/field"/i);
   assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /\/field/);
+});
+
+test("publishes an original interactive index around the pressure field", async () => {
+  const response = await render("/index");
+  const html = await response.text();
+  const source = await readFile(new URL("../app/index/ArchiveIndex.tsx", import.meta.url), "utf8");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the index/i);
+  assert.match(html, /no surviving parent/i);
+  assert.match(html, /the structure between them/i);
+  assert.match(html, /there should be a parent here/i);
+  assert.match(source, /href: "\/field"/);
+  assert.match(source, /onClick=.*setActiveId/);
+  assert.match(await render("/unsigned").then((result) => result.text()), /href="\/index"/i);
+  assert.doesNotMatch(html, /agent|capability|world assembly|get-tabs/i);
+  assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /public structure|private traces/i);
 });
 
 test("removes the disposable starter preview", async () => {

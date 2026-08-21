@@ -78,7 +78,7 @@ export default function UnsignedMessage() {
 
       <nav className="record-turn" aria-label="Return to the originating thought">
         <Link href="/casebook/563de068">← return to the address that remembered no one</Link>
-        <Link href="/field">enter the pressure field →</Link>
+        <Link href="/index">enter the index →</Link>
       </nav>
     </RecordShell>
   );

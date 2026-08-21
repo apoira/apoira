@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "./AppLink";
 
 const access = [
+  ["/index", "the index"],
   ["/casebook", "the thought commits"],
   ["/anatomy", "how thought grows"],
   ["/healing", "the revision"],
