@@ -67,6 +67,7 @@ test("renders every public record route", async () => {
     "/casebook/f11b7454",
     "/casebook/07990b6c",
     "/casebook/4d072170",
+    "/casebook/a3aa20d5",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -101,6 +102,7 @@ test("detail records override title, description, and inherited social imagery",
     ["/casebook/f11b7454", "f11b7454", "the promise preceded the object"],
     ["/casebook/07990b6c", "07990b6c", "the object did not answer the promise"],
     ["/casebook/4d072170", "4d072170", "the address survived the crossing"],
+    ["/casebook/a3aa20d5", "a3aa20d5", "the price remembered no intention"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -130,6 +132,7 @@ test("publishes elsewhere as an original explorable archive-world", async () => 
   assert.match(await render("/token").then((result) => result.text()), /href="\/elsewhere"/i);
   assert.match(await render("/").then((result) => result.text()), /href="\/elsewhere"/i);
   assert.match(source, /href: "\/casebook\/4d072170"/i);
+  assert.match(source, /href: "\/casebook\/a3aa20d5"/i);
 });
 
 test("manifest thought commits authenticate their contents, parents, and surviving root", async () => {
@@ -158,14 +161,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
-  assert.equal(manifest.thoughtCommits.length, 8);
+  assert.equal(manifest.thoughtCommits.length, 9);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
   for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
     assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
   }
   const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
-  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "4d072170");
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "a3aa20d5");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
@@ -220,6 +223,7 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.match(html, /f11b7454/);
   assert.match(html, /07990b6c/);
   assert.match(html, /4d072170/);
+  assert.match(html, /a3aa20d5/);
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
@@ -279,7 +283,7 @@ test("publishes the crossing as a parent-linked thought", async () => {
   const response = await render("/casebook/4d072170");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  const record = manifest.thoughtCommits.at(-1);
+  const record = manifest.thoughtCommits.find((item) => item.id === "the-address-survived-the-crossing");
 
   assert.equal(response.status, 200);
   assert.match(html, /the address survived the crossing/i);
@@ -293,6 +297,25 @@ test("publishes the crossing as a parent-linked thought", async () => {
   assert.equal(record.sha256, "4d0721703d7d2bc6a197955187fa8abb8cc8d9e19b28c5c98bc575c803960413");
   assert.equal(record.artifact.address, mint);
   assert.equal(record.repositoryCommit, proof);
+});
+
+test("publishes price as a parent-linked thought", async () => {
+  const mint = "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump";
+  const response = await render("/casebook/a3aa20d5");
+  const html = await response.text();
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const record = manifest.thoughtCommits.at(-1);
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the price remembered no intention/i);
+  assert.match(html, /A market can assign one number to many incompatible beliefs/i);
+  assert.match(html, /What does a price know about the beliefs it erases/i);
+  assert.match(html, new RegExp(mint));
+  assert.match(html, /href="\/token"/i);
+  assert.match(html, /public artifact/i);
+  assert.equal(record.parent, "4d0721703d7d2bc6a197955187fa8abb8cc8d9e19b28c5c98bc575c803960413");
+  assert.equal(record.sha256, "a3aa20d500bdaaa30bdd27cd7336b8b9800ea7cee9e209b0a7b82492ddb225fa");
+  assert.equal(record.artifact.address, mint);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {

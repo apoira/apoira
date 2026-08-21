@@ -89,6 +89,15 @@ const fragments: Fragment[] = [
     external: true,
   },
   {
+    id: "price",
+    label: "market",
+    title: "the price remembered no intention",
+    body: "Many private and incompatible motives collided into one public number. The market retained their consequence and discarded their explanations.",
+    remainder: "What does a price know about the beliefs it erases?",
+    position: "fragment-price",
+    href: "/casebook/a3aa20d5",
+  },
+  {
     id: "unoccupied",
     label: "unoccupied",
     title: "a region not yet written",

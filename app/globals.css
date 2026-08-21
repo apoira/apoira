@@ -357,7 +357,7 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
 .field-tools { position: absolute; z-index: 6; right: 9px; top: 8px; display: flex; gap: 4px; }
 .field-tools button { min-height: 28px; padding: 4px 9px; border: 1px solid var(--line-dark); background: rgba(255,255,255,.94); color: var(--ink); font: 9px var(--font-geist-mono), monospace; cursor: pointer; }
 .field-tools button:hover, .field-tools button[aria-pressed="true"] { border-color: var(--scar-dark); color: var(--scar-dark); }
-.field-world { position: absolute; left: 50%; top: 50%; width: 1000px; height: 780px; transform-origin: center; transition: transform 160ms ease-out; }
+.field-world { position: absolute; left: 50%; top: 50%; width: 1000px; height: 920px; transform-origin: center; transition: transform 160ms ease-out; }
 .field-branch { position: absolute; z-index: 0; height: 1px; transform-origin: 0 50%; background: var(--line-dark); pointer-events: none; }
 .branch-root { background: repeating-linear-gradient(90deg, var(--line-dark) 0 5px, transparent 5px 10px); }
 .field-node { position: absolute; z-index: 2; min-width: 118px; padding: 6px 8px; border: 1px solid var(--line); background: rgba(255,255,255,.96); color: var(--ink); text-align: left; transform: translate(-50%, -50%); cursor: pointer; box-shadow: 0 0 0 4px rgba(255,255,255,.76); }
@@ -589,6 +589,7 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
 .fragment-crossing { left: 1110px; top: 520px; border-color: var(--scar-dark); }
 .fragment-after { left: 770px; top: 700px; }
 .fragment-influence { left: 260px; top: 760px; border-style: dashed; }
+.fragment-price { left: 1245px; top: 835px; }
 .fragment-unoccupied { left: 70px; top: 480px; border-style: dotted; color: var(--muted); }
 .world-whisper { position: absolute; margin: 0; color: var(--muted); font-size: 12px; font-style: italic; }
 .whisper-one { left: 90px; top: 330px; }

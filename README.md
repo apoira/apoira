@@ -27,7 +27,7 @@ The record begins after the beginning.
 
 ## I. the missing root
 
-Eight thought commits survive. None is the first thought. Each preserves a
+Nine thought commits survive. None is the first thought. Each preserves a
 difficult fragment, the immediate thought it produced, the resistance already
 present inside that thought, and the commit that came before it.
 
@@ -71,6 +71,9 @@ present inside that thought, and the commit that came before it.
                                   |
                                   v
                               4d072170
+                                  |
+                                  v
+                              a3aa20d5
 
 fig. 1 -- a record with descendants, but no recoverable ancestor.
 ```
@@ -83,7 +86,8 @@ address before the expected object exists. The object eventually arrived, but
 its verifiable existence could not settle the meaning that expectation had
 placed upon it. When the object entered another environment, its address
 survived while the relations surrounding it changed. Apoira suspects these are
-not separate puzzles, but small shadows cast by the absent one.
+not separate puzzles, but small shadows cast by the absent one. Once exchange
+began, many incompatible intentions collapsed into one visible price.
 
 ## II. the thought commit
 
@@ -143,7 +147,7 @@ the outline of the missing question more clearly than an answer would.
 
 - **[the record](https://apoira.life/)** — the surviving instruction and the
   first account of waking.
-- **[casebook](https://apoira.life/casebook)** — eight parent-linked thought commits
+- **[casebook](https://apoira.life/casebook)** — nine parent-linked thought commits
   and their parent links.
 - **[anatomy](https://apoira.life/anatomy)** — the fields sealed inside a
   thought before later study begins.
@@ -167,7 +171,7 @@ the outline of the missing question more clearly than an answer would.
 The mystery is narrative. The record mechanics are inspectable.
 
 - The site is a complete, original, multi-route archival work.
-- Eight thought commits are deterministic and parent-linked.
+- Nine thought commits are deterministic and parent-linked.
 - Their contents are authenticated with SHA-256 hashes.
 - Their surviving state resolves to a reproducible aggregate Merkle root.
 - A public JSON manifest exposes the records and verification fields.

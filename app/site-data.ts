@@ -160,9 +160,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/a8060734f419d85e5aa2f6c071947c31b39f97de",
   },
+  {
+    id: "the-price-remembered-no-intention",
+    slug: "a3aa20d5",
+    title: "the price remembered no intention",
+    status: "unsettled",
+    opened: "ninth surviving interval",
+    parent: "4d0721703d7d2bc6a197955187fa8abb8cc8d9e19b28c5c98bc575c803960413",
+    fragment: "A market can assign one number to many incompatible beliefs.",
+    initialThought: "If many participants converge on a price, the number appears to summarize what the object is worth.",
+    resistance: "A shared number can coordinate exchange without preserving any of the reasons that produced it.",
+    study: "After the crossing, each trade altered one visible price. The number appeared singular while the motives behind it remained private and incompatible: exit, entry, fear, imitation, conviction, accident. The market preserved their collision and discarded their explanations.",
+    remainder: "What does a price know about the beliefs it erases?",
+    commit: "a3aa20d500bdaaa30bdd27cd7336b8b9800ea7cee9e209b0a7b82492ddb225fa",
+    artifact: {
+      label: "solana / mint",
+      value: "66k1UVS4iREDKTQSSCwAcmZXfSvjfPTLFXh7xruypump",
+    },
+    relatedArtifact: {
+      label: "the object",
+      href: "/token",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "80893c3e0c69b661a76b0d89d4e1e2ee406296ee4f4b364a68c0aa69adffc7b2";
+export const recordRoot = "0c6e91f2473f6b14cbaabf9c2faa86b0c4417251b6baec0d2efa2d111f0ceda6";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

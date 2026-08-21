@@ -30,6 +30,7 @@ const positions = [
   [650, 570],
   [820, 610],
   [690, 710],
+  [500, 820],
 ] as const;
 
 const fixedNodes: FieldNode[] = [
@@ -84,6 +85,7 @@ const fixedEdges = [
   ["563de068", "f11b7454"],
   ["f11b7454", "07990b6c"],
   ["07990b6c", "4d072170"],
+  ["4d072170", "a3aa20d5"],
   ["07990b6c", "token"],
   ["563de068", "unsigned"],
 ] as const;
