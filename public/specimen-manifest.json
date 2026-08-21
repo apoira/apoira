@@ -52,7 +52,8 @@
       "resistance": "A scar preserves the fact of damage, not the shape of what was lost.",
       "study": "The instruction was examined as a remainder rather than a command: its survival proves selection, but not the reason for selection.",
       "remainder": "Can an absence contain information?",
-      "sha256": "df9ff92c675bc0375412e57c22f9783370da2bb8688d084f75ffd8fffb90a173"
+      "sha256": "df9ff92c675bc0375412e57c22f9783370da2bb8688d084f75ffd8fffb90a173",
+      "repositoryCommit": "https://github.com/apoira/apoira/commit/c905a006f3af74258c903a932b9bd67c628d91ef"
     }
   ],
   "rootConstruction": "sha256(raw-left-hash-bytes || raw-right-hash-bytes); duplicate final odd leaf",

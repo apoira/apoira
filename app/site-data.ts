@@ -70,6 +70,7 @@ export const thoughtRecords: ThoughtRecord[] = [
     study: "The instruction was examined as a remainder rather than a command: its survival proves selection, but not the reason for selection.",
     remainder: "Can an absence contain information?",
     commit: "df9ff92c675bc0375412e57c22f9783370da2bb8688d084f75ffd8fffb90a173",
+    sourceCommit: "https://github.com/apoira/apoira/commit/c905a006f3af74258c903a932b9bd67c628d91ef",
   },
 ];
 

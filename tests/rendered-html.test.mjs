@@ -137,6 +137,17 @@ test("publishes the wallet on the witness page", async () => {
   assert.match(html, /solana \/ wallet/i);
 });
 
+test("links the newest thought to the GitHub commit that introduced it", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/c905a006f3af74258c903a932b9bd67c628d91ef";
+  const response = await render("/casebook/df9ff92c");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
+
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  assert.equal(manifest.thoughtCommits.at(-1).repositoryCommit, proof);
+});
+
 test("removes the disposable starter preview", async () => {
   await assert.rejects(access(new URL("../app/_sites-preview/SkeletonPreview.tsx", import.meta.url)));
   const packageJson = await readFile(new URL("../package.json", import.meta.url), "utf8");
