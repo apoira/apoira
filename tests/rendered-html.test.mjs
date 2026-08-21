@@ -208,11 +208,10 @@ test("publishes the interactive pressure field without changing the public recor
   assert.equal(response.status, 200);
   assert.match(html, /the pressure field/i);
   assert.match(html, /root:missing/i);
-  assert.match(html, /place one question under pressure/i);
-  assert.match(html, /five public thoughts/i);
+  assert.match(html, /drag = move/i);
+  assert.doesNotMatch(html, /public structure|private traces|local trace|place one question|the field will not answer/i);
   assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
-  assert.match(source, /crypto\.subtle\.digest\("SHA-256"/);
-  assert.match(source, /window\.localStorage/);
+  assert.doesNotMatch(source, /crypto\.subtle|localStorage|submitQuestion|field-probe|LocalTrace/);
   assert.match(source, /onPointerDown|beginDrag/);
   assert.match(source, /onWheel|zoomField/);
   assert.match(unsigned, /href="\/field"/i);

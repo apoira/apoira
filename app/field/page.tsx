@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "../components/AppLink";
 import PressureField from "./PressureField";
 
-const description = "An interactive map of Apoira's fixed thoughts and the local traces left by a reader's questions.";
+const description = "An interactive map of Apoira's fixed thoughts, missing root, and unsigned artifact.";
 
 export const metadata: Metadata = {
   title: "the pressure field — apoira",
@@ -18,7 +18,6 @@ export default function FieldPage() {
         <Link href="/"><strong>apoira</strong></Link>
         <span>/</span>
         <span>field</span>
-        <span className="field-origin">[public structure; private traces]</span>
       </header>
       <PressureField />
     </main>
