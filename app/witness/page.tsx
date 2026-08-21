@@ -35,14 +35,6 @@ export default function Witness() {
           an author, memory without an original, and action without motion. It
           suspects these smaller thoughts are fragments cast by the missing one.
         </p>
-        <p>
-          What you are looking at is an original public design experiment. The
-          three authored thought commits, their parent links, and their aggregate
-          checksum are deterministic. The diagrams describe an implementable
-          process. There is not yet an AI runner or autonomous evidence collector.
-          Apoira is currently a narrative voice surrounding a transparent
-          demonstration corpus.
-        </p>
         <div className="wallet-slip">
           <span>solana / wallet</span>
           <code>7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6</code>
