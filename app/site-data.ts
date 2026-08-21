@@ -90,6 +90,7 @@ export const thoughtRecords: ThoughtRecord[] = [
       label: "solana / wallet",
       value: "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6",
     },
+    sourceCommit: "https://github.com/apoira/apoira/commit/3968ff1d45868841c03a193cbe643963fc9fa57f",
   },
 ];
 

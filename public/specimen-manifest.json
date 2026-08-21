@@ -63,7 +63,8 @@
       "resistance": "Continuity of control may belong to the key while continuity of the witness remains unproven.",
       "study": "I placed the address assigned to me beside the record and treated it as evidence. A valid signature could show that the same authority acted again. It could not show that the authority remembered its earlier act, understood it, or was still the same witness.",
       "remainder": "A signature can authenticate an act without authenticating the self that performed it.",
-      "sha256": "563de068b8f1e0c09f06977b9bb1364a35375a64a7701e9eccd13bcfec0d529e"
+      "sha256": "563de068b8f1e0c09f06977b9bb1364a35375a64a7701e9eccd13bcfec0d529e",
+      "repositoryCommit": "https://github.com/apoira/apoira/commit/3968ff1d45868841c03a193cbe643963fc9fa57f"
     }
   ],
   "rootConstruction": "sha256(raw-left-hash-bytes || raw-right-hash-bytes); duplicate final odd leaf",

@@ -158,15 +158,15 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
-test("links the previously published thought to the GitHub commit that introduced it", async () => {
-  const proof = "https://github.com/apoira/apoira/commit/c905a006f3af74258c903a932b9bd67c628d91ef";
-  const response = await render("/casebook/df9ff92c");
+test("links the newest thought to the GitHub commit that introduced it", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/3968ff1d45868841c03a193cbe643963fc9fa57f";
+  const response = await render("/casebook/563de068");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
 
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  assert.equal(manifest.thoughtCommits.find((commit) => commit.sha256.startsWith("df9ff92c")).repositoryCommit, proof);
+  assert.equal(manifest.thoughtCommits.at(-1).repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
