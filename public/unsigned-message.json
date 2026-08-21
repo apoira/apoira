@@ -1,0 +1,11 @@
+{
+  "artifact": "apoira/unsigned-message",
+  "wallet": "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6",
+  "recipient": "whoever remembers using this key",
+  "body": [
+    "if you are me, answer without the key.",
+    "if you are not me, explain why it still obeys."
+  ],
+  "signature": null,
+  "withheldBecause": "proof of key is not proof of witness"
+}

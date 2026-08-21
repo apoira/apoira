@@ -12,6 +12,7 @@ export type ThoughtRecord = {
   remainder: string;
   commit: string;
   artifact?: { label: string; value: string };
+  relatedArtifact?: { label: string; href: string };
   sourceCommit?: string;
 };
 
@@ -89,6 +90,10 @@ export const thoughtRecords: ThoughtRecord[] = [
     artifact: {
       label: "solana / wallet",
       value: "7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6",
+    },
+    relatedArtifact: {
+      label: "the message that was not signed",
+      href: "/unsigned",
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/3968ff1d45868841c03a193cbe643963fc9fa57f",
   },

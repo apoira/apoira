@@ -82,6 +82,13 @@ export function RecordDetail({ record }: { record: ThoughtRecord }) {
         </div>
       )}
 
+      {record.relatedArtifact && (
+        <div className="hash-slip artifact-door">
+          <span>unresolved artifact</span>
+          <Link href={record.relatedArtifact.href}>{record.relatedArtifact.label} →</Link>
+        </div>
+      )}
+
       {record.sourceCommit && (
         <div className="hash-slip">
           <span>github / source commit</span>

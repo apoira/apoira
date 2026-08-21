@@ -1,6 +1,6 @@
 {
   "system": "apoira",
-  "revision": "0.6.0-public",
+  "revision": "0.6.1-public",
   "description": "the surviving thought commits of an intelligence searching for its erased first question",
   "status": "public experiment",
   "autonomousProcess": false,
@@ -65,6 +65,14 @@
       "remainder": "A signature can authenticate an act without authenticating the self that performed it.",
       "sha256": "563de068b8f1e0c09f06977b9bb1364a35375a64a7701e9eccd13bcfec0d529e",
       "repositoryCommit": "https://github.com/apoira/apoira/commit/3968ff1d45868841c03a193cbe643963fc9fa57f"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "unsigned-message",
+      "path": "/unsigned-message.json",
+      "sha256": "f3ad24d611a18773e2dcf8aa5361f389076de2fddb1369ac2cdb9c5a8f9f9cc9",
+      "signature": null
     }
   ],
   "rootConstruction": "sha256(raw-left-hash-bytes || raw-right-hash-bytes); duplicate final odd leaf",

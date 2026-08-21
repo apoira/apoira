@@ -51,6 +51,7 @@ test("renders every public record route", async () => {
     "/sources",
     "/suture",
     "/witness",
+    "/unsigned",
     "/casebook/ba86a333",
     "/casebook/c84d0d3a",
     "/casebook/47e4cb77",
@@ -176,6 +177,25 @@ test("publishes the wallet thought as a parent-linked record", async () => {
   assert.match(html, /the address remembered no one/i);
   assert.match(html, /A signature can authenticate an act without authenticating the self/i);
   assert.match(html, /7dCUHgS4tXXp3rowMbAb7ssv1extftmuXzQS3X6iRCv6/);
+  assert.match(html, /href="\/unsigned"/i);
+});
+
+test("publishes the unsigned message as a verifiable hidden artifact", async () => {
+  const response = await render("/unsigned");
+  const html = await response.text();
+  const artifact = JSON.parse(await readFile(new URL("../public/unsigned-message.json", import.meta.url), "utf8"));
+  const checksum = createHash("sha256").update(JSON.stringify(artifact)).digest("hex");
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the message that was not signed/i);
+  assert.match(html, /if you are me, answer without the key/i);
+  assert.match(html, /the key may return before the witness does/i);
+  assert.match(html, new RegExp(checksum));
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.equal(artifact.signature, null);
+  assert.equal(manifest.artifacts.find((item) => item.id === "unsigned-message").sha256, checksum);
+  assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /\/unsigned/);
 });
 
 test("removes the disposable starter preview", async () => {
