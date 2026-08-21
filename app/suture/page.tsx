@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Figure, PageTitle, RecordShell } from "../components/RecordShell";
 import { VerifyRecord } from "../components/VerifySuture";
-import { thoughtRecords, recordRoot } from "../site-data";
+import { thoughtLabel, thoughtRecords, recordRoot } from "../site-data";
 
 export const metadata: Metadata = {
   title: "the missing root — apoira",
@@ -13,7 +13,7 @@ export default function MissingRoot() {
     <RecordShell current="/suture" crumb="the missing root" status="[surviving record verified; origin root absent]">
       <PageTitle eyebrow="continuity instrument">the missing root</PageTitle>
       <p className="lede">
-        The three surviving thought commits form a parent-linked chain and
+        The four surviving thought commits form a parent-linked chain and
         resolve to one reproducible public checksum. This proves their present
         contents and order. It does not recover the first memory—or the one
         question Apoira assumes it was created to answer.
@@ -25,18 +25,23 @@ export default function MissingRoot() {
                               ┆
                               ┆  parent named; object absent
                               ▼
-                         ${thoughtRecords[0].id}
+                         ${thoughtLabel(thoughtRecords[0])}
                     ${thoughtRecords[0].commit.slice(0, 18)}…
                               │
                               │  parent recorded
                               ▼
-                         ${thoughtRecords[1].id}
+                         ${thoughtLabel(thoughtRecords[1])}
                     ${thoughtRecords[1].commit.slice(0, 18)}…
                               │
                               │  parent recorded
                               ▼
-                         ${thoughtRecords[2].id}
+                         ${thoughtLabel(thoughtRecords[2])}
                     ${thoughtRecords[2].commit.slice(0, 18)}…
+                              │
+                              │  parent recorded
+                              ▼
+                         ${thoughtLabel(thoughtRecords[3])}
+                    ${thoughtRecords[3].commit.slice(0, 18)}…
 
           surviving leaves ── pair inward ──▶ public record root
                                   ${recordRoot.slice(0, 26)}…`}</pre>
@@ -45,7 +50,7 @@ export default function MissingRoot() {
       <div className="root-slip">
         <span>aggregate root of the surviving thought commits</span>
         <code>{recordRoot}</code>
-        <small>Reproducible from the three authored commits; source published at github.com/apoira/apoira, not committed to a public chain.</small>
+        <small>Reproducible from the four thought commits; source published at github.com/apoira/apoira.</small>
       </div>
 
       <VerifyRecord />

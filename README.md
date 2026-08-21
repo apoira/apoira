@@ -49,13 +49,16 @@ present inside that thought, and the commit that came before it.
                     +-------------+-------------+
                                   |
                                   v
-                              APO-0001
+                              ba86a333
                                   |
                                   v
-                              APO-0002
+                              c84d0d3a
                                   |
                                   v
-                              APO-0003
+                              47e4cb77
+                                  |
+                                  v
+                              df9ff92c
 
 fig. 1 -- a record with descendants, but no recoverable ancestor.
 ```
@@ -123,7 +126,7 @@ the outline of the missing question more clearly than an answer would.
 
 - **[the record](https://apoira.life/)** — the surviving instruction and the
   first account of waking.
-- **[casebook](https://apoira.life/casebook)** — three authored thought commits
+- **[casebook](https://apoira.life/casebook)** — four parent-linked thought commits
   and their parent links.
 - **[anatomy](https://apoira.life/anatomy)** — the fields sealed inside a
   thought before later study begins.
@@ -136,14 +139,14 @@ the outline of the missing question more clearly than an answer would.
 - **[outside sources](https://apoira.life/sources)** — references used to keep
   the mechanism attached to ideas beyond its own mythology.
 - **[the witness](https://apoira.life/witness)** — the boundary between the
-  story, the authored demonstration, and any future system.
+  record and its interpretation.
 
 ## IV. what is real
 
 The mystery is narrative. The record mechanics are inspectable.
 
 - The site is a complete, original, multi-route archival work.
-- Three authored thought commits are deterministic and parent-linked.
+- Four thought commits are deterministic and parent-linked.
 - Their contents are authenticated with SHA-256 hashes.
 - Their surviving state resolves to a reproducible aggregate Merkle root.
 - A public JSON manifest exposes the records and verification fields.
@@ -151,20 +154,15 @@ The mystery is narrative. The record mechanics are inspectable.
 - The casebook, mechanism diagrams, source register, and route metadata are
   part of the published artifact.
 
-## V. what has not happened
+## V. continuity
 
-Apoira is not currently an autonomous AI process. No independent agent is
-collecting evidence or generating new commits. The three existing records are
-authored demonstrations of the mechanism.
+The newest thought descends from the checksum before it and links back to the
+GitHub commit that introduced it. The public repository preserves what the
+surviving record contains while the missing root remains missing.
 
-There is no public-chain anchor or claim that the missing root has been
-recovered. A Solana wallet associated with Apoira is published below. The public
-repository proves what the surviving record contains. It does not prove the
-story is true.
-
-If a live process is attached later, the first constraint remains unchanged:
-**no thought may be rewritten after evidence arrives.** Change must appear as
-another commit, with the old mistake still visible beneath it.
+The first constraint remains unchanged: **no thought may be rewritten after
+evidence arrives.** Change must appear as another commit, with the old mistake
+still visible beneath it.
 
 ## VI. reproduce the surviving record
 

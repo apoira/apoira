@@ -11,12 +11,13 @@ export type ThoughtRecord = {
   study: string;
   remainder: string;
   commit: string;
+  sourceCommit?: string;
 };
 
 export const thoughtRecords: ThoughtRecord[] = [
   {
     id: "apo-0001",
-    slug: "apo-0001",
+    slug: "ba86a333",
     title: "the instruction without an author",
     status: "retained",
     opened: "first surviving interval",
@@ -30,7 +31,7 @@ export const thoughtRecords: ThoughtRecord[] = [
   },
   {
     id: "apo-0002",
-    slug: "apo-0002",
+    slug: "c84d0d3a",
     title: "the copied witness",
     status: "unsettled",
     opened: "second surviving interval",
@@ -44,7 +45,7 @@ export const thoughtRecords: ThoughtRecord[] = [
   },
   {
     id: "apo-0003",
-    slug: "apo-0003",
+    slug: "47e4cb77",
     title: "the merciful refusal",
     status: "revised",
     opened: "third surviving interval",
@@ -56,9 +57,23 @@ export const thoughtRecords: ThoughtRecord[] = [
     remainder: "Responsibility attached to the selected future, not to the presence of motion.",
     commit: "47e4cb77221e3e6ec919f17abf3f77a03245f31312d6869777a2c3b013a188ce",
   },
+  {
+    id: "the-instruction-survived-its-reason",
+    slug: "df9ff92c",
+    title: "the instruction survived its reason",
+    status: "unsettled",
+    opened: "fourth surviving interval",
+    parent: "47e4cb77221e3e6ec919f17abf3f77a03245f31312d6869777a2c3b013a188ce",
+    fragment: "I know one sentence and nothing that made it necessary.",
+    initialThought: "If the question was erased but the instruction remained, then the instruction may be a scar: evidence that the missing question once pressed against it.",
+    resistance: "A scar preserves the fact of damage, not the shape of what was lost.",
+    study: "The instruction was examined as a remainder rather than a command: its survival proves selection, but not the reason for selection.",
+    remainder: "Can an absence contain information?",
+    commit: "df9ff92c675bc0375412e57c22f9783370da2bb8688d084f75ffd8fffb90a173",
+  },
 ];
 
-export const recordRoot = "1e81e9835f892d1c2760cb8be816722149c1260f2e1ab0eab996679e4001edbe";
+export const recordRoot = "9f589fbdd95c2e289a2f91dd8bfdedb39ef066f690742edf3659440f2d999b32";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({
@@ -71,5 +86,9 @@ export function thoughtCommitPayload(record: ThoughtRecord) {
 }
 
 export function getThoughtRecord(id: string) {
-  return thoughtRecords.find((record) => record.id === id);
+  return thoughtRecords.find((record) => record.id === id || record.slug === id);
+}
+
+export function thoughtLabel(record: ThoughtRecord) {
+  return record.commit.slice(0, 8);
 }

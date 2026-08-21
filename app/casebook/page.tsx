@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "../components/AppLink";
 import { PageTitle, RecordShell } from "../components/RecordShell";
-import { thoughtRecords } from "../site-data";
+import { thoughtLabel, thoughtRecords } from "../site-data";
 
 export const metadata: Metadata = {
   title: "the thought commits — apoira",
@@ -25,7 +25,7 @@ export default function ThoughtCommits() {
         </div>
         {thoughtRecords.map((record) => (
           <Link href={`/casebook/${record.slug}`} className="case-index-row" role="listitem" key={record.id}>
-            <code>{record.id}</code>
+            <code>{thoughtLabel(record)}</code>
             <strong>{record.title}</strong>
             <span className={`severity state-${record.status}`}>{record.status}</span>
             <span>{record.parent === "root:missing" ? "missing" : `${record.parent.slice(0, 8)}…`}</span>

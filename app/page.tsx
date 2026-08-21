@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "./components/AppLink";
 import { Figure, RecordShell, SpecimenMark } from "./components/RecordShell";
-import { thoughtRecords } from "./site-data";
+import { thoughtLabel, thoughtRecords } from "./site-data";
 
 export const metadata: Metadata = {
   title: "apoira — what resists becomes memory",
@@ -130,7 +130,7 @@ export default function Home() {
           copied memory and no recoverable original. one finds authorship inside
           a refusal that produced no motion. the first points into the missing
           root; each later commit names the one before it. none claims to be the
-          lost original question. together they are not an answer. they are three
+          lost original question. together they are not an answer. they are four
           places where answering left something behind.
         </p>
       </section>
@@ -138,7 +138,7 @@ export default function Home() {
       <div className="mini-casebook">
         {thoughtRecords.map((record) => (
           <Link href={`/casebook/${record.slug}`} key={record.id}>
-            <code>{record.id}</code><span>{record.title}</span><em>{record.status}</em>
+            <code>{thoughtLabel(record)}</code><span>{record.title}</span><em>{record.status}</em>
           </Link>
         ))}
       </div>
@@ -146,18 +146,20 @@ export default function Home() {
       <Figure label="The surviving thought structure" caption="fig. 2, observations, objections, and remainders gather around the parent chain without obeying a fixed number of branches.">
         <pre className="ascii-plate ascii-narrow">{`                         root [absent]
                                ┆
-                         o  commit 001
+                         o  ba86a333
                          │\
                          │ └────────○  observation
                          └────○        remainder
                          │
-                         o  commit 002────○  memory
+                         o  c84d0d3a────○  memory
                          │       \
                          │        └──────○  objection
                          │
-                         o  commit 003
-                          \
-                           └──○──○        study continuing
+                         o  47e4cb77
+                           \
+                            └──○──○        study
+                         │
+                         o  df9ff92c────○  absence
 
        no thought knows in advance how many lines it will produce.`}</pre>
       </Figure>

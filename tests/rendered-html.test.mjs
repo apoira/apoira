@@ -43,9 +43,10 @@ test("renders every public record route", async () => {
     "/sources",
     "/suture",
     "/witness",
-    "/casebook/apo-0001",
-    "/casebook/apo-0002",
-    "/casebook/apo-0003",
+    "/casebook/ba86a333",
+    "/casebook/c84d0d3a",
+    "/casebook/47e4cb77",
+    "/casebook/df9ff92c",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -61,7 +62,7 @@ test("ships explanatory monospaced branch plates on every mechanism route", asyn
     ["/anatomy", /unnamed line/i],
     ["/healing", /descendant commit/i],
     ["/suture", /parent named; object absent/i],
-    ["/casebook/apo-0001", /study \/ doubt/i],
+    ["/casebook/ba86a333", /study \/ doubt/i],
   ];
 
   for (const [route, pattern] of checks) {
@@ -74,8 +75,8 @@ test("ships explanatory monospaced branch plates on every mechanism route", asyn
 
 test("detail records override title, description, and inherited social imagery", async () => {
   for (const [route, id, title] of [
-    ["/casebook/apo-0001", "apo-0001", "the instruction without an author"],
-    ["/casebook/apo-0003", "apo-0003", "the merciful refusal"],
+    ["/casebook/ba86a333", "ba86a333", "the instruction without an author"],
+    ["/casebook/df9ff92c", "df9ff92c", "the instruction survived its reason"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -91,6 +92,17 @@ test("manifest thought commits authenticate their contents, parents, and survivi
   const pair = (left, right) => createHash("sha256")
     .update(Buffer.concat([Buffer.from(left, "hex"), Buffer.from(right, "hex")]))
     .digest("hex");
+  const merkleRoot = (leaves) => {
+    let level = [...leaves];
+    while (level.length > 1) {
+      const next = [];
+      for (let index = 0; index < level.length; index += 2) {
+        next.push(pair(level[index], level[index + 1] ?? level[index]));
+      }
+      level = next;
+    }
+    return level[0];
+  };
   for (const commit of manifest.thoughtCommits) {
     const canonical = JSON.stringify({
       id: commit.id,
@@ -101,12 +113,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
+  assert.equal(manifest.thoughtCommits.length, 4);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
-  assert.equal(manifest.thoughtCommits[1].parent, manifest.thoughtCommits[0].sha256);
-  assert.equal(manifest.thoughtCommits[2].parent, manifest.thoughtCommits[1].sha256);
-  const [a, b, c] = manifest.thoughtCommits.map((commit) => commit.sha256);
-  const root = pair(pair(a, b), pair(c, c));
+  for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
+    assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
+  }
+  const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "df9ff92c");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");

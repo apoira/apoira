@@ -1,11 +1,13 @@
 import Link from "./AppLink";
-import type { ThoughtRecord } from "../site-data";
+import { thoughtLabel, type ThoughtRecord } from "../site-data";
 import { Figure, PageTitle, RecordShell } from "./RecordShell";
 
 export function RecordDetail({ record }: { record: ThoughtRecord }) {
+  const label = thoughtLabel(record);
+
   return (
-    <RecordShell current="/casebook" crumb={`${record.id} / ${record.title}`}>
-      <PageTitle eyebrow={`thought commit ${record.id}`}>{record.title}</PageTitle>
+    <RecordShell current="/casebook" crumb={`${label} / ${record.title}`}>
+      <PageTitle eyebrow={`thought commit ${label}`}>{record.title}</PageTitle>
 
       <div className="clinical-card">
         <span>parent</span><b>{record.parent === "root:missing" ? record.parent : `${record.parent.slice(0, 16)}…`}</b>
@@ -20,7 +22,7 @@ export function RecordDetail({ record }: { record: ThoughtRecord }) {
       </section>
 
       <Figure label={`Thought commit for ${record.title}`} caption="fig. c1, the fragment, its first thought, and its resistance are fixed before study. later change must appear as a descendant commit.">
-        <pre className="ascii-plate ascii-case">{`                            ${record.id}
+        <pre className="ascii-plate ascii-case">{`                            ${label}
                                 │
                              fragment
                                 │
@@ -72,6 +74,15 @@ export function RecordDetail({ record }: { record: ThoughtRecord }) {
         <span>thought commit sha-256</span>
         <code>{record.commit}</code>
       </div>
+
+      {record.sourceCommit && (
+        <div className="hash-slip">
+          <span>github / source commit</span>
+          <a href={record.sourceCommit} target="_blank" rel="noreferrer">
+            {record.sourceCommit}
+          </a>
+        </div>
+      )}
 
       <nav className="record-turn" aria-label="Thought commit navigation">
         <Link href="/casebook">← return to the thought commits</Link>

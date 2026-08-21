@@ -181,6 +181,7 @@ h1, h2, h3, p { text-wrap: pretty; }
 .hash-slip, .root-slip { margin: 24px 0; padding: 10px 12px; border: 1px solid var(--line); display: grid; gap: 5px; }
 .hash-slip span, .root-slip span { color: var(--muted); font: 9px var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .08em; }
 .hash-slip code, .root-slip code { word-break: break-all; font-size: 10px; }
+.hash-slip a { overflow-wrap: anywhere; font: 10px var(--font-geist-mono), monospace; }
 .root-slip small { color: var(--muted); font-size: 11px; }
 .record-turn { margin-top: 26px; display: flex; justify-content: space-between; gap: 20px; font-size: 13px; }
 
@@ -204,7 +205,7 @@ blockquote { margin: 32px 0; padding: 15px 0 15px 20px; border-left: 2px solid v
 blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; font-style: normal; }
 
 .scar-registry { margin: 24px 0; border-top: 1px solid var(--line-dark); }
-.scar-entry { position: relative; padding: 20px 78px 22px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 58px 1fr; gap: 16px; }
+.scar-entry { position: relative; padding: 20px 78px 22px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 70px 1fr; gap: 16px; }
 .scar-number { color: var(--scar-dark); font: 11px var(--font-geist-mono), monospace; }
 .scar-entry h2 { margin: 0 0 11px; font-size: 16px; font-weight: 550; }
 .scar-entry p { margin: 5px 0; font-size: 13px; }
@@ -280,7 +281,7 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
   .case-index-row { grid-template-columns: 82px 1fr 70px; min-height: 61px; }
   .case-index-row > span:last-child { display: none; }
   .clinical-card { grid-template-columns: 78px 1fr; }
-  .scar-entry { padding-right: 0; grid-template-columns: 48px 1fr; }
+  .scar-entry { padding-right: 0; grid-template-columns: 64px 1fr; }
   .tissue-state { position: static; grid-column: 2; justify-self: start; }
   .scar-entry p span { display: block; width: auto; margin-bottom: 2px; }
   .procedure-list summary { grid-template-columns: 38px 80px 1fr; }

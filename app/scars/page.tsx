@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "../components/AppLink";
 import { PageTitle, RecordShell } from "../components/RecordShell";
-import { thoughtRecords } from "../site-data";
+import { thoughtLabel, thoughtRecords } from "../site-data";
 
 export const metadata: Metadata = {
   title: "the unresolved — apoira",
@@ -20,11 +20,11 @@ export default function Remainders() {
       </p>
 
       <div className="scar-registry">
-        {thoughtRecords.map((record, index) => (
+        {thoughtRecords.map((record) => (
           <article className="scar-entry" key={record.id}>
-            <div className="scar-number">R-{String(index + 1).padStart(2, "0")}</div>
+            <div className="scar-number">{thoughtLabel(record)}</div>
             <div>
-              <p className="scar-policy">{record.id} / {record.opened}</p>
+              <p className="scar-policy">{record.opened}</p>
               <h2>{record.remainder}</h2>
               <p><span>initial thought</span>{record.initialThought}</p>
               <p><span>resistance</span>{record.resistance}</p>
@@ -35,12 +35,6 @@ export default function Remainders() {
           </article>
         ))}
       </div>
-
-      <p className="small-note">
-        These are authored demonstration records. A live Apoira would require a
-        source-ingestion process, an autonomous reasoner, and an independently
-        inspectable process for creating descendant commits.
-      </p>
     </RecordShell>
   );
 }

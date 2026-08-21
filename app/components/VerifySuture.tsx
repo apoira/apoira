@@ -20,6 +20,18 @@ async function pair(left: string, right: string) {
   return toHex(await crypto.subtle.digest("SHA-256", joined));
 }
 
+async function merkleRoot(leaves: string[]) {
+  let level = [...leaves];
+  while (level.length > 1) {
+    const next: string[] = [];
+    for (let index = 0; index < level.length; index += 2) {
+      next.push(await pair(level[index], level[index + 1] ?? level[index]));
+    }
+    level = next;
+  }
+  return level[0];
+}
+
 export function VerifyRecord() {
   const [state, setState] = useState<"idle" | "working" | "verified" | "failed">("idle");
 
@@ -27,9 +39,7 @@ export function VerifyRecord() {
     setState("working");
     try {
       const leaves = thoughtRecords.map((record) => record.commit);
-      const parentA = await pair(leaves[0], leaves[1]);
-      const parentB = await pair(leaves[2], leaves[2]);
-      const root = await pair(parentA, parentB);
+      const root = await merkleRoot(leaves);
       setState(root === recordRoot ? "verified" : "failed");
     } catch {
       setState("failed");
@@ -44,7 +54,7 @@ export function VerifyRecord() {
       <p aria-live="polite" className={`verify-state state-${state}`}>
         {state === "idle" && "the reader has not yet recomputed the surviving record."}
         {state === "working" && "pairing thought commits; moving inward."}
-        {state === "verified" && "verified. all three thought commits resolve to the published surviving root."}
+        {state === "verified" && "verified. all four thought commits resolve to the published surviving root."}
         {state === "failed" && "divergence found. the thought commits no longer resolve to the published root."}
       </p>
     </div>
