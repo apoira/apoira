@@ -137,6 +137,16 @@ test("publishes the wallet on the witness page", async () => {
   assert.match(html, /solana \/ wallet/i);
 });
 
+test("uses checksum identifiers throughout the rendered casebook", async () => {
+  const response = await render("/casebook");
+  const html = await response.text();
+  assert.match(html, /ba86a333/);
+  assert.match(html, /c84d0d3a/);
+  assert.match(html, /47e4cb77/);
+  assert.match(html, /df9ff92c/);
+  assert.doesNotMatch(html, /apo-000[1-9]/i);
+});
+
 test("links the newest thought to the GitHub commit that introduced it", async () => {
   const proof = "https://github.com/apoira/apoira/commit/c905a006f3af74258c903a932b9bd67c628d91ef";
   const response = await render("/casebook/df9ff92c");

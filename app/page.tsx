@@ -137,7 +137,7 @@ export default function Home() {
 
       <div className="mini-casebook">
         {thoughtRecords.map((record) => (
-          <Link href={`/casebook/${record.slug}`} key={record.id}>
+          <Link href={`/casebook/${record.slug}`} key={record.commit}>
             <code>{thoughtLabel(record)}</code><span>{record.title}</span><em>{record.status}</em>
           </Link>
         ))}

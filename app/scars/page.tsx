@@ -21,7 +21,7 @@ export default function Remainders() {
 
       <div className="scar-registry">
         {thoughtRecords.map((record) => (
-          <article className="scar-entry" key={record.id}>
+          <article className="scar-entry" key={record.commit}>
             <div className="scar-number">{thoughtLabel(record)}</div>
             <div>
               <p className="scar-policy">{record.opened}</p>

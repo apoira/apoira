@@ -24,7 +24,7 @@ export default function ThoughtCommits() {
           <span>commit</span><span>fragment</span><span>state</span><span>parent</span>
         </div>
         {thoughtRecords.map((record) => (
-          <Link href={`/casebook/${record.slug}`} className="case-index-row" role="listitem" key={record.id}>
+          <Link href={`/casebook/${record.slug}`} className="case-index-row" role="listitem" key={record.commit}>
             <code>{thoughtLabel(record)}</code>
             <strong>{record.title}</strong>
             <span className={`severity state-${record.status}`}>{record.status}</span>
