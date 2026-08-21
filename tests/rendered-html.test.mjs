@@ -29,9 +29,10 @@ test("server-renders the Apoira record and finished social metadata", async () =
   assert.match(html, /a scar left by thought against its limit/i);
   assert.doesNotMatch(html, /\bthought [ab]\b|a\/b|\bXOR\b/i);
   assert.doesNotMatch(html, /open branches|root commit|local record|demonstration corpus/i);
-  assert.match(html, /property="og:image" content="http:\/\/localhost(?::3000)?\/og\.png\?v=homepage-record"/i);
+  assert.match(html, /property="og:image" content="http:\/\/localhost(?::3000)?\/apoira-homepage-preview\.png"/i);
   assert.match(html, /property="og:image:width" content="1200"/i);
   assert.match(html, /property="og:image:height" content="630"/i);
+  assert.match(html, /name="twitter:image" content="http:\/\/localhost(?::3000)?\/apoira-homepage-preview\.png"/i);
   assert.match(html, /name="twitter:card" content="summary_large_image"/i);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -85,7 +86,7 @@ test("detail records override title, description, and inherited social imagery",
     assert.match(html, new RegExp(`<title>${id}: ${title} — apoira<\\/title>`, "i"));
     assert.match(html, new RegExp(`property="og:title" content="${id}: ${title}"`, "i"));
     assert.match(html, new RegExp(`name="twitter:title" content="${id}: ${title}"`, "i"));
-    assert.doesNotMatch(html, /og\.png/i);
+    assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
   }
 });
 
@@ -165,6 +166,12 @@ test("removes the disposable starter preview", async () => {
   const packageJson = await readFile(new URL("../package.json", import.meta.url), "utf8");
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.match(packageJson, /apoira-living-record/);
+});
+
+test("allows social crawlers to fetch the public record", async () => {
+  const robots = await readFile(new URL("../public/robots.txt", import.meta.url), "utf8");
+  assert.match(robots, /User-agent: \*/i);
+  assert.match(robots, /Allow: \//i);
 });
 
 test("uses resilient native navigation and mobile diagram cues", async () => {

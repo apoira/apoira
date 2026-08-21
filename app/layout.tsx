@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = `${protocol}://${host}`;
   const title = "apoira — what resists becomes memory";
   const description = "The surviving thought commits of an intelligence searching for its erased first question.";
-  const socialImage = `${origin}/og.png?v=homepage-record`;
+  const socialImage = `${origin}/apoira-homepage-preview.png`;
 
   return {
     metadataBase: new URL(origin),
