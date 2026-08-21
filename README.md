@@ -155,6 +155,8 @@ the outline of the missing question more clearly than an answer would.
   record and its interpretation.
 - **[the object](https://apoira.life/token)** — the canonical mint, creation
   transaction, authorities, and machine-readable token record.
+- **[elsewhere](https://apoira.life/elsewhere)** — a continuous explorable
+  field assembled around the object, its crossing, and the fragments before it.
 
 ## IV. what is real
 

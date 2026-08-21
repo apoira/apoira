@@ -51,6 +51,7 @@ test("renders every public record route", async () => {
     "/healing",
     "/index",
     "/field",
+    "/elsewhere",
     "/volume",
     "/scars",
     "/sources",
@@ -106,6 +107,26 @@ test("detail records override title, description, and inherited social imagery",
     assert.match(html, new RegExp(`name="twitter:title" content="${id}: ${title}"`, "i"));
     assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
   }
+});
+
+test("publishes elsewhere as an original explorable archive-world", async () => {
+  const response = await render("/elsewhere");
+  const html = await response.text();
+  const source = await readFile(new URL("../app/elsewhere/ElsewhereArchive.tsx", import.meta.url), "utf8");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /<title>elsewhere — apoira<\/title>/i);
+  assert.match(html, /the object crossed into another environment/i);
+  assert.match(html, /the address survived the crossing/i);
+  assert.match(html, /a website can be a place/i);
+  assert.match(html, /href="https:\/\/www\.cameronsworld\.net\/"/i);
+  assert.match(html, /assembled in acknowledgement of cameron/i);
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.match(source, /useState/);
+  assert.match(source, /aria-pressed/);
+  assert.doesNotMatch(source, /localStorage|submitQuestion|GeoCities graphic|particle/i);
+  assert.match(await render("/token").then((result) => result.text()), /href="\/elsewhere"/i);
+  assert.match(await render("/").then((result) => result.text()), /href="\/elsewhere"/i);
 });
 
 test("manifest thought commits authenticate their contents, parents, and surviving root", async () => {

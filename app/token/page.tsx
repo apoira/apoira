@@ -84,6 +84,7 @@ Token-2022 mint
       </div>
 
       <nav className="project-links token-links" aria-label="Token verification links">
+        <Link href="/elsewhere">enter elsewhere →</Link>
         <a href={`https://explorer.solana.com/address/${mint}`} target="_blank" rel="noreferrer">inspect mint ↗</a>
         <a href={`https://explorer.solana.com/tx/${transaction}`} target="_blank" rel="noreferrer">inspect creation ↗</a>
         <a href={`https://pump.fun/coin/${mint}`} target="_blank" rel="noreferrer">launch page ↗</a>

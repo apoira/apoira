@@ -22,6 +22,7 @@ export default function Home() {
         (outside history), <Link href="/suture">the missing root (unverified)</Link>
       </p>
       <nav className="project-links" aria-label="Apoira elsewhere">
+        <Link href="/elsewhere">elsewhere →</Link>
         <a href="https://github.com/apoira/apoira" target="_blank" rel="noreferrer">github ↗</a>
         <a href="https://x.com/apoiralife" target="_blank" rel="noreferrer">x ↗</a>
       </nav>

@@ -562,3 +562,51 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
   .field-world { transition: none; }
   .field-world.is-drifting .field-node { animation: none; }
 }
+
+/* elsewhere: a continuous archive-world assembled from surviving fragments */
+.elsewhere-shell { min-height: 100vh; background: #fff; }
+.elsewhere-bar { min-height: 34px; padding: 7px 12px 6px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 7px; font-size: 12px; }
+.elsewhere-bar small { margin-left: auto; color: var(--muted); font: 9px var(--font-geist-mono), monospace; letter-spacing: .04em; }
+.elsewhere-intro { padding: 24px 20px 18px; border-bottom: 1px solid var(--line); }
+.elsewhere-intro h1 { margin: 0 0 5px; font-size: clamp(34px, 6vw, 76px); line-height: .95; font-weight: 500; letter-spacing: -.045em; }
+.elsewhere-intro > p:not(.eyebrow) { max-width: 620px; margin: 0 0 12px; font-size: 17px; }
+.elsewhere-intro > span { color: var(--muted); font: 9px var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .08em; }
+.elsewhere-viewport { height: min(72vh, 780px); min-height: 520px; overflow: auto; border-bottom: 1px solid var(--line-dark); background-image: linear-gradient(to right, rgba(170,163,153,.16) 1px, transparent 1px), linear-gradient(to bottom, rgba(170,163,153,.16) 1px, transparent 1px); background-size: 96px 96px; }
+.elsewhere-world { position: relative; width: 1540px; height: 1080px; background: rgba(255,255,255,.76); }
+.elsewhere-trace { position: absolute; left: 505px; top: 370px; margin: 0; color: #9a948b; font: 11px/1.5 var(--font-geist-mono), monospace; white-space: pre; }
+.elsewhere-fragment { position: absolute; z-index: 2; width: 210px; min-height: 96px; padding: 10px 11px; border: 1px solid var(--line); background: rgba(255,255,255,.97); color: var(--ink); text-align: left; cursor: pointer; box-shadow: 0 0 0 6px rgba(255,255,255,.78); }
+.elsewhere-fragment:hover, .elsewhere-fragment.is-selected { border-color: var(--scar-dark); color: var(--scar-dark); }
+.elsewhere-fragment span, .elsewhere-fragment i { display: block; font: 9px var(--font-geist-mono), monospace; letter-spacing: .07em; text-transform: uppercase; }
+.elsewhere-fragment span { margin-bottom: 8px; color: var(--muted); }
+.elsewhere-fragment b { display: block; font: 16px/1.2 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-weight: 550; }
+.elsewhere-fragment i { margin-top: 10px; color: var(--scar-dark); font-style: normal; opacity: 0; }
+.elsewhere-fragment:hover i, .elsewhere-fragment.is-selected i { opacity: 1; }
+.fragment-origin { left: 70px; top: 80px; border-style: dashed; }
+.fragment-instruction { left: 350px; top: 185px; }
+.fragment-wallet { left: 680px; top: 90px; }
+.fragment-promise { left: 965px; top: 230px; }
+.fragment-object { left: 1240px; top: 95px; }
+.fragment-crossing { left: 1110px; top: 520px; border-color: var(--scar-dark); }
+.fragment-after { left: 770px; top: 700px; }
+.fragment-influence { left: 260px; top: 760px; border-style: dashed; }
+.fragment-unoccupied { left: 70px; top: 480px; border-style: dotted; color: var(--muted); }
+.world-whisper { position: absolute; margin: 0; color: var(--muted); font-size: 12px; font-style: italic; }
+.whisper-one { left: 90px; top: 330px; }
+.whisper-two { left: 1160px; top: 430px; }
+.whisper-three { left: 485px; top: 940px; }
+.elsewhere-reader { min-height: 180px; padding: 18px 20px 20px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(220px, .7fr) minmax(300px, 1.3fr); gap: 40px; }
+.elsewhere-reader p { margin: 0 0 5px; color: var(--scar-dark); font: 9px var(--font-geist-mono), monospace; letter-spacing: .1em; text-transform: uppercase; }
+.elsewhere-reader h2 { max-width: 440px; margin: 0; font-size: 25px; line-height: 1.08; font-weight: 550; }
+.elsewhere-reader span, .elsewhere-reader em, .elsewhere-reader a { display: block; max-width: 680px; }
+.elsewhere-reader em { margin-top: 9px; color: var(--muted); font-size: 13px; }
+.elsewhere-reader a { margin-top: 13px; font: 10px var(--font-geist-mono), monospace; }
+.elsewhere-ending { padding: 12px 20px 30px; display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font: 10px var(--font-geist-mono), monospace; }
+
+@media (max-width: 680px) {
+  .elsewhere-bar small { display: none; }
+  .elsewhere-intro { padding: 20px 13px 15px; }
+  .elsewhere-viewport { min-height: 500px; }
+  .elsewhere-world { transform-origin: top left; }
+  .elsewhere-reader { padding: 15px 13px 18px; grid-template-columns: 1fr; gap: 13px; }
+  .elsewhere-ending { padding: 11px 13px 24px; display: grid; }
+}

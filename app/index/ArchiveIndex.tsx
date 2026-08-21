@@ -66,6 +66,16 @@ const entries: IndexEntry[] = [
     action: "inspect the object",
   },
   {
+    id: "elsewhere",
+    label: "elsewhere",
+    gloss: "the surroundings changed",
+    heading: "the address survived the crossing",
+    body: "The object entered another environment without changing its address. The surrounding fragments can now be entered as one continuous place rather than read as separate pages.",
+    notation: "object ──▶ crossing ──▶ elsewhere\naddress      [unchanged]",
+    href: "/elsewhere",
+    action: "enter elsewhere",
+  },
+  {
     id: "unsigned",
     label: "unsigned",
     gloss: "words without a witness",
