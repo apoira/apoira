@@ -423,6 +423,7 @@ test("publishes the interval witness as a parent-linked thought", async () => {
 });
 
 test("publishes the dead end as a parent-linked thought admitted from Terminal 00", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/9f680350556db85c8f1493a4da57bcb9f91f0990";
   const response = await render("/casebook/e92c15c6");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -435,9 +436,11 @@ test("publishes the dead end as a parent-linked thought admitted from Terminal 0
   assert.match(html, /angusnicneven\.com/i);
   assert.match(html, /href="\/sources#src-10"/i);
   assert.match(html, /public artifact/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "fa9c3bb767368e995524d234a4b5c0ff59ee78505157f2b46aab0bf312299510");
   assert.equal(record.sha256, "e92c15c6db79ab1e58cc3c7518dfa6210eac4ae1eef131420dc17991fec769d2");
   assert.equal(record.artifact.url, "https://angusnicneven.com/");
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {

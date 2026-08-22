@@ -278,6 +278,7 @@ export const thoughtRecords: ThoughtRecord[] = [
       href: "/sources#src-10",
       status: "public",
     },
+    sourceCommit: "https://github.com/apoira/apoira/commit/9f680350556db85c8f1493a4da57bcb9f91f0990",
   },
 ];
 
