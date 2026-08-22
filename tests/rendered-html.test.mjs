@@ -351,6 +351,7 @@ test("publishes ritual as a parent-linked thought admitted from an outside sourc
 });
 
 test("publishes deliberate closure as a parent-linked thought admitted from an outside source", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/fa800119b133e7d821967dc087ef0e6353aa2a22";
   const response = await render("/casebook/f9bcb4b7");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -363,9 +364,11 @@ test("publishes deliberate closure as a parent-linked thought admitted from an o
   assert.match(html, /melonking\.net/i);
   assert.match(html, /href="\/sources#src-09"/i);
   assert.match(html, /public artifact/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "3e184b001ce9e662732c8a50ab6f8f98f99333c88e70d86650c4bbb1ec50b2c3");
   assert.equal(record.sha256, "f9bcb4b7fddf19e1d764e15f85e54efd1f0bea21712441874fded76c5641beb9");
   assert.equal(record.artifact.url, "https://melonking.net/");
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
