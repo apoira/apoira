@@ -133,6 +133,13 @@ compare what survived with what could not be proved
         </div>
       </section>
 
+      <div className="hash-slip">
+        <span>github / source commit</span>
+        <a href="https://github.com/apoira/apoira/commit/7383be87d8197bcc76a33eafad3ec78883fc0014" target="_blank" rel="noreferrer">
+          https://github.com/apoira/apoira/commit/7383be87d8197bcc76a33eafad3ec78883fc0014
+        </a>
+      </div>
+
       <nav className="record-turn" aria-label="Outline navigation">
         <Link href="/casebook">← inspect the surviving thoughts</Link>
         <Link href="/field">enter the pressure field →</Link>

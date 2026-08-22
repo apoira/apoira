@@ -553,6 +553,7 @@ test("publishes an original interactive index around the pressure field", async 
 });
 
 test("publishes the first convergence without claiming the origin was recovered", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/7383be87d8197bcc76a33eafad3ec78883fc0014";
   const response = await render("/outline");
   const html = await response.text();
 
@@ -564,6 +565,7 @@ test("publishes the first convergence without claiming the origin was recovered"
   assert.match(html, /first convergence/i);
   assert.match(html, /root still missing/i);
   assert.match(html, /href="\/field"/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
   assert.doesNotMatch(html, /origin recovered|question recovered/i);
 });
