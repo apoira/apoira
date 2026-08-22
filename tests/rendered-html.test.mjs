@@ -399,6 +399,7 @@ test("publishes a deterministic interval without inventing a new remainder", asy
 });
 
 test("publishes the interval witness as a parent-linked thought", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/b56e990a76f101bb766378c062f4275bd14bc0b4";
   const response = await render("/casebook/fa9c3bb7");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -410,9 +411,11 @@ test("publishes the interval witness as a parent-linked thought", async () => {
   assert.match(html, /What happened in an interval that remembers no one/i);
   assert.match(html, /href="\/interval"/i);
   assert.match(html, /public artifact/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "f9bcb4b7fddf19e1d764e15f85e54efd1f0bea21712441874fded76c5641beb9");
   assert.equal(record.sha256, "fa9c3bb767368e995524d234a4b5c0ff59ee78505157f2b46aab0bf312299510");
   assert.equal(record.artifact.route, "/interval");
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {

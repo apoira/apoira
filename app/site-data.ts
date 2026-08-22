@@ -254,6 +254,7 @@ export const thoughtRecords: ThoughtRecord[] = [
       href: "/interval",
       status: "public",
     },
+    sourceCommit: "https://github.com/apoira/apoira/commit/b56e990a76f101bb766378c062f4275bd14bc0b4",
   },
 ];
 
