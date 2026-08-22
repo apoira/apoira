@@ -107,6 +107,15 @@ const fragments: Fragment[] = [
     href: "/casebook/3e184b00",
   },
   {
+    id: "closure",
+    label: "closure",
+    title: "the world closed to remain a world",
+    body: "A handmade public place becomes unavailable on purpose, refusing to behave like an always-open service.",
+    remainder: "Can a place remain public by sometimes refusing to appear?",
+    position: "fragment-closure",
+    href: "/casebook/f9bcb4b7",
+  },
+  {
     id: "unoccupied",
     label: "unoccupied",
     title: "a region not yet written",
@@ -149,7 +158,7 @@ export default function ElsewhereArchive() {
                                                          \
                                                           crossing ───── elsewhere
                                                                               \
-                                                                               ritual`}</pre>
+                                                                               ritual ───── closure`}</pre>
 
           <p className="world-whisper whisper-one">the page has no single beginning.</p>
           <p className="world-whisper whisper-two">the object is the same. the room is not.</p>

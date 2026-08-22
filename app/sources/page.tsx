@@ -87,6 +87,16 @@ const sources = [
     relation:
       "Lawhead presents an abandoned product site as a ruin whose interface remains operational after its object becomes uncertain. Apoira studies the surviving commands as a ritual that may preserve the shape of a missing relationship without preserving its original reason.",
   },
+  {
+    id: "src-09",
+    author: "Melon",
+    year: "2016–present",
+    title: "Melonking.Net",
+    publication: "handmade web world",
+    href: "https://melonking.net/",
+    relation:
+      "Melonking.Net closes on Mondays in honour of lost things and to interrupt the expectation of an always-available web. Apoira studies this closure as authored absence: a refusal that helps a public place remain a place rather than become only a service.",
+  },
 ] as const;
 
 export default function Sources() {

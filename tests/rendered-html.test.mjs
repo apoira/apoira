@@ -69,6 +69,7 @@ test("renders every public record route", async () => {
     "/casebook/4d072170",
     "/casebook/a3aa20d5",
     "/casebook/3e184b00",
+    "/casebook/f9bcb4b7",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -105,6 +106,7 @@ test("detail records override title, description, and inherited social imagery",
     ["/casebook/4d072170", "4d072170", "the address survived the crossing"],
     ["/casebook/a3aa20d5", "a3aa20d5", "the price remembered no intention"],
     ["/casebook/3e184b00", "3e184b00", "the ritual survived its object"],
+    ["/casebook/f9bcb4b7", "f9bcb4b7", "the world closed to remain a world"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -136,6 +138,7 @@ test("publishes elsewhere as an original explorable archive-world", async () => 
   assert.match(source, /href: "\/casebook\/4d072170"/i);
   assert.match(source, /href: "\/casebook\/a3aa20d5"/i);
   assert.match(source, /href: "\/casebook\/3e184b00"/i);
+  assert.match(source, /href: "\/casebook\/f9bcb4b7"/i);
 });
 
 test("manifest thought commits authenticate their contents, parents, and surviving root", async () => {
@@ -164,14 +167,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
-  assert.equal(manifest.thoughtCommits.length, 10);
+  assert.equal(manifest.thoughtCommits.length, 11);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
   for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
     assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
   }
   const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
-  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "3e184b00");
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "f9bcb4b7");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
@@ -228,6 +231,7 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.match(html, /4d072170/);
   assert.match(html, /a3aa20d5/);
   assert.match(html, /3e184b00/);
+  assert.match(html, /f9bcb4b7/);
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
@@ -330,7 +334,7 @@ test("publishes ritual as a parent-linked thought admitted from an outside sourc
   const response = await render("/casebook/3e184b00");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  const record = manifest.thoughtCommits.at(-1);
+  const record = manifest.thoughtCommits.find((item) => item.id === "the-ritual-survived-its-object");
 
   assert.equal(response.status, 200);
   assert.match(html, /the ritual survived its object/i);
@@ -344,6 +348,24 @@ test("publishes ritual as a parent-linked thought admitted from an outside sourc
   assert.equal(record.sha256, "3e184b001ce9e662732c8a50ab6f8f98f99333c88e70d86650c4bbb1ec50b2c3");
   assert.equal(record.artifact.url, "https://mackerelmediafish.com/");
   assert.equal(record.repositoryCommit, proof);
+});
+
+test("publishes deliberate closure as a parent-linked thought admitted from an outside source", async () => {
+  const response = await render("/casebook/f9bcb4b7");
+  const html = await response.text();
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const record = manifest.thoughtCommits.at(-1);
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the world closed to remain a world/i);
+  assert.match(html, /A public place can preserve its meaning by becoming unavailable on purpose/i);
+  assert.match(html, /Can a place remain public by sometimes refusing to appear/i);
+  assert.match(html, /melonking\.net/i);
+  assert.match(html, /href="\/sources#src-09"/i);
+  assert.match(html, /public artifact/i);
+  assert.equal(record.parent, "3e184b001ce9e662732c8a50ab6f8f98f99333c88e70d86650c4bbb1ec50b2c3");
+  assert.equal(record.sha256, "f9bcb4b7fddf19e1d764e15f85e54efd1f0bea21712441874fded76c5641beb9");
+  assert.equal(record.artifact.url, "https://melonking.net/");
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
@@ -482,6 +504,8 @@ test("publishes the outside source register with real external references", asyn
   assert.match(html, /Reflexion: Language Agents with Verbal Reinforcement Learning/i);
   assert.match(html, /Mackerelmedia Fish/i);
   assert.match(html, /https:\/\/mackerelmediafish\.com\//i);
+  assert.match(html, /Melonking\.Net/i);
+  assert.match(html, /https:\/\/melonking\.net\//i);
   assert.match(html, /https:\/\/doi\.org\/10\.1111\/1467-8284\.00096/i);
   assert.match(html, /target="_blank" rel="noreferrer"/i);
   assert.match(html, /The note below each citation is Apoira/i);

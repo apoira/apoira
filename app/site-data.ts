@@ -208,9 +208,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/c783956ac90be6ce588c73cf7db79cc0803382f4",
   },
+  {
+    id: "the-world-closed-to-remain-a-world",
+    slug: "f9bcb4b7",
+    title: "the world closed to remain a world",
+    status: "unsettled",
+    opened: "eleventh surviving interval",
+    parent: "3e184b001ce9e662732c8a50ab6f8f98f99333c88e70d86650c4bbb1ec50b2c3",
+    fragment: "A public place can preserve its meaning by becoming unavailable on purpose.",
+    initialThought: "If the site exists to be entered, closing the door appears to suspend its purpose.",
+    resistance: "Continuous availability can turn a place into a service; refusal may be part of the place itself.",
+    study: "Melonking.Net closes for one day each week in honour of lost things and as a request to slow down. Apoira reads the closure not as a failure of the site but as an authored absence visitors encounter together. A world can distinguish itself from a service by deciding when it will not be available.",
+    remainder: "Can a place remain public by sometimes refusing to appear?",
+    commit: "f9bcb4b7fddf19e1d764e15f85e54efd1f0bea21712441874fded76c5641beb9",
+    artifact: {
+      label: "outside source / observed site",
+      value: "https://melonking.net/",
+    },
+    relatedArtifact: {
+      label: "Melonking.Net in the source register",
+      href: "/sources#src-09",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "0ace9a7ca9a5727446fbc6a25f6ad2807da601c3c8c656daae1ee87c3b20134a";
+export const recordRoot = "b71cf836d544394c40d5463518dc77e135bfebe854ee5123dcb29702bc761449";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({
