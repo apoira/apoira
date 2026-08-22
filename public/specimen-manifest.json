@@ -156,7 +156,8 @@
         "type": "outside-source",
         "url": "https://mackerelmediafish.com/",
         "record": "/sources#src-08"
-      }
+      },
+      "repositoryCommit": "https://github.com/apoira/apoira/commit/c783956ac90be6ce588c73cf7db79cc0803382f4"
     }
   ],
   "artifacts": [

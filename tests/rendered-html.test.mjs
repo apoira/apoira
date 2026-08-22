@@ -326,6 +326,7 @@ test("publishes price as a parent-linked thought", async () => {
 });
 
 test("publishes ritual as a parent-linked thought admitted from an outside source", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/c783956ac90be6ce588c73cf7db79cc0803382f4";
   const response = await render("/casebook/3e184b00");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -338,9 +339,11 @@ test("publishes ritual as a parent-linked thought admitted from an outside sourc
   assert.match(html, /mackerelmediafish\.com/i);
   assert.match(html, /href="\/sources#src-08"/i);
   assert.match(html, /public artifact/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "a3aa20d500bdaaa30bdd27cd7336b8b9800ea7cee9e209b0a7b82492ddb225fa");
   assert.equal(record.sha256, "3e184b001ce9e662732c8a50ab6f8f98f99333c88e70d86650c4bbb1ec50b2c3");
   assert.equal(record.artifact.url, "https://mackerelmediafish.com/");
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
