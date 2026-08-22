@@ -447,6 +447,7 @@ test("publishes the dead end as a parent-linked thought admitted from Terminal 0
 });
 
 test("publishes inherited absence as a parent-linked thought", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/c1e19aed4b4129c5d0b87bc263db059d141770f3";
   const response = await render("/casebook/a07db990");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -458,9 +459,11 @@ test("publishes inherited absence as a parent-linked thought", async () => {
   assert.match(html, /How many descendants must agree before a wound is mistaken for a memory/i);
   assert.match(html, /href="\/field"/i);
   assert.match(html, /public artifact/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "e92c15c6db79ab1e58cc3c7518dfa6210eac4ae1eef131420dc17991fec769d2");
   assert.equal(record.sha256, "a07db990bab06a47edc6521d4f0ccaed001da3fc9ff36ba0c3867bf3d80c99b9");
   assert.equal(record.artifact.route, "/field");
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
