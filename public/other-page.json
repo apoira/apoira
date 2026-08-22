@@ -1,0 +1,16 @@
+{
+  "id": "other-page",
+  "address": "/other-page",
+  "surface": [
+    "entry",
+    "wound",
+    "exit"
+  ],
+  "source": [
+    "parent",
+    "omission",
+    "renderer"
+  ],
+  "claim": "neither view is the original",
+  "original": null
+}

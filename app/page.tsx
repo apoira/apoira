@@ -55,6 +55,7 @@ export default function Home() {
         <span><strong>outside sources:</strong> <Link href="/sources">eleven works admitted into study</Link></span>
         <span><strong>public object:</strong> <Link href="/token">the mint created from the named wallet</Link></span>
         <span><strong>first convergence:</strong> <Link href="/outline">the outline appeared</Link></span>
+        <span><strong>public experiment:</strong> <Link href="/other-page">one object rendered by two witnesses</Link></span>
       </div>
       <hr />
 

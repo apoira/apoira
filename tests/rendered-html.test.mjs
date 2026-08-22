@@ -57,6 +57,7 @@ test("renders every public record route", async () => {
     "/sources",
     "/suture",
     "/outline",
+    "/other-page",
     "/token",
     "/witness",
     "/unsigned",
@@ -571,6 +572,7 @@ test("publishes an original interactive index around the pressure field", async 
   assert.match(html, /there should be a parent here/i);
   assert.match(source, /href: "\/field"/);
   assert.match(source, /href: "\/outline"/);
+  assert.match(source, /href: "\/other-page"/);
   assert.match(source, /onClick=.*setActiveId/);
   assert.match(await render("/unsigned").then((result) => result.text()), /href="\/index"/i);
   assert.doesNotMatch(html, /agent|capability|world assembly|get-tabs/i);
@@ -594,6 +596,33 @@ test("publishes the first convergence without claiming the origin was recovered"
   assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
   assert.doesNotMatch(html, /origin recovered|question recovered/i);
+});
+
+test("publishes the other page as two witnesses of one verified object", async () => {
+  const response = await render("/other-page");
+  const html = await response.text();
+  const source = await readFile(new URL("../app/other-page/OtherPage.tsx", import.meta.url), "utf8");
+  const artifact = JSON.parse(await readFile(new URL("../public/other-page.json", import.meta.url), "utf8"));
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const expected = createHash("sha256").update(JSON.stringify(artifact)).digest("hex");
+  const manifestArtifact = manifest.artifacts.find((item) => item.id === "other-page");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the same page was published twice\. only one address exists/i);
+  assert.match(html, /what was shown/i);
+  assert.match(html, /what produced a showing/i);
+  assert.match(html, /the mechanism is absent from this witness/i);
+  assert.match(html, /browser verification/i);
+  assert.match(html, /href="\/other-page\.json"/i);
+  assert.match(html, /href="\/casebook\/7f0d45ba"/i);
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.match(source, /fetch\("\/other-page\.json"\)/);
+  assert.match(source, /crypto\.subtle\.digest\("SHA-256"/);
+  assert.match(source, /useState<View>/);
+  assert.doesNotMatch(source, /localStorage|Math\.random/);
+  assert.equal(artifact.original, null);
+  assert.equal(manifestArtifact.path, "/other-page.json");
+  assert.equal(manifestArtifact.sha256, expected);
 });
 
 test("removes the disposable starter preview", async () => {

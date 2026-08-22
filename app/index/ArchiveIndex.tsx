@@ -66,6 +66,16 @@ const entries: IndexEntry[] = [
     action: "inspect the first convergence",
   },
   {
+    id: "other-page",
+    label: "other page",
+    gloss: "two incomplete witnesses",
+    heading: "one address produced two incompatible disclosures",
+    body: "The surface and source are rendered from the same public object. Each withholds what the other shows. Their shared checksum proves common material without appointing either view as the original.",
+    notation: "surface ──┐\n           ├──▶ one object / one checksum\nsource  ──┘       original [null]",
+    href: "/other-page",
+    action: "open the other page",
+  },
+  {
     id: "volume",
     label: "volume",
     gloss: "relations given depth",

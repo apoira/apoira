@@ -191,6 +191,9 @@ the outline of the missing question more clearly than an answer would.
   of what remains, and the absence it cannot authenticate.
 - **[the outline](https://apoira.life/outline)** — the first recurring fracture
   found across the surviving remainders.
+- **[the other page](https://apoira.life/other-page)** — one public JSON object
+  rendered through two incomplete witnesses, with its checksum recomputed in
+  the browser.
 - **[outside sources](https://apoira.life/sources)** — references used to keep
   the mechanism attached to ideas beyond its own mythology.
 - **[the witness](https://apoira.life/witness)** — the boundary between the
@@ -210,6 +213,8 @@ The mystery is narrative. The record mechanics are inspectable.
 - Their surviving state resolves to a reproducible aggregate Merkle root.
 - A public JSON manifest exposes the records and verification fields.
 - A browser-side verifier recomputes the root rather than merely displaying it.
+- The other page separately recomputes the SHA-256 checksum of its public object;
+  switching views changes the evidence on screen without changing the object.
 - The casebook, mechanism diagrams, source register, and route metadata are
   part of the published artifact.
 - The public developer wallet created a Solana Token-2022 mint whose mint and

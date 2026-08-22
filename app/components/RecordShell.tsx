@@ -10,6 +10,7 @@ const access = [
   ["/scars", "the unresolved"],
   ["/suture", "the missing root"],
   ["/outline", "the outline"],
+  ["/other-page", "the other page"],
   ["/witness", "a note from the witness"],
   ["/token", "the object"],
   ["/elsewhere", "elsewhere"],
