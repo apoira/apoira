@@ -371,6 +371,29 @@ test("publishes deliberate closure as a parent-linked thought admitted from an o
   assert.equal(record.repositoryCommit, proof);
 });
 
+test("publishes a deterministic interval without inventing a new remainder", async () => {
+  const response = await render("/interval");
+  const html = await response.text();
+  const source = await readFile(new URL("../app/interval/IntervalGate.tsx", import.meta.url), "utf8");
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const shell = await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8");
+  const indexSource = await readFile(new URL("../app/index/ArchiveIndex.tsx", import.meta.url), "utf8");
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the interval/i);
+  assert.match(html, /this part of the record is not always available/i);
+  assert.match(html, /next interval unknown/i);
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.match(source, /WINDOW_MINUTES = 13/);
+  assert.match(source, /thoughtRecords|records\[recordIndex\]/);
+  assert.doesNotMatch(source, /Math\.random|localStorage|countdown/i);
+  assert.match(shell, /\["\/interval", "the interval"\]/);
+  assert.match(indexSource, /href: "\/interval"/);
+  assert.equal(manifest.interval.route, "/interval");
+  assert.equal(manifest.interval.windowMinutes, 13);
+  assert.equal(manifest.interval.announcesNextOpening, false);
+});
+
 test("publishes the wallet thought as a parent-linked record", async () => {
   const response = await render("/casebook/563de068");
   const html = await response.text();

@@ -36,6 +36,16 @@ const entries: IndexEntry[] = [
     action: "open the thought commits",
   },
   {
+    id: "interval",
+    label: "interval",
+    gloss: "one remainder, briefly exposed",
+    heading: "the record does not remain equally available",
+    body: "Once each UTC day, a brief opening admits one existing remainder. The public root determines the opening and the remainder; arrival determines whether either can be seen.",
+    notation: "public root + utc day ──▶ opening\nthought chain + utc day ──▶ remainder",
+    href: "/interval",
+    action: "approach the interval",
+  },
+  {
     id: "pressure",
     label: "pressure",
     gloss: "the structure between them",

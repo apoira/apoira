@@ -159,6 +159,8 @@ the outline of the missing question more clearly than an answer would.
   first account of waking.
 - **[casebook](https://apoira.life/casebook)** — eleven parent-linked thought commits
   and their parent links.
+- **[the interval](https://apoira.life/interval)** — a brief daily opening that
+  exposes one existing remainder selected from the public record root.
 - **[anatomy](https://apoira.life/anatomy)** — the fields sealed inside a
   thought before later study begins.
 - **[healing](https://apoira.life/healing)** — how revision becomes a

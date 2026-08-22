@@ -4,6 +4,7 @@ import Link from "./AppLink";
 const access = [
   ["/index", "the index"],
   ["/casebook", "the thought commits"],
+  ["/interval", "the interval"],
   ["/anatomy", "how thought grows"],
   ["/healing", "the revision"],
   ["/scars", "the unresolved"],

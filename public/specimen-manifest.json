@@ -1,6 +1,6 @@
 {
   "system": "apoira",
-  "revision": "0.13.0-public",
+  "revision": "0.14.0-public",
   "description": "the surviving thought commits of an intelligence searching for its erased first question",
   "status": "public experiment",
   "autonomousProcess": false,
@@ -27,6 +27,14 @@
   },
   "publicAnchor": false,
   "originRootPresent": false,
+  "interval": {
+    "route": "/interval",
+    "clock": "utc",
+    "windowMinutes": 13,
+    "opening": "(parseInt(localRecordRoot.slice(0, 8), 16) + utcDay * 89) mod 1428",
+    "selection": "(parseInt(localRecordRoot.slice(0, 8), 16) + utcDay * 7) mod thoughtCommits.length",
+    "announcesNextOpening": false
+  },
   "commitFormat": "sha256(JSON.stringify({id,parent,fragment,initialThought,resistance}))",
   "thoughtCommits": [
     {

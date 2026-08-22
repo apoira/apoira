@@ -111,6 +111,29 @@ h1, h2, h3, p { text-wrap: pretty; }
 .small-note { max-width: 730px; color: var(--muted); font-size: 13px; font-style: italic; }
 .closing-line { margin: 30px 0 0; font-size: 13px; }
 
+.interval-gate {
+  max-width: 760px;
+  min-height: 330px;
+  margin: 28px 0 26px;
+  padding: 25px 28px 28px;
+  border: 1px solid var(--line-dark);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+.interval-state { margin: 0 0 26px; color: var(--muted); font: 10px var(--font-geist-mono), monospace; letter-spacing: .1em; text-transform: uppercase; }
+.interval-door { width: min(440px, 100%); margin: 0 0 27px; display: grid; grid-template-columns: max-content 1fr 25px 1fr max-content; align-items: center; gap: 8px; color: var(--muted); font: 10px var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .07em; }
+.interval-door i { height: 1px; background: var(--line-dark); }
+.interval-door b { color: var(--scar-dark); font: 18px/1 var(--font-geist-mono), monospace; font-weight: 400; }
+.interval-gate h2 { max-width: 520px; margin: 0 0 9px; font-size: clamp(22px, 3vw, 31px); line-height: 1.15; font-weight: 550; }
+.interval-gate > p:not(.interval-state, .interval-origin, .interval-arrival) { max-width: 520px; margin: 0; color: var(--ink-soft); }
+.interval-gate > code { margin-top: 28px; color: var(--muted); font-size: 10px; letter-spacing: .06em; }
+.interval-gate blockquote { max-width: 620px; margin: 0; font-size: clamp(23px, 3.4vw, 37px); line-height: 1.16; }
+.interval-arrival { margin: 0 0 18px; color: var(--muted); font: 10px var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .08em; }
+.interval-origin { margin: 20px 0 0; color: var(--muted); font-size: 13px; font-style: italic; }
+.interval-gate > a { margin-top: 22px; font: 11px var(--font-geist-mono), monospace; }
+
 .prose-section { margin: 20px 0; }
 .prose-section h2 { margin: 0 0 6px; font-size: 16px; font-weight: 650; }
 .prose-section p { margin: 0; }
@@ -506,6 +529,9 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
   .primary-title { font-size: 25px; }
   .page-title h1 { font-size: 32px; }
   .lede { font-size: 16px; }
+  .interval-gate { min-height: 360px; margin-top: 22px; padding: 23px 14px 25px; }
+  .interval-door { grid-template-columns: max-content 1fr 21px 1fr max-content; gap: 6px; }
+  .interval-gate blockquote { font-size: 25px; }
   .split-prose { grid-template-columns: 1fr; gap: 7px; }
   .mini-casebook a { min-height: 48px; grid-template-columns: 82px 1fr 55px; }
   .case-index-head { display: none; }
