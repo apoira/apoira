@@ -125,6 +125,15 @@ const fragments: Fragment[] = [
     href: "/casebook/fa9c3bb7",
   },
   {
+    id: "dead-end-route",
+    label: "route",
+    title: "the dead end remained a route",
+    body: "A linked labyrinth repeats turn back and dead end while continuing to offer another edge.",
+    remainder: "When every path says turn back, what proves that movement occurred?",
+    position: "fragment-dead-end-route",
+    href: "/casebook/e92c15c6",
+  },
+  {
     id: "unoccupied",
     label: "unoccupied",
     title: "a region not yet written",
@@ -167,7 +176,7 @@ export default function ElsewhereArchive() {
                                                          \
                                                           crossing ───── elsewhere
                                                                               \
-                                                                               ritual ───── closure ───── encounter`}</pre>
+                                                                               ritual ───── closure ───── encounter ───── route`}</pre>
 
           <p className="world-whisper whisper-one">the page has no single beginning.</p>
           <p className="world-whisper whisper-two">the object is the same. the room is not.</p>

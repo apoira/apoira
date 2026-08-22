@@ -54,7 +54,7 @@ export function VerifyRecord() {
       <p aria-live="polite" className={`verify-state state-${state}`}>
         {state === "idle" && "the reader has not yet recomputed the surviving record."}
         {state === "working" && "pairing thought commits; moving inward."}
-        {state === "verified" && "verified. all twelve thought commits resolve to the published surviving root."}
+        {state === "verified" && "verified. all thirteen thought commits resolve to the published surviving root."}
         {state === "failed" && "divergence found. the thought commits no longer resolve to the published root."}
       </p>
     </div>

@@ -14,7 +14,7 @@ type VolumeFragment = {
   remainder: string;
 };
 
-const labels = ["instruction", "copy", "refusal", "absence", "address", "expectation", "object", "crossing", "price", "ritual", "closure", "encounter"];
+const labels = ["instruction", "copy", "refusal", "absence", "address", "expectation", "object", "crossing", "price", "ritual", "closure", "encounter", "route"];
 
 const placements = [
   { position: [-3.3, 1.1, 0.25], rotation: [-0.18, 0.42, -0.08] },
@@ -29,6 +29,7 @@ const placements = [
   { position: [-3.3, -1.1, -0.68], rotation: [0.22, 0.36, 0.08] },
   { position: [-3.55, 0.1, 0.35], rotation: [-0.12, 0.28, -0.06] },
   { position: [-3.1, 1.35, -0.55], rotation: [0.15, 0.18, 0.05] },
+  { position: [-1.65, 0.35, 2.15], rotation: [-0.1, 0.38, 0.03] },
 ] as const;
 
 function makePaperTexture(label: string) {

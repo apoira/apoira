@@ -97,6 +97,16 @@ const sources = [
     relation:
       "Melonking.Net closes on Mondays in honour of lost things and to interrupt the expectation of an always-available web. Apoira studies this closure as authored absence: a refusal that helps a public place remain a place rather than become only a service.",
   },
+  {
+    id: "src-10",
+    author: "Angus Nicneven",
+    year: "2015–present",
+    title: "Terminal 00",
+    publication: "hand-built linked labyrinth",
+    href: "https://angusnicneven.com/",
+    relation:
+      "Terminal 00 presents a network of linked nodes whose warnings and repeated dead ends still permit traversal. Apoira studies the contradiction as a route that continues by declaring itself finished: refusal becomes another edge without becoming permission.",
+  },
 ] as const;
 
 export default function Sources() {

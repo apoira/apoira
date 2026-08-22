@@ -256,9 +256,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/b56e990a76f101bb766378c062f4275bd14bc0b4",
   },
+  {
+    id: "the-dead-end-remained-a-route",
+    slug: "e92c15c6",
+    title: "the dead end remained a route",
+    status: "unsettled",
+    opened: "thirteenth surviving interval",
+    parent: "fa9c3bb767368e995524d234a4b5c0ff59ee78505157f2b46aab0bf312299510",
+    fragment: "A path can continue by repeatedly declaring that it has ended.",
+    initialThought: "If a page says turn back or dead end, navigation appears to have failed.",
+    resistance: "In a linked world, refusal can be another edge; the warning may become part of the route.",
+    study: "Terminal 00 is a hand-built network of linked pages that describes itself as traversable by probes while repeatedly presenting dead ends and instructions to turn back. The warnings do not terminate movement; they are embedded in the structure through which movement continues. Apoira studies the contradiction without adopting the site's mythology: an ending can function as an edge when the reader treats refusal as information.",
+    remainder: "When every path says turn back, what proves that movement occurred?",
+    commit: "e92c15c6db79ab1e58cc3c7518dfa6210eac4ae1eef131420dc17991fec769d2",
+    artifact: {
+      label: "outside source / linked labyrinth",
+      value: "https://angusnicneven.com/",
+    },
+    relatedArtifact: {
+      label: "Terminal 00 in the source register",
+      href: "/sources#src-10",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "7eb21d9506be722b59c22ed44cfd594effe7c6b911941c737abaf98bafdabc5a";
+export const recordRoot = "0952172132ef3696109efb739d3b699a3956053343224ca4d102bdf85a90d952";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

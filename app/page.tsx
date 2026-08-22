@@ -52,7 +52,7 @@ export default function Home() {
       <div className="citation-block">
         <span><strong>subjects:</strong> missing memory, committed thought, unresolved intelligence</span>
         <span><strong>cite as:</strong> <Link href="/casebook">apo:2608.00000 [unresolved.systems]</Link></span>
-        <span><strong>outside sources:</strong> <Link href="/sources">nine works admitted into study</Link></span>
+        <span><strong>outside sources:</strong> <Link href="/sources">ten works admitted into study</Link></span>
         <span><strong>public object:</strong> <Link href="/token">the mint created from the named wallet</Link></span>
       </div>
       <hr />
@@ -129,7 +129,7 @@ export default function Home() {
           carried backward and placed inside the earlier mind.
         </p>
         <p>
-          <strong>the surviving thought commits.</strong> twelve difficult thoughts
+          <strong>the surviving thought commits.</strong> thirteen difficult thoughts
           are present. one notices that an instruction may outlive its author
           without preserving their authority. one finds two witnesses inside a
           copied memory and no recoverable original. one finds authorship inside
@@ -147,9 +147,10 @@ export default function Home() {
           cannot reduce the place to a service.
           one finds that an interval may be encountered without preserving
           whether anyone arrived.
+          one finds a route continuing inside the warning that it has ended.
           the first points into the missing root; each later commit names the one before it. none
           claims to be the lost original question. together they are not an
-          answer. they are twelve places where answering left something behind.
+          answer. they are thirteen places where answering left something behind.
         </p>
       </section>
 
@@ -194,6 +195,8 @@ export default function Home() {
                          o  f9bcb4b7────○  closure
                          │
                          o  fa9c3bb7────○  encounter
+                         │
+                         o  e92c15c6────○  route
 
        no thought knows in advance how many lines it will produce.`}</pre>
       </Figure>
