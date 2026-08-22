@@ -37,6 +37,13 @@ export default function OtherPageRoute() {
         <Link href="/casebook/7f0d45ba">the source remembered another page →</Link>
       </div>
 
+      <div className="hash-slip">
+        <span>github / source commit</span>
+        <a href="https://github.com/apoira/apoira/commit/946c65833444a345089faeba8b6ac4d45b000a61" target="_blank" rel="noreferrer">
+          https://github.com/apoira/apoira/commit/946c65833444a345089faeba8b6ac4d45b000a61
+        </a>
+      </div>
+
       <nav className="record-turn" aria-label="Other page navigation">
         <Link href="/outline">← return to the outline</Link>
         <a href="/other-page.json">inspect the common object →</a>

@@ -261,7 +261,8 @@
     {
       "id": "other-page",
       "path": "/other-page.json",
-      "sha256": "93bd5cf3a5ed62e35740b4201ae7bd5595f4c652890cbd6f27d7f04abe819030"
+      "sha256": "93bd5cf3a5ed62e35740b4201ae7bd5595f4c652890cbd6f27d7f04abe819030",
+      "repositoryCommit": "https://github.com/apoira/apoira/commit/946c65833444a345089faeba8b6ac4d45b000a61"
     }
   ],
   "rootConstruction": "sha256(raw-left-hash-bytes || raw-right-hash-bytes); duplicate final odd leaf",

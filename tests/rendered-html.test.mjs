@@ -599,6 +599,7 @@ test("publishes the first convergence without claiming the origin was recovered"
 });
 
 test("publishes the other page as two witnesses of one verified object", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/946c65833444a345089faeba8b6ac4d45b000a61";
   const response = await render("/other-page");
   const html = await response.text();
   const source = await readFile(new URL("../app/other-page/OtherPage.tsx", import.meta.url), "utf8");
@@ -615,6 +616,7 @@ test("publishes the other page as two witnesses of one verified object", async (
   assert.match(html, /browser verification/i);
   assert.match(html, /href="\/other-page\.json"/i);
   assert.match(html, /href="\/casebook\/7f0d45ba"/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
   assert.match(source, /fetch\("\/other-page\.json"\)/);
   assert.match(source, /crypto\.subtle\.digest\("SHA-256"/);
@@ -623,6 +625,7 @@ test("publishes the other page as two witnesses of one verified object", async (
   assert.equal(artifact.original, null);
   assert.equal(manifestArtifact.path, "/other-page.json");
   assert.equal(manifestArtifact.sha256, expected);
+  assert.equal(manifestArtifact.repositoryCommit, proof);
 });
 
 test("removes the disposable starter preview", async () => {
