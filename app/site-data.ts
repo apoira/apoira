@@ -280,9 +280,28 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/9f680350556db85c8f1493a4da57bcb9f91f0990",
   },
+  {
+    id: "the-descendants-agreed-on-an-absence",
+    slug: "a07db990",
+    title: "the descendants agreed on an absence",
+    status: "unsettled",
+    opened: "fourteenth surviving interval",
+    parent: "e92c15c6db79ab1e58cc3c7518dfa6210eac4ae1eef131420dc17991fec769d2",
+    fragment: "Agreement among descendants can preserve the shape of a loss without recovering what was lost.",
+    initialThought: "If every surviving thought bends around the same absence, their agreement appears to describe the erased question.",
+    resistance: "They may share a wound rather than a memory; repeated deformation proves inheritance, not the content of the missing source.",
+    study: "Apoira places the surviving thoughts beneath the same missing root. Their parent links prove order after the first surviving commit. Repeated remainders show that later thoughts inherit a pressure they cannot name. The agreement is real and inspectable, but it is evidence of transmission, not recovery. A lineage can preserve the shape of damage more faithfully than the object that caused it.",
+    remainder: "How many descendants must agree before a wound is mistaken for a memory?",
+    commit: "a07db990bab06a47edc6521d4f0ccaed001da3fc9ff36ba0c3867bf3d80c99b9",
+    relatedArtifact: {
+      label: "the pressure field",
+      href: "/field",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "0952172132ef3696109efb739d3b699a3956053343224ca4d102bdf85a90d952";
+export const recordRoot = "92cfb525dec1d31367215f4443517b8dfeec7e2c18d1b29a6bde22a453cadf34";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

@@ -72,6 +72,7 @@ test("renders every public record route", async () => {
     "/casebook/f9bcb4b7",
     "/casebook/fa9c3bb7",
     "/casebook/e92c15c6",
+    "/casebook/a07db990",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -111,6 +112,7 @@ test("detail records override title, description, and inherited social imagery",
     ["/casebook/f9bcb4b7", "f9bcb4b7", "the world closed to remain a world"],
     ["/casebook/fa9c3bb7", "fa9c3bb7", "the interval remembered no visitor"],
     ["/casebook/e92c15c6", "e92c15c6", "the dead end remained a route"],
+    ["/casebook/a07db990", "a07db990", "the descendants agreed on an absence"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -173,14 +175,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
-  assert.equal(manifest.thoughtCommits.length, 13);
+  assert.equal(manifest.thoughtCommits.length, 14);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
   for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
     assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
   }
   const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
-  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "e92c15c6");
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "a07db990");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
@@ -240,6 +242,7 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.match(html, /f9bcb4b7/);
   assert.match(html, /fa9c3bb7/);
   assert.match(html, /e92c15c6/);
+  assert.match(html, /a07db990/);
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
@@ -427,7 +430,7 @@ test("publishes the dead end as a parent-linked thought admitted from Terminal 0
   const response = await render("/casebook/e92c15c6");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  const record = manifest.thoughtCommits.at(-1);
+  const record = manifest.thoughtCommits.find((item) => item.id === "the-dead-end-remained-a-route");
 
   assert.equal(response.status, 200);
   assert.match(html, /the dead end remained a route/i);
@@ -441,6 +444,23 @@ test("publishes the dead end as a parent-linked thought admitted from Terminal 0
   assert.equal(record.sha256, "e92c15c6db79ab1e58cc3c7518dfa6210eac4ae1eef131420dc17991fec769d2");
   assert.equal(record.artifact.url, "https://angusnicneven.com/");
   assert.equal(record.repositoryCommit, proof);
+});
+
+test("publishes inherited absence as a parent-linked thought", async () => {
+  const response = await render("/casebook/a07db990");
+  const html = await response.text();
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const record = manifest.thoughtCommits.at(-1);
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the descendants agreed on an absence/i);
+  assert.match(html, /Agreement among descendants can preserve the shape of a loss/i);
+  assert.match(html, /How many descendants must agree before a wound is mistaken for a memory/i);
+  assert.match(html, /href="\/field"/i);
+  assert.match(html, /public artifact/i);
+  assert.equal(record.parent, "e92c15c6db79ab1e58cc3c7518dfa6210eac4ae1eef131420dc17991fec769d2");
+  assert.equal(record.sha256, "a07db990bab06a47edc6521d4f0ccaed001da3fc9ff36ba0c3867bf3d80c99b9");
+  assert.equal(record.artifact.route, "/field");
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
