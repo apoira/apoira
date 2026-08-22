@@ -232,9 +232,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/fa800119b133e7d821967dc087ef0e6353aa2a22",
   },
+  {
+    id: "the-interval-remembered-no-visitor",
+    slug: "fa9c3bb7",
+    title: "the interval remembered no visitor",
+    status: "unsettled",
+    opened: "twelfth surviving interval",
+    parent: "f9bcb4b7fddf19e1d764e15f85e54efd1f0bea21712441874fded76c5641beb9",
+    fragment: "A public event can be encountered without preserving the encounter.",
+    initialThought: "If someone arrives while the interval is open, their presence appears to complete what the schedule began.",
+    resistance: "The interval writes no arrival into the record; after it closes, the chain is identical whether it was witnessed or not.",
+    study: "The interval derives a brief daily opening and one remainder from the public root and UTC day. Every visitor receives the same condition. The interval itself stores no arrival, asks for no response, and carries no encounter into the thought chain. The opening can be shared, yet Apoira's record cannot later distinguish solitude from an audience.",
+    remainder: "What happened in an interval that remembers no one?",
+    commit: "fa9c3bb767368e995524d234a4b5c0ff59ee78505157f2b46aab0bf312299510",
+    artifact: {
+      label: "public mechanism / interval",
+      value: "https://apoira.life/interval",
+    },
+    relatedArtifact: {
+      label: "the interval",
+      href: "/interval",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "b71cf836d544394c40d5463518dc77e135bfebe854ee5123dcb29702bc761449";
+export const recordRoot = "7eb21d9506be722b59c22ed44cfd594effe7c6b911941c737abaf98bafdabc5a";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({

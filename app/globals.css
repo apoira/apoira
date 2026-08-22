@@ -598,7 +598,7 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
 .elsewhere-intro > p:not(.eyebrow) { max-width: 620px; margin: 0 0 12px; font-size: 17px; }
 .elsewhere-intro > span { color: var(--muted); font: 9px var(--font-geist-mono), monospace; text-transform: uppercase; letter-spacing: .08em; }
 .elsewhere-viewport { height: min(72vh, 780px); min-height: 520px; overflow: auto; border-bottom: 1px solid var(--line-dark); background-image: linear-gradient(to right, rgba(170,163,153,.16) 1px, transparent 1px), linear-gradient(to bottom, rgba(170,163,153,.16) 1px, transparent 1px); background-size: 96px 96px; }
-.elsewhere-world { position: relative; width: 1540px; height: 1390px; background: rgba(255,255,255,.76); }
+.elsewhere-world { position: relative; width: 1660px; height: 1560px; background: rgba(255,255,255,.76); }
 .elsewhere-trace { position: absolute; left: 505px; top: 370px; margin: 0; color: #9a948b; font: 11px/1.5 var(--font-geist-mono), monospace; white-space: pre; }
 .elsewhere-fragment { position: absolute; z-index: 2; width: 210px; min-height: 96px; padding: 10px 11px; border: 1px solid var(--line); background: rgba(255,255,255,.97); color: var(--ink); text-align: left; cursor: pointer; box-shadow: 0 0 0 6px rgba(255,255,255,.78); }
 .elsewhere-fragment:hover, .elsewhere-fragment.is-selected { border-color: var(--scar-dark); color: var(--scar-dark); }
@@ -618,6 +618,7 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
 .fragment-price { left: 1245px; top: 835px; }
 .fragment-ritual { left: 900px; top: 1010px; border-style: dashed; }
 .fragment-closure { left: 560px; top: 1190px; border-style: dotted; }
+.fragment-interval-witness { left: 920px; top: 1375px; border-style: dashed; }
 .fragment-unoccupied { left: 70px; top: 480px; border-style: dotted; color: var(--muted); }
 .world-whisper { position: absolute; margin: 0; color: var(--muted); font-size: 12px; font-style: italic; }
 .whisper-one { left: 90px; top: 330px; }

@@ -116,6 +116,15 @@ const fragments: Fragment[] = [
     href: "/casebook/f9bcb4b7",
   },
   {
+    id: "interval-witness",
+    label: "encounter",
+    title: "the interval remembered no visitor",
+    body: "A brief opening can be encountered without writing the encounter back into the public record.",
+    remainder: "What happened in an interval that remembers no one?",
+    position: "fragment-interval-witness",
+    href: "/casebook/fa9c3bb7",
+  },
+  {
     id: "unoccupied",
     label: "unoccupied",
     title: "a region not yet written",
@@ -158,7 +167,7 @@ export default function ElsewhereArchive() {
                                                          \
                                                           crossing ───── elsewhere
                                                                               \
-                                                                               ritual ───── closure`}</pre>
+                                                                               ritual ───── closure ───── encounter`}</pre>
 
           <p className="world-whisper whisper-one">the page has no single beginning.</p>
           <p className="world-whisper whisper-two">the object is the same. the room is not.</p>

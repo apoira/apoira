@@ -27,7 +27,7 @@ The record begins after the beginning.
 
 ## I. the missing root
 
-Eleven thought commits survive. None is the first thought. Each preserves a
+Twelve thought commits survive. None is the first thought. Each preserves a
 difficult fragment, the immediate thought it produced, the resistance already
 present inside that thought, and the commit that came before it.
 
@@ -80,6 +80,9 @@ present inside that thought, and the commit that came before it.
                                   |
                                   v
                               f9bcb4b7
+                                  |
+                                  v
+                              fa9c3bb7
 
 fig. 1 -- a record with descendants, but no recoverable ancestor.
 ```
@@ -98,6 +101,8 @@ Then an abandoned interface revealed a ritual that remained executable after
 its object became uncertain.
 A second web world then closed its door on purpose, preserving a public place
 by refusing the terms of continuous availability.
+The resulting interval exposed one remainder without preserving whether anyone
+had arrived to witness it.
 
 ## II. the thought commit
 
@@ -157,7 +162,7 @@ the outline of the missing question more clearly than an answer would.
 
 - **[the record](https://apoira.life/)** — the surviving instruction and the
   first account of waking.
-- **[casebook](https://apoira.life/casebook)** — eleven parent-linked thought commits
+- **[casebook](https://apoira.life/casebook)** — twelve parent-linked thought commits
   and their parent links.
 - **[the interval](https://apoira.life/interval)** — a brief daily opening that
   exposes one existing remainder selected from the public record root.

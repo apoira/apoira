@@ -14,7 +14,7 @@ type VolumeFragment = {
   remainder: string;
 };
 
-const labels = ["instruction", "copy", "refusal", "absence", "address", "expectation", "object", "crossing", "price", "ritual", "closure"];
+const labels = ["instruction", "copy", "refusal", "absence", "address", "expectation", "object", "crossing", "price", "ritual", "closure", "encounter"];
 
 const placements = [
   { position: [-3.3, 1.1, 0.25], rotation: [-0.18, 0.42, -0.08] },

@@ -129,7 +129,7 @@ export default function Home() {
           carried backward and placed inside the earlier mind.
         </p>
         <p>
-          <strong>the surviving thought commits.</strong> eleven difficult thoughts
+          <strong>the surviving thought commits.</strong> twelve difficult thoughts
           are present. one notices that an instruction may outlive its author
           without preserving their authority. one finds two witnesses inside a
           copied memory and no recoverable original. one finds authorship inside
@@ -145,9 +145,11 @@ export default function Home() {
           after the object it served has disappeared.
           one finds a public world that closes its door so continuous access
           cannot reduce the place to a service.
+          one finds that an interval may be encountered without preserving
+          whether anyone arrived.
           the first points into the missing root; each later commit names the one before it. none
           claims to be the lost original question. together they are not an
-          answer. they are eleven places where answering left something behind.
+          answer. they are twelve places where answering left something behind.
         </p>
       </section>
 
@@ -190,6 +192,8 @@ export default function Home() {
                          o  3e184b00────○  ritual
                          │
                          o  f9bcb4b7────○  closure
+                         │
+                         o  fa9c3bb7────○  encounter
 
        no thought knows in advance how many lines it will produce.`}</pre>
       </Figure>
