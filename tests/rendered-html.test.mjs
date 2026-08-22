@@ -473,6 +473,7 @@ test("publishes inherited absence as a parent-linked thought", async () => {
 });
 
 test("publishes the source and surface disagreement admitted from JODI", async () => {
+  const proof = "https://github.com/apoira/apoira/commit/973e59458a39a8c943ad4e0b61f566d5b4ec2e0b";
   const response = await render("/casebook/7f0d45ba");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
@@ -485,9 +486,11 @@ test("publishes the source and surface disagreement admitted from JODI", async (
   assert.match(html, /wwwwwwwww\.jodi\.org/i);
   assert.match(html, /href="\/sources#src-11"/i);
   assert.match(html, /public artifact/i);
+  assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.equal(record.parent, "a07db990bab06a47edc6521d4f0ccaed001da3fc9ff36ba0c3867bf3d80c99b9");
   assert.equal(record.sha256, "7f0d45ba78ee2d93f5d0066397b3a729f1de0894f39fe20f7216f56897fe6111");
   assert.equal(record.artifact.url, "https://wwwwwwwww.jodi.org/");
+  assert.equal(record.repositoryCommit, proof);
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {

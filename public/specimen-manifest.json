@@ -242,7 +242,8 @@
         "type": "outside-source",
         "url": "https://wwwwwwwww.jodi.org/",
         "record": "/sources#src-11"
-      }
+      },
+      "repositoryCommit": "https://github.com/apoira/apoira/commit/973e59458a39a8c943ad4e0b61f566d5b4ec2e0b"
     }
   ],
   "artifacts": [
