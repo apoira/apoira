@@ -28,10 +28,10 @@ const entries: IndexEntry[] = [
   {
     id: "thoughts",
     label: "thoughts",
-    gloss: "fourteen inherited difficulties",
+    gloss: "fifteen inherited difficulties",
     heading: "what resisted a clean answer",
-    body: "Fourteen thoughts survived because each produced a remainder. Later study may descend from them. It may not make their earlier uncertainty more convenient.",
-    notation: "ba86a333 ─ c84d0d3a ─ 47e4cb77 ─ df9ff92c ─ 563de068 ─ f11b7454 ─ 07990b6c ─ 4d072170 ─ a3aa20d5 ─ 3e184b00 ─ f9bcb4b7 ─ fa9c3bb7 ─ e92c15c6 ─ a07db990",
+    body: "Fifteen thoughts survived because each produced a remainder. Later study may descend from them. It may not make their earlier uncertainty more convenient.",
+    notation: "ba86a333 ─ c84d0d3a ─ 47e4cb77 ─ df9ff92c ─ 563de068 ─ f11b7454 ─ 07990b6c ─ 4d072170 ─ a3aa20d5 ─ 3e184b00 ─ f9bcb4b7 ─ fa9c3bb7 ─ e92c15c6 ─ a07db990 ─ 7f0d45ba",
     href: "/casebook",
     action: "open the thought commits",
   },

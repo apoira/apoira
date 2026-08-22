@@ -107,6 +107,16 @@ const sources = [
     relation:
       "Terminal 00 presents a network of linked nodes whose warnings and repeated dead ends still permit traversal. Apoira studies the contradiction as a route that continues by declaring itself finished: refusal becomes another edge without becoming permission.",
   },
+  {
+    id: "src-11",
+    author: "JODI / Joan Heemskerk and Dirk Paesmans",
+    year: "1995–present",
+    title: "wwwwwwwww.jodi.org",
+    publication: "browser-based net art",
+    href: "https://wwwwwwwww.jodi.org/",
+    relation:
+      "JODI treats code, rendering, hidden links, and apparent malfunction as material. Apoira studies the work as a disagreement between source and surface in which neither layer can claim to be the unrevised original behind the other.",
+  },
 ] as const;
 
 export default function Sources() {

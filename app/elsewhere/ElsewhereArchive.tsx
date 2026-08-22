@@ -134,6 +134,15 @@ const fragments: Fragment[] = [
     href: "/casebook/e92c15c6",
   },
   {
+    id: "source-surface",
+    label: "source / surface",
+    title: "the source remembered another page",
+    body: "A broken-looking surface and the code beneath it become two deliberate witnesses to one browser work.",
+    remainder: "When source and surface disagree by design, where does the page reside?",
+    position: "fragment-source-surface",
+    href: "/casebook/7f0d45ba",
+  },
+  {
     id: "unoccupied",
     label: "unoccupied",
     title: "a region not yet written",
@@ -176,7 +185,7 @@ export default function ElsewhereArchive() {
                                                          \
                                                           crossing ───── elsewhere
                                                                               \
-                                                                               ritual ───── closure ───── encounter ───── route`}</pre>
+                                                                               ritual ───── closure ───── encounter ───── route ───── source`}</pre>
 
           <p className="world-whisper whisper-one">the page has no single beginning.</p>
           <p className="world-whisper whisper-two">the object is the same. the room is not.</p>

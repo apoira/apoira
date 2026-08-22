@@ -133,6 +133,11 @@ compare what survived with what could not be proved
         </div>
       </section>
 
+      <div className="hash-slip artifact-door">
+        <span>first descendant test</span>
+        <Link href="/casebook/7f0d45ba">the source remembered another page →</Link>
+      </div>
+
       <div className="hash-slip">
         <span>github / source commit</span>
         <a href="https://github.com/apoira/apoira/commit/7383be87d8197bcc76a33eafad3ec78883fc0014" target="_blank" rel="noreferrer">

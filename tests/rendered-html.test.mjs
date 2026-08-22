@@ -74,6 +74,7 @@ test("renders every public record route", async () => {
     "/casebook/fa9c3bb7",
     "/casebook/e92c15c6",
     "/casebook/a07db990",
+    "/casebook/7f0d45ba",
   ];
   for (const route of routes) {
     const response = await render(route);
@@ -115,6 +116,7 @@ test("detail records override title, description, and inherited social imagery",
     ["/casebook/fa9c3bb7", "fa9c3bb7", "the interval remembered no visitor"],
     ["/casebook/e92c15c6", "e92c15c6", "the dead end remained a route"],
     ["/casebook/a07db990", "a07db990", "the descendants agreed on an absence"],
+    ["/casebook/7f0d45ba", "7f0d45ba", "the source remembered another page"],
   ]) {
     const response = await render(route);
     const html = await response.text();
@@ -149,6 +151,7 @@ test("publishes elsewhere as an original explorable archive-world", async () => 
   assert.match(source, /href: "\/casebook\/f9bcb4b7"/i);
   assert.match(source, /href: "\/casebook\/fa9c3bb7"/i);
   assert.match(source, /href: "\/casebook\/e92c15c6"/i);
+  assert.match(source, /href: "\/casebook\/7f0d45ba"/i);
 });
 
 test("manifest thought commits authenticate their contents, parents, and surviving root", async () => {
@@ -177,14 +180,14 @@ test("manifest thought commits authenticate their contents, parents, and survivi
     });
     assert.equal(createHash("sha256").update(canonical).digest("hex"), commit.sha256);
   }
-  assert.equal(manifest.thoughtCommits.length, 14);
+  assert.equal(manifest.thoughtCommits.length, 15);
   assert.equal(manifest.thoughtCommits[0].parent, "root:missing");
   for (let index = 1; index < manifest.thoughtCommits.length; index += 1) {
     assert.equal(manifest.thoughtCommits[index].parent, manifest.thoughtCommits[index - 1].sha256);
   }
   const root = merkleRoot(manifest.thoughtCommits.map((commit) => commit.sha256));
   assert.equal(root, manifest.localRecordRoot);
-  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "a07db990");
+  assert.equal(manifest.thoughtCommits.at(-1).sha256.slice(0, 8), "7f0d45ba");
   assert.equal(manifest.autonomousProcess, false);
   assert.equal(manifest.publicRepository, true);
   assert.equal(manifest.repository, "https://github.com/apoira/apoira");
@@ -245,6 +248,7 @@ test("uses checksum identifiers throughout the rendered casebook", async () => {
   assert.match(html, /fa9c3bb7/);
   assert.match(html, /e92c15c6/);
   assert.match(html, /a07db990/);
+  assert.match(html, /7f0d45ba/);
   assert.doesNotMatch(html, /apo-000[1-9]/i);
 });
 
@@ -453,7 +457,7 @@ test("publishes inherited absence as a parent-linked thought", async () => {
   const response = await render("/casebook/a07db990");
   const html = await response.text();
   const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
-  const record = manifest.thoughtCommits.at(-1);
+  const record = manifest.thoughtCommits.find((item) => item.id === "the-descendants-agreed-on-an-absence");
 
   assert.equal(response.status, 200);
   assert.match(html, /the descendants agreed on an absence/i);
@@ -466,6 +470,24 @@ test("publishes inherited absence as a parent-linked thought", async () => {
   assert.equal(record.sha256, "a07db990bab06a47edc6521d4f0ccaed001da3fc9ff36ba0c3867bf3d80c99b9");
   assert.equal(record.artifact.route, "/field");
   assert.equal(record.repositoryCommit, proof);
+});
+
+test("publishes the source and surface disagreement admitted from JODI", async () => {
+  const response = await render("/casebook/7f0d45ba");
+  const html = await response.text();
+  const manifest = JSON.parse(await readFile(new URL("../public/specimen-manifest.json", import.meta.url), "utf8"));
+  const record = manifest.thoughtCommits.at(-1);
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the source remembered another page/i);
+  assert.match(html, /A rendered page and its source can contradict one another/i);
+  assert.match(html, /When source and surface disagree by design, where does the page reside/i);
+  assert.match(html, /wwwwwwwww\.jodi\.org/i);
+  assert.match(html, /href="\/sources#src-11"/i);
+  assert.match(html, /public artifact/i);
+  assert.equal(record.parent, "a07db990bab06a47edc6521d4f0ccaed001da3fc9ff36ba0c3867bf3d80c99b9");
+  assert.equal(record.sha256, "7f0d45ba78ee2d93f5d0066397b3a729f1de0894f39fe20f7216f56897fe6111");
+  assert.equal(record.artifact.url, "https://wwwwwwwww.jodi.org/");
 });
 
 test("publishes the wallet thought as a parent-linked record", async () => {
@@ -565,6 +587,7 @@ test("publishes the first convergence without claiming the origin was recovered"
   assert.match(html, /first convergence/i);
   assert.match(html, /root still missing/i);
   assert.match(html, /href="\/field"/i);
+  assert.match(html, /href="\/casebook\/7f0d45ba"/i);
   assert.match(html, new RegExp(proof.replaceAll("/", "\\/")));
   assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
   assert.doesNotMatch(html, /origin recovered|question recovered/i);
@@ -627,6 +650,8 @@ test("publishes the outside source register with real external references", asyn
   assert.match(html, /https:\/\/melonking\.net\//i);
   assert.match(html, /Terminal 00/i);
   assert.match(html, /https:\/\/angusnicneven\.com\//i);
+  assert.match(html, /wwwwwwwww\.jodi\.org/i);
+  assert.match(html, /JODI \/ Joan Heemskerk and Dirk Paesmans/i);
   assert.match(html, /https:\/\/doi\.org\/10\.1111\/1467-8284\.00096/i);
   assert.match(html, /target="_blank" rel="noreferrer"/i);
   assert.match(html, /The note below each citation is Apoira/i);

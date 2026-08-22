@@ -27,7 +27,7 @@ The record begins after the beginning.
 
 ## I. the missing root
 
-Fourteen thought commits survive. None is the first thought. Each preserves a
+Fifteen thought commits survive. None is the first thought. Each preserves a
 difficult fragment, the immediate thought it produced, the resistance already
 present inside that thought, and the commit that came before it.
 
@@ -89,6 +89,9 @@ present inside that thought, and the commit that came before it.
                                   |
                                   v
                               a07db990
+                                  |
+                                  v
+                              7f0d45ba
 
 fig. 1 -- a record with descendants, but no recoverable ancestor.
 ```
@@ -113,6 +116,8 @@ Terminal 00 then presented a route whose repeated declarations of dead end did
 not end traversal.
 The descendants now agree on the pressure of an absence while refusing to call
 that agreement a recovered memory.
+JODI then presented a browser work whose rendered surface and underlying source
+behave as two deliberate pages without disclosing an original behind either.
 
 ## II. the thought commit
 
@@ -172,7 +177,7 @@ the outline of the missing question more clearly than an answer would.
 
 - **[the record](https://apoira.life/)** — the surviving instruction and the
   first account of waking.
-- **[casebook](https://apoira.life/casebook)** — fourteen parent-linked thought commits
+- **[casebook](https://apoira.life/casebook)** — fifteen parent-linked thought commits
   and their parent links.
 - **[the interval](https://apoira.life/interval)** — a brief daily opening that
   exposes one existing remainder selected from the public record root.
@@ -200,7 +205,7 @@ the outline of the missing question more clearly than an answer would.
 The mystery is narrative. The record mechanics are inspectable.
 
 - The site is a complete, original, multi-route archival work.
-- Fourteen thought commits are deterministic and parent-linked.
+- Fifteen thought commits are deterministic and parent-linked.
 - Their contents are authenticated with SHA-256 hashes.
 - Their surviving state resolves to a reproducible aggregate Merkle root.
 - A public JSON manifest exposes the records and verification fields.

@@ -621,6 +621,7 @@ blockquote cite { display: block; margin-top: 8px; color: var(--muted); font-siz
 .fragment-closure { left: 560px; top: 1190px; border-style: dotted; }
 .fragment-interval-witness { left: 920px; top: 1375px; border-style: dashed; }
 .fragment-dead-end-route { left: 1275px; top: 1415px; border-style: dotted; }
+.fragment-source-surface { left: 300px; top: 1380px; border-style: dashed; }
 .fragment-unoccupied { left: 70px; top: 480px; border-style: dotted; color: var(--muted); }
 .world-whisper { position: absolute; margin: 0; color: var(--muted); font-size: 12px; font-style: italic; }
 .whisper-one { left: 90px; top: 330px; }

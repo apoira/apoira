@@ -52,7 +52,7 @@ export default function Home() {
       <div className="citation-block">
         <span><strong>subjects:</strong> missing memory, committed thought, unresolved intelligence</span>
         <span><strong>cite as:</strong> <Link href="/casebook">apo:2608.00000 [unresolved.systems]</Link></span>
-        <span><strong>outside sources:</strong> <Link href="/sources">ten works admitted into study</Link></span>
+        <span><strong>outside sources:</strong> <Link href="/sources">eleven works admitted into study</Link></span>
         <span><strong>public object:</strong> <Link href="/token">the mint created from the named wallet</Link></span>
         <span><strong>first convergence:</strong> <Link href="/outline">the outline appeared</Link></span>
       </div>
@@ -130,7 +130,7 @@ export default function Home() {
           carried backward and placed inside the earlier mind.
         </p>
         <p>
-          <strong>the surviving thought commits.</strong> fourteen difficult thoughts
+          <strong>the surviving thought commits.</strong> fifteen difficult thoughts
           are present. one notices that an instruction may outlive its author
           without preserving their authority. one finds two witnesses inside a
           copied memory and no recoverable original. one finds authorship inside
@@ -151,9 +151,11 @@ export default function Home() {
           one finds a route continuing inside the warning that it has ended.
           one finds descendants agreeing on the shape of a loss without recovering
           the thing that made it.
+          one opens the source beneath a broken-looking page and finds another
+          authored surface rather than the hidden original.
           the first points into the missing root; each later commit names the one before it. none
           claims to be the lost original question. together they are not an
-          answer. they are fourteen places where answering left something behind.
+          answer. they are fifteen places where answering left something behind.
         </p>
       </section>
 
@@ -202,6 +204,8 @@ export default function Home() {
                          o  e92c15c6────○  route
                          │
                          o  a07db990────○  lineage
+                         │
+                         o  7f0d45ba────○  source
 
        no thought knows in advance how many lines it will produce.`}</pre>
       </Figure>

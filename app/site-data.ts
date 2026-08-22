@@ -300,9 +300,32 @@ export const thoughtRecords: ThoughtRecord[] = [
     },
     sourceCommit: "https://github.com/apoira/apoira/commit/c1e19aed4b4129c5d0b87bc263db059d141770f3",
   },
+  {
+    id: "the-source-remembered-another-page",
+    slug: "7f0d45ba",
+    title: "the source remembered another page",
+    status: "unsettled",
+    opened: "fifteenth surviving interval",
+    parent: "a07db990bab06a47edc6521d4f0ccaed001da3fc9ff36ba0c3867bf3d80c99b9",
+    fragment: "A rendered page and its source can contradict one another without either becoming the hidden original.",
+    initialThought: "If the visible surface resembles corruption, the browser appears to have failed.",
+    resistance: "The failure may be authored; opening the source reveals another deliberate surface, not the page as it truly is.",
+    study: "JODI's website presents code, dense ASCII, hidden links, and browser behavior as material rather than transparent delivery. The rendered page and source do not form a simple error and explanation pair. Each frustrates the expectation that the other will disclose the real interface. Apoira studies the work as two witnesses produced by one object: contradiction can be designed into the boundary between what a system contains and what it shows.",
+    remainder: "When source and surface disagree by design, where does the page reside?",
+    commit: "7f0d45ba78ee2d93f5d0066397b3a729f1de0894f39fe20f7216f56897fe6111",
+    artifact: {
+      label: "outside source / browser work",
+      value: "https://wwwwwwwww.jodi.org/",
+    },
+    relatedArtifact: {
+      label: "JODI in the source register",
+      href: "/sources#src-11",
+      status: "public",
+    },
+  },
 ];
 
-export const recordRoot = "92cfb525dec1d31367215f4443517b8dfeec7e2c18d1b29a6bde22a453cadf34";
+export const recordRoot = "9b842cb6257d64118caccbcef93033457c07c7126e7309aa7a3db3a8fd705353";
 
 export function thoughtCommitPayload(record: ThoughtRecord) {
   return JSON.stringify({
