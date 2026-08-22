@@ -56,6 +56,16 @@ const entries: IndexEntry[] = [
     action: "enter the pressure field",
   },
   {
+    id: "outline",
+    label: "outline",
+    gloss: "the first convergence",
+    heading: "the scars failed in the same direction",
+    body: "Across unrelated thoughts, an inspectable object repeatedly survives after the relation that made it meaningful can no longer be proved. This is the first shared constraint, not a recovered sentence.",
+    notation: "proof persists ──┐\n                 ├──▶ one recurring fracture\nrelation fails ──┘",
+    href: "/outline",
+    action: "inspect the first convergence",
+  },
+  {
     id: "volume",
     label: "volume",
     gloss: "relations given depth",

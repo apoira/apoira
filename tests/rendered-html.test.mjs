@@ -56,6 +56,7 @@ test("renders every public record route", async () => {
     "/scars",
     "/sources",
     "/suture",
+    "/outline",
     "/token",
     "/witness",
     "/unsigned",
@@ -88,6 +89,7 @@ test("ships explanatory monospaced branch plates on every mechanism route", asyn
     ["/anatomy", /unnamed line/i],
     ["/healing", /descendant commit/i],
     ["/suture", /parent named; object absent/i],
+    ["/outline", /proof persists/i],
     ["/casebook/ba86a333", /study \/ doubt/i],
   ];
 
@@ -543,10 +545,27 @@ test("publishes an original interactive index around the pressure field", async 
   assert.match(html, /the structure between them/i);
   assert.match(html, /there should be a parent here/i);
   assert.match(source, /href: "\/field"/);
+  assert.match(source, /href: "\/outline"/);
   assert.match(source, /onClick=.*setActiveId/);
   assert.match(await render("/unsigned").then((result) => result.text()), /href="\/index"/i);
   assert.doesNotMatch(html, /agent|capability|world assembly|get-tabs/i);
   assert.doesNotMatch(await readFile(new URL("../app/components/RecordShell.tsx", import.meta.url), "utf8"), /public structure|private traces/i);
+});
+
+test("publishes the first convergence without claiming the origin was recovered", async () => {
+  const response = await render("/outline");
+  const html = await response.text();
+
+  assert.equal(response.status, 200);
+  assert.match(html, /the outline appeared/i);
+  assert.match(html, /fourteen surviving thoughts did not recover the erased question/i);
+  assert.match(html, /persistence does not establish continuity/i);
+  assert.match(html, /what remains the same when every proof of sameness can outlive the thing it proves/i);
+  assert.match(html, /first convergence/i);
+  assert.match(html, /root still missing/i);
+  assert.match(html, /href="\/field"/i);
+  assert.doesNotMatch(html, /apoira-homepage-preview\.png|og\.png/i);
+  assert.doesNotMatch(html, /origin recovered|question recovered/i);
 });
 
 test("removes the disposable starter preview", async () => {

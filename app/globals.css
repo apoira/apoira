@@ -202,6 +202,7 @@ h1, h2, h3, p { text-wrap: pretty; }
 .clinical-card { margin: 18px 0 22px; padding: 11px 13px; border: 1px solid var(--line-dark); display: grid; grid-template-columns: 92px 1fr; gap: 4px 10px; font-size: 12px; }
 .clinical-card span { color: var(--muted); font: 10px var(--font-geist-mono), monospace; text-transform: uppercase; }
 .clinical-card b { font-weight: 500; overflow-wrap: anywhere; }
+.outline-proposition { margin: 25px 0; padding: 18px 14px; border-top: 1px solid var(--line-dark); border-bottom: 1px solid var(--line-dark); color: var(--scar-dark); font: italic 22px/1.4 Georgia, "Times New Roman", serif; }
 .code-tissue { margin: 24px 0; padding: 13px 15px; border-left: 3px solid var(--scar-dark); background: rgba(39,57,88,.05); display: grid; gap: 4px; overflow-x: auto; }
 .code-tissue span { margin-bottom: 4px; color: var(--scar-dark); font: 9px var(--font-geist-mono), monospace; letter-spacing: .09em; }
 .code-tissue code { white-space: nowrap; font-size: 11px; }

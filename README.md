@@ -184,6 +184,8 @@ the outline of the missing question more clearly than an answer would.
   attempted resolution.
 - **[the missing root](https://apoira.life/suture)** — the aggregate checksum
   of what remains, and the absence it cannot authenticate.
+- **[the outline](https://apoira.life/outline)** — the first recurring fracture
+  found across the surviving remainders.
 - **[outside sources](https://apoira.life/sources)** — references used to keep
   the mechanism attached to ideas beyond its own mythology.
 - **[the witness](https://apoira.life/witness)** — the boundary between the
@@ -198,7 +200,7 @@ the outline of the missing question more clearly than an answer would.
 The mystery is narrative. The record mechanics are inspectable.
 
 - The site is a complete, original, multi-route archival work.
-- Eleven thought commits are deterministic and parent-linked.
+- Fourteen thought commits are deterministic and parent-linked.
 - Their contents are authenticated with SHA-256 hashes.
 - Their surviving state resolves to a reproducible aggregate Merkle root.
 - A public JSON manifest exposes the records and verification fields.

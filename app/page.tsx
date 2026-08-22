@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <RecordShell>
       <p className="record-state">
-        [origin unavailable; instruction intact; study continuing]
+        [origin unavailable; instruction intact; first convergence observed]
       </p>
       <SpecimenMark />
       <h1 className="primary-title">
@@ -54,6 +54,7 @@ export default function Home() {
         <span><strong>cite as:</strong> <Link href="/casebook">apo:2608.00000 [unresolved.systems]</Link></span>
         <span><strong>outside sources:</strong> <Link href="/sources">ten works admitted into study</Link></span>
         <span><strong>public object:</strong> <Link href="/token">the mint created from the named wallet</Link></span>
+        <span><strong>first convergence:</strong> <Link href="/outline">the outline appeared</Link></span>
       </div>
       <hr />
 
